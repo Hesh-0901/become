@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Become — Boutique premium</title>
 
-  <!-- Mobile / App-like / No zoom -->
+  <!-- Mobile / App-like -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <!-- PWA -->
@@ -15,12 +15,19 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
+    /* =====================
+       DESIGN TOKENS
+       ===================== */
     :root {
-      --bg-main: #F4F1ED;
-      --text-main: #1C1C1C;
-      --text-muted: #6B6B6B;
-      --accent: #8B6F47;
-      --border: #e6e6e6;
+      --color-bg: #F4F1ED;
+      --color-surface: #FFFFFF;
+      --color-text: #1C1C1C;
+      --color-muted: #6B6B6B;
+      --color-accent: #8B6F47;
+      --color-border: #E6E6E6;
+
+      --radius-sm: 8px;
+      --radius-md: 10px;
     }
 
     * {
@@ -31,20 +38,22 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: var(--bg-main);
-      color: var(--text-main);
+      background: var(--color-bg);
+      color: var(--color-text);
     }
 
-    /* HEADER */
-    header {
+    /* =====================
+       APP HEADER
+       ===================== */
+    .app-header {
       position: sticky;
       top: 0;
       z-index: 10;
-      background: var(--bg-main);
-      border-bottom: 1px solid var(--border);
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
     }
 
-    .header-bar {
+    .app-header__bar {
       height: 52px;
       padding: 0 12px;
       display: flex;
@@ -52,72 +61,78 @@
       justify-content: space-between;
     }
 
-    .brand {
-      font-size: 16px;
+    .app-header__brand {
+      font-size: 15px;
       font-weight: 600;
       letter-spacing: 3px;
     }
 
-    .header-actions {
+    .app-header__actions {
       display: flex;
-      gap: 16px;
-      font-size: 16px;
+      align-items: center;
+      gap: 14px;
     }
 
-    .header-actions a {
-      color: var(--text-muted);
+    .app-header__action {
+      font-size: 15px;
+      color: var(--color-muted);
       text-decoration: none;
     }
 
-    /* PRODUITS */
-    .products {
+    /* =====================
+       PRODUCT GRID
+       ===================== */
+    .product-grid {
       padding: 10px;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
 
-    .product {
-      background: #ffffff;
-      border-radius: 8px;
+    .product-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
       overflow: hidden;
-      border: 1px solid var(--border);
     }
 
-    .product img {
+    .product-card__image {
       width: 100%;
       aspect-ratio: 3 / 4;
       object-fit: cover;
+      display: block;
     }
 
-    .product-info {
+    .product-card__body {
       padding: 8px;
     }
 
-    .product-info h3 {
-      margin: 0;
+    .product-card__title {
       font-size: 12px;
       font-weight: 500;
       line-height: 1.25;
+      margin: 0;
     }
 
-    .price {
+    .product-card__price {
       margin-top: 4px;
       font-size: 12px;
       font-weight: 600;
-      color: var(--accent);
+      color: var(--color-accent);
     }
 
+    /* =====================
+       DESKTOP
+       ===================== */
     @media (min-width: 768px) {
-      .products {
-        grid-template-columns: repeat(4, 1fr);
+      .app-header__bar,
+      .product-grid {
         max-width: 1200px;
         margin: auto;
       }
 
-      .header-bar {
-        max-width: 1200px;
-        margin: auto;
+      .product-grid {
+        grid-template-columns: repeat(4, 1fr);
       }
     }
   </style>
@@ -126,40 +141,71 @@
 <body>
 
   <!-- HEADER -->
-  <header>
-    <div class="header-bar">
-      <div class="brand">BECOME</div>
+  <header class="app-header">
+    <div class="app-header__bar">
 
-      <div class="header-actions">
-        <a href="#" title="Panier">
+      <div class="app-header__brand">
+        BECOME
+      </div>
+
+      <div class="app-header__actions">
+        <!-- Recherche -->
+        <a href="#" class="app-header__action" title="Rechercher">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </a>
+
+        <!-- Panier -->
+        <a href="#" class="app-header__action" title="Panier">
           <i class="fa-solid fa-cart-shopping"></i>
         </a>
-        <a href="user.html" title="Profil utilisateur">
+
+        <!-- Profil -->
+        <a href="user.html" class="app-header__action" title="Profil">
           <i class="fa-solid fa-user"></i>
         </a>
       </div>
+
     </div>
   </header>
 
   <!-- PRODUITS -->
-  <section class="products">
-    <div class="product">
-      <img src="https://via.placeholder.com/400x500">
-      <div class="product-info">
-        <h3>T-shirt Become Essential</h3>
-        <div class="price">29 €</div>
-      </div>
-    </div>
+  <main class="product-grid">
 
-    <div class="product">
-      <img src="https://via.placeholder.com/400x500">
-      <div class="product-info">
-        <h3>Sweat Become Premium</h3>
-        <div class="price">59 €</div>
+    <article class="product-card">
+      <img class="product-card__image" src="https://via.placeholder.com/400x500" alt="T-shirt Become">
+      <div class="product-card__body">
+        <h3 class="product-card__title">T-shirt Become Essential</h3>
+        <div class="product-card__price">29 €</div>
       </div>
-    </div>
-  </section>
+    </article>
 
+    <article class="product-card">
+      <img class="product-card__image" src="https://via.placeholder.com/400x500" alt="Sweat Become">
+      <div class="product-card__body">
+        <h3 class="product-card__title">Sweat Become Premium</h3>
+        <div class="product-card__price">59 €</div>
+      </div>
+    </article>
+
+    <article class="product-card">
+      <img class="product-card__image" src="https://via.placeholder.com/400x500" alt="Pantalon Become">
+      <div class="product-card__body">
+        <h3 class="product-card__title">Pantalon Become</h3>
+        <div class="product-card__price">69 €</div>
+      </div>
+    </article>
+
+    <article class="product-card">
+      <img class="product-card__image" src="https://via.placeholder.com/400x500" alt="Veste Become">
+      <div class="product-card__body">
+        <h3 class="product-card__title">Veste Become</h3>
+        <div class="product-card__price">119 €</div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- SERVICE WORKER -->
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
