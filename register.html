@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Become — Inscription</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0F0F0F">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg: #0F0F0F;
+      --surface: #1E1E1E;
+      --text: #F5F5F5;
+      --muted: #9A9A9A;
+      --accent: #C2A16A;
+      --border: #2C2C2C;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(180deg, #0F0F0F, #161616);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .top-bar {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    .back-btn {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wrapper {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      font-size: 13px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      background: #161616;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      margin: 18px 0;
+    }
+
+    .checkbox input {
+      margin-top: 4px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 999px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      background: var(--accent);
+      color: #1B1B1B;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .error {
+      color: #FF6B6B;
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="top-bar">
+    <a href="user.html" class="back-btn">
+      <i class="fa-solid fa-arrow-left"></i> Retour
+    </a>
+  </header>
+
+  <main class="wrapper">
+    <div class="card">
+
+      <div class="title">Créer un compte</div>
+      <div class="subtitle">Rejoignez Become en quelques instants</div>
+
+      <form id="registerForm">
+
+        <div class="field">
+          <label>Prénom</label>
+          <input type="text" id="firstName" required>
+        </div>
+
+        <div class="field">
+          <label>Nom</label>
+          <input type="text" id="lastName" required>
+        </div>
+
+        <div class="field">
+          <label>Genre</label>
+          <select id="gender" required>
+            <option value="">Sélectionner</option>
+            <option>Homme</option>
+            <option>Femme</option>
+            <option>Autre</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Numéro de téléphone</label>
+          <input type="tel" id="phone" required>
+        </div>
+
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="email" required>
+        </div>
+
+        <div class="field">
+          <label>Mot de passe</label>
+          <input type="password" id="password" required>
+        </div>
+
+        <div class="field">
+          <label>Ville</label>
+          <input type="text" id="city" required>
+        </div>
+
+        <div class="field">
+          <label>Quartier</label>
+          <input type="text" id="district" required>
+        </div>
+
+        <div class="checkbox">
+          <input type="checkbox" id="terms" required>
+          <label for="terms">
+            J’accepte les termes et règles d’utilisation de Become
+          </label>
+        </div>
+
+        <button type="submit" class="btn">
+          <i class="fa-solid fa-user-plus"></i>
+          Créer mon compte
+        </button>
+
+        <div class="error" id="errorMsg"></div>
+      </form>
+
+    </div>
+  </main>
+
+  <!-- BACKEND -->
+  <script type="module">
+    import { auth, db } from "./js/firebase.config.js";
+    import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const form = document.getElementById("registerForm");
+    const errorMsg = document.getElementById("errorMsg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorMsg.style.display = "none";
+
+      try {
+        const email = email.value;
+        const password = document.getElementById("password").value;
+
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+          firstName: firstName.value,
+          lastName: lastName.value,
+          gender: gender.value,
+          phone: phone.value,
+          email,
+          city: city.value,
+          district: district.value,
+          createdAt: new Date()
+        });
+
+        window.location.href = "index.html";
+
+      } catch (error) {
+        errorMsg.textContent = error.message;
+        errorMsg.style.display = "block";
+      }
+    });
+  </script>
+
+</body>
+</html>
