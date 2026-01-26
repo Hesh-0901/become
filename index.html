@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <title>Become — Boutique premium</title>
 
-  <!-- Mobile / No zoom (app-like) -->
+  <!-- Mobile / No zoom -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#8B6F47">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     /* =====================
@@ -33,36 +36,32 @@
       font-family: Arial, sans-serif;
       background: var(--bg-main);
       color: var(--text-main);
+      padding-bottom: 70px; /* place pour le footer */
     }
 
     /* =====================
-       HEADER
+       HEADER STRUCTURÉ
        ===================== */
     header {
-      padding: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg-main);
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .header-top {
+      padding: 14px 16px;
       text-align: center;
       font-size: 22px;
       letter-spacing: 4px;
       font-weight: 600;
-      background: var(--bg-main);
     }
 
-    /* =====================
-       HERO
-       ===================== */
-    .hero {
-      padding: 24px 16px;
+    .header-sub {
+      padding: 8px 16px 12px;
       text-align: center;
-    }
-
-    .hero h2 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    .hero p {
-      margin-top: 8px;
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-muted);
     }
 
@@ -72,7 +71,7 @@
     .products {
       padding: 16px;
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* mobile */
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
 
@@ -109,6 +108,40 @@
     }
 
     /* =====================
+       FOOTER APP (FIXE)
+       ===================== */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 64px;
+      background: #ffffff;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .nav-item {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .nav-item i {
+      font-size: 20px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+    }
+
+    /* =====================
        DESKTOP
        ===================== */
     @media (min-width: 768px) {
@@ -118,8 +151,11 @@
         margin: auto;
       }
 
-      .hero h2 {
-        font-size: 26px;
+      footer {
+        max-width: 500px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 16px 16px 0 0;
       }
     }
   </style>
@@ -129,14 +165,9 @@
 
   <!-- HEADER -->
   <header>
-    BECOME
+    <div class="header-top">BECOME</div>
+    <div class="header-sub">Vêtements premium & minimalistes</div>
   </header>
-
-  <!-- HERO -->
-  <section class="hero">
-    <h2>Premium Essentials</h2>
-    <p>Des vêtements minimalistes, pensés pour durer.</p>
-  </section>
 
   <!-- PRODUITS -->
   <section class="products">
@@ -174,6 +205,24 @@
     </div>
 
   </section>
+
+  <!-- FOOTER NAV -->
+  <footer>
+    <div class="nav-item active">
+      <i class="fa-solid fa-house"></i>
+      Accueil
+    </div>
+
+    <div class="nav-item">
+      <i class="fa-solid fa-cart-shopping"></i>
+      Panier
+    </div>
+
+    <div class="nav-item">
+      <i class="fa-solid fa-user"></i>
+      Profil
+    </div>
+  </footer>
 
   <!-- SERVICE WORKER -->
   <script>
