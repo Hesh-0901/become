@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Become — Mon espace</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0F0F0F">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg: #0F0F0F;
+      --surface: #1E1E1E;
+      --surface-soft: #242424;
+      --text: #F5F5F5;
+      --muted: #A0A0A0;
+      --accent: #C2A16A;
+      --border: #2C2C2C;
+      --radius: 16px;
+      --success: #4CAF50;
+      --danger: #FF6B6B;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(180deg, #0F0F0F, #161616);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    .header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-title {
+      font-size: 14px;
+      letter-spacing: 4px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .logout {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* MAIN */
+    .container {
+      padding: 16px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .section {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: rgba(76,175,80,0.15);
+      color: var(--success);
+    }
+
+    .badge-danger {
+      background: rgba(255,107,107,0.15);
+      color: var(--danger);
+    }
+
+    .list {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .item {
+      background: var(--surface-soft);
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-title">BECOME</div>
+    <button id="logoutBtn" class="logout">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      Déconnexion
+    </button>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="container">
+
+    <!-- USER INFO -->
+    <section class="section">
+      <div class="section-title">
+        <i class="fa-solid fa-user"></i>
+        Mon profil
+      </div>
+      <div class="info">
+        <div id="userName">Chargement...</div>
+        <div id="userEmail"></div>
+      </div>
+    </section>
+
+    <!-- CART -->
+    <section class="section">
+      <div class="section-title">
+        <i class="fa-solid fa-cart-shopping"></i>
+        Mon panier
+      </div>
+
+      <div class="list">
+        <div class="item">
+          T-shirt Become Essential
+          <strong>29 €</strong>
+        </div>
+        <div class="item">
+          Sweat Become Premium
+          <strong>59 €</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- PACKAGES -->
+    <section class="section">
+      <div class="section-title">
+        <i class="fa-solid fa-box"></i>
+        Mes colis
+      </div>
+
+      <div class="list">
+        <div class="item">
+          Commande #1021
+          <span class="badge badge-success">Approuvé</span>
+        </div>
+        <div class="item">
+          Commande #1018
+          <span class="badge badge-danger">Refusé</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FIREBASE LOGIC -->
+  <script type="module">
+    import { auth } from "./js/firebase.config.js";
+    import { onAuthStateChanged, signOut } 
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const userName = document.getElementById("userName");
+    const userEmail = document.getElementById("userEmail");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    // 🔒 Protection de la page
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.replace("user.html");
+      } else {
+        userName.textContent = "Bienvenue";
+        userEmail.textContent = user.email;
+      }
+    });
+
+    // 🚪 Déconnexion
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.replace("user.html");
+    });
+  </script>
+
+</body>
+</html>
