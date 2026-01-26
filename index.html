@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>Become — Boutique premium</title>
 
-  <!-- Mobile / App-like -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <!-- PWA -->
@@ -15,9 +14,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    /* =====================
-       DESIGN TOKENS
-       ===================== */
     :root {
       --color-bg: #F4F1ED;
       --color-surface: #FFFFFF;
@@ -25,9 +21,7 @@
       --color-muted: #6B6B6B;
       --color-accent: #8B6F47;
       --color-border: #E6E6E6;
-
       --radius-sm: 8px;
-      --radius-md: 10px;
     }
 
     * {
@@ -42,9 +36,7 @@
       color: var(--color-text);
     }
 
-    /* =====================
-       SPLASH SCREEN
-       ===================== */
+    /* Splash */
     #splash {
       position: fixed;
       inset: 0;
@@ -59,17 +51,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
     }
 
     .splash-logo {
       width: 72px;
-      height: 72px;
     }
 
-    .splash-loader {
-      width: 28px;
-      height: 28px;
+    .loader {
+      width: 26px;
+      height: 26px;
       border: 2px solid var(--color-border);
       border-top-color: var(--color-accent);
       border-radius: 50%;
@@ -80,15 +71,13 @@
       to { transform: rotate(360deg); }
     }
 
-    /* =====================
-       APP HEADER
-       ===================== */
+    /* Header */
     .app-header {
       position: sticky;
       top: 0;
-      z-index: 10;
       background: var(--color-bg);
       border-bottom: 1px solid var(--color-border);
+      z-index: 10;
     }
 
     .app-header__bar {
@@ -107,19 +96,15 @@
 
     .app-header__actions {
       display: flex;
-      align-items: center;
       gap: 14px;
     }
 
     .app-header__action {
       font-size: 15px;
       color: var(--color-muted);
-      text-decoration: none;
     }
 
-    /* =====================
-       PRODUCT GRID
-       ===================== */
+    /* Grid */
     .product-grid {
       padding: 10px;
       display: grid;
@@ -138,7 +123,6 @@
       width: 100%;
       aspect-ratio: 3 / 4;
       object-fit: cover;
-      display: block;
     }
 
     .product-card__body {
@@ -148,7 +132,6 @@
     .product-card__title {
       font-size: 12px;
       font-weight: 500;
-      line-height: 1.25;
       margin: 0;
     }
 
@@ -159,18 +142,11 @@
       color: var(--color-accent);
     }
 
-    /* =====================
-       DESKTOP
-       ===================== */
     @media (min-width: 768px) {
-      .app-header__bar,
-      .product-grid {
-        max-width: 1200px;
-        margin: auto;
-      }
-
       .product-grid {
         grid-template-columns: repeat(4, 1fr);
+        max-width: 1200px;
+        margin: auto;
       }
     }
   </style>
@@ -178,94 +154,89 @@
 
 <body>
 
-  <!-- SPLASH -->
-  <div id="splash">
-    <div class="splash-content">
-      <img src="./icons/icon.192.png" alt="Become logo" class="splash-logo">
-      <div class="splash-loader"></div>
+<!-- Splash -->
+<div id="splash">
+  <div class="splash-content">
+    <img src="./icons/icon.192.png" class="splash-logo">
+    <div class="loader"></div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="app-header">
+  <div class="app-header__bar">
+    <div class="app-header__brand">BECOME</div>
+    <div class="app-header__actions">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <i class="fa-solid fa-cart-shopping"></i>
+      <a href="user.html"><i class="fa-solid fa-user"></i></a>
     </div>
   </div>
+</header>
 
-  <!-- HEADER -->
-  <header class="app-header">
-    <div class="app-header__bar">
-      <div class="app-header__brand">BECOME</div>
+<!-- Products -->
+<main class="product-grid">
 
-      <div class="app-header__actions">
-        <a href="#" class="app-header__action" aria-label="Recherche">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </a>
-        <a href="#" class="app-header__action" aria-label="Panier">
-          <i class="fa-solid fa-cart-shopping"></i>
-        </a>
-        <a href="user.html" class="app-header__action" aria-label="Profil">
-          <i class="fa-solid fa-user"></i>
-        </a>
-      </div>
-    </div>
-  </header>
+<!-- 30 PRODUCTS -->
+<script>
+  const products = [
+    ["T-shirt Essential",29,"1521572163474-6864f9cf17ab"],
+    ["Sweat Premium",59,"1618354691373-d851c5c3a990"],
+    ["Pantalon Tailored",69,"1593032465171-8c6e4b5b0f5c"],
+    ["Veste Signature",119,"1542060748-10c28b62716e"],
+    ["Hoodie Urban",75,"1602810318383-e386cc2a3ccf"],
+    ["Chemise Classique",49,"1520975918318-7da08c5cfd7c"],
+    ["Blazer Moderne",139,"1520975918318-7da08c5cfd7c"],
+    ["Jean Slim",59,"1512436991641-6745cdb1723f"],
+    ["Pull Minimal",65,"1618354691373-d851c5c3a990"],
+    ["Manteau Long",159,"1541099649105-f69ad21f3246"],
+    ["Polo Premium",39,"1583743814966-8936f37f4671"],
+    ["Short Casual",35,"1562158070-622a2a7f0d4d"],
+    ["Veste Denim",89,"1551024601-bec78aea704b"],
+    ["Cardigan",55,"1593032465171-8c6e4b5b0f5c"],
+    ["Pantalon Cargo",79,"1594938298603-c8148c4dae35"],
+    ["Sweat Zippé",69,"1618354691373-d851c5c3a990"],
+    ["T-shirt Oversize",34,"1521572163474-6864f9cf17ab"],
+    ["Chemise Lin",59,"1520975918318-7da08c5cfd7c"],
+    ["Veste Cuir",199,"1542060748-10c28b62716e"],
+    ["Pull Col Roulé",75,"1602810318383-e386cc2a3ccf"],
+    ["Jean Brut",69,"1512436991641-6745cdb1723f"],
+    ["Sweat Basic",49,"1618354691373-d851c5c3a990"],
+    ["Pantalon Classique",79,"1593032465171-8c6e4b5b0f5c"],
+    ["Veste Légère",99,"1542060748-10c28b62716e"],
+    ["Hoodie Premium",85,"1602810318383-e386cc2a3ccf"],
+    ["T-shirt Coton Bio",32,"1521572163474-6864f9cf17ab"],
+    ["Chemise Oversize",55,"1520975918318-7da08c5cfd7c"],
+    ["Blouson Urbain",129,"1542060748-10c28b62716e"],
+    ["Pull Laine",89,"1602810318383-e386cc2a3ccf"],
+    ["Veste Tailoring",149,"1542060748-10c28b62716e"]
+  ];
 
-  <!-- PRODUITS -->
-  <main class="product-grid">
-
+  document.write(products.map(p => `
     <article class="product-card">
       <img class="product-card__image"
-        src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80"
-        alt="T-shirt Become Essential">
+        src="https://images.unsplash.com/photo-${p[2]}?auto=format&fit=crop&w=600&q=80">
       <div class="product-card__body">
-        <h3 class="product-card__title">T-shirt Become Essential</h3>
-        <div class="product-card__price">29 €</div>
+        <h3 class="product-card__title">${p[0]}</h3>
+        <div class="product-card__price">${p[1]} €</div>
       </div>
     </article>
+  `).join(""));
+</script>
 
-    <article class="product-card">
-      <img class="product-card__image"
-        src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=600&q=80"
-        alt="Sweat Become Premium">
-      <div class="product-card__body">
-        <h3 class="product-card__title">Sweat Become Premium</h3>
-        <div class="product-card__price">59 €</div>
-      </div>
-    </article>
+</main>
 
-    <article class="product-card">
-      <img class="product-card__image"
-        src="https://images.unsplash.com/photo-1593032465171-8c6e4b5b0f5c?auto=format&fit=crop&w=600&q=80"
-        alt="Pantalon Become">
-      <div class="product-card__body">
-        <h3 class="product-card__title">Pantalon Become Tailored</h3>
-        <div class="product-card__price">69 €</div>
-      </div>
-    </article>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js");
+  }
 
-    <article class="product-card">
-      <img class="product-card__image"
-        src="https://images.unsplash.com/photo-1542060748-10c28b62716e?auto=format&fit=crop&w=600&q=80"
-        alt="Veste Become">
-      <div class="product-card__body">
-        <h3 class="product-card__title">Veste Become Signature</h3>
-        <div class="product-card__price">119 €</div>
-      </div>
-    </article>
-
-  </main>
-
-  <!-- SCRIPTS -->
-  <script>
-    // Service Worker
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/service-worker.js");
-    }
-
-    // Splash screen
-    window.addEventListener("load", () => {
-      const splash = document.getElementById("splash");
-      splash.style.opacity = "0";
-      splash.style.transition = "opacity 0.3s ease";
-      setTimeout(() => splash.remove(), 300);
-    });
-  </script>
+  window.addEventListener("load", () => {
+    const splash = document.getElementById("splash");
+    splash.style.opacity = "0";
+    setTimeout(() => splash.remove(), 300);
+  });
+</script>
 
 </body>
 </html>
-
