@@ -2,58 +2,146 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Become — Boutique de vêtements</title>
+  <title>Become — Boutique premium</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#8B6F47">
 
   <style>
+    :root {
+      --bg-main: #F4F1ED;
+      --bg-secondary: #D6CFC7;
+      --text-main: #1C1C1C;
+      --text-muted: #6B6B6B;
+      --accent: #8B6F47;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      font-family: "Arial", sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
     }
 
     header {
-      background: black;
-      color: white;
       padding: 20px;
       text-align: center;
-      font-size: 22px;
-      letter-spacing: 2px;
+      font-size: 24px;
+      letter-spacing: 3px;
+      font-weight: 600;
     }
 
-    .container {
+    .hero {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      max-width: 400px;
+      margin: 16px auto 0;
+      font-size: 14px;
+    }
+
+    .products {
       padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
     }
 
-    .card {
+    .product {
       background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .product img {
+      width: 100%;
+      display: block;
+    }
+
+    .product-info {
       padding: 16px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .product-info h3 {
+      margin: 0;
+      font-size: 16px;
     }
 
     .price {
-      font-weight: bold;
       margin-top: 8px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px;
+      border: none;
+      border-radius: 30px;
+      background: var(--accent);
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    @media (min-width: 768px) {
+      .products {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 1100px;
+        margin: auto;
+      }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    BECOME
-  </header>
+<header>
+  BECOME
+</header>
 
-  <div class="container">
-    <div class="card">
-      👕 T-shirt Become
+<section class="hero">
+  <h2>Premium Essentials</h2>
+  <p>
+    Des vêtements minimalistes, pensés pour durer.
+  </p>
+</section>
+
+<section class="products">
+  <div class="product">
+    <img src="https://via.placeholder.com/400x500" alt="Produit Become">
+    <div class="product-info">
+      <h3>T-shirt Become</h3>
       <div class="price">29 €</div>
+      <button>Voir le produit</button>
     </div>
   </div>
-  <script>
+
+  <div class="product">
+    <img src="https://via.placeholder.com/400x500" alt="Produit Become">
+    <div class="product-info">
+      <h3>Sweat Become</h3>
+      <div class="price">59 €</div>
+      <button>Voir le produit</button>
+    </div>
+  </div>
+</section>
+
+<script>
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js");
   }
