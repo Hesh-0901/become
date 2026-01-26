@@ -5,17 +5,21 @@
   <title>Become — Accès utilisateur</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#8A6A4F">
+  <meta name="theme-color" content="#0F0F0F">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     :root {
-      --bg-gradient: linear-gradient(160deg, #F7F3EE 0%, #EFE8E0 100%);
-      --surface: #FFFFFF;
-      --text: #1B1B1B;
-      --muted: #6F6F6F;
-      --accent: #8A6A4F;
-      --accent-soft: #E6D8CB;
-      --border: #E4DED7;
+      --bg: #0F0F0F;
+      --bg-soft: #161616;
+      --surface: #1E1E1E;
+      --text: #F5F5F5;
+      --muted: #A0A0A0;
+      --accent: #C2A16A;
+      --accent-soft: #2A241A;
+      --border: #2C2C2C;
       --radius: 18px;
     }
 
@@ -27,12 +31,12 @@
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: var(--bg-gradient);
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
       color: var(--text);
       min-height: 100vh;
     }
 
-    /* ===== HEADER ===== */
+    /* ===== TOP BAR ===== */
     .top-bar {
       height: 56px;
       display: flex;
@@ -43,11 +47,10 @@
     .back-btn {
       text-decoration: none;
       font-size: 14px;
-      color: var(--text);
+      color: var(--muted);
       display: flex;
       align-items: center;
-      gap: 6px;
-      opacity: 0.7;
+      gap: 8px;
     }
 
     /* ===== CONTENT ===== */
@@ -64,16 +67,17 @@
       max-width: 420px;
       background: var(--surface);
       border-radius: var(--radius);
-      padding: 34px 26px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+      padding: 36px 26px;
+      border: 1px solid var(--border);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
       text-align: center;
     }
 
     .brand {
       font-weight: 600;
-      letter-spacing: 5px;
-      font-size: 14px;
-      margin-bottom: 24px;
+      letter-spacing: 6px;
+      font-size: 13px;
+      margin-bottom: 28px;
       color: var(--accent);
     }
 
@@ -88,7 +92,7 @@
       font-size: 15px;
       color: var(--muted);
       line-height: 1.6;
-      margin-bottom: 32px;
+      margin-bottom: 36px;
     }
 
     .actions {
@@ -105,11 +109,15 @@
       font-weight: 600;
       border: none;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     .btn-primary {
       background: var(--accent);
-      color: #fff;
+      color: #1B1B1B;
     }
 
     .btn-outline {
@@ -125,7 +133,8 @@
   <!-- TOP BAR -->
   <header class="top-bar">
     <a href="index.html" class="back-btn">
-      ← Retour
+      <i class="fa-solid fa-arrow-left"></i>
+      Retour
     </a>
   </header>
 
@@ -136,26 +145,29 @@
       <div class="brand">BECOME</div>
 
       <div class="headline">
-        La mode premium, sans barrières
+        La mode premium, sans compromis
       </div>
 
       <div class="subtitle">
-        Explorez une nouvelle façon d’acheter :
-        plus simple, plus juste, pensée pour vous
-        accompagner partout.
+        Accédez à une expérience d’achat moderne,
+        pensée pour vous offrir plus de liberté,
+        de choix et de simplicité.
       </div>
 
       <div class="actions">
         <!-- INSTALL APP -->
         <button id="installBtn" class="btn btn-primary" style="display:none;">
+          <i class="fa-solid fa-download"></i>
           Télécharger l’application
         </button>
 
         <button class="btn btn-outline">
+          <i class="fa-solid fa-right-to-bracket"></i>
           Se connecter
         </button>
 
         <button class="btn btn-outline">
+          <i class="fa-solid fa-user-plus"></i>
           Créer un compte
         </button>
       </div>
@@ -175,7 +187,7 @@
       window.addEventListener("beforeinstallprompt", (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        installBtn.style.display = "block";
+        installBtn.style.display = "flex";
       });
     }
 
