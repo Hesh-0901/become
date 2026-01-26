@@ -15,9 +15,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    /* =====================
-       PALETTE BECOME STONE
-       ===================== */
     :root {
       --bg-main: #F4F1ED;
       --text-main: #1C1C1C;
@@ -38,9 +35,7 @@
       color: var(--text-main);
     }
 
-    /* =====================
-       HEADER PREMIUM COMPACT
-       ===================== */
+    /* HEADER */
     header {
       position: sticky;
       top: 0;
@@ -65,18 +60,16 @@
 
     .header-actions {
       display: flex;
-      gap: 14px;
+      gap: 16px;
       font-size: 16px;
+    }
+
+    .header-actions a {
       color: var(--text-muted);
+      text-decoration: none;
     }
 
-    .header-actions i {
-      cursor: pointer;
-    }
-
-    /* =====================
-       PRODUITS (ULTRA COMPACT)
-       ===================== */
+    /* PRODUITS */
     .products {
       padding: 10px;
       display: grid;
@@ -95,7 +88,6 @@
       width: 100%;
       aspect-ratio: 3 / 4;
       object-fit: cover;
-      display: block;
     }
 
     .product-info {
@@ -116,9 +108,6 @@
       color: var(--accent);
     }
 
-    /* =====================
-       DESKTOP
-       ===================== */
     @media (min-width: 768px) {
       .products {
         grid-template-columns: repeat(4, 1fr);
@@ -142,17 +131,20 @@
       <div class="brand">BECOME</div>
 
       <div class="header-actions">
-        <i class="fa-solid fa-cart-shopping" title="Panier"></i>
-        <i class="fa-solid fa-user" title="Profil"></i>
+        <a href="#" title="Panier">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </a>
+        <a href="user.html" title="Profil utilisateur">
+          <i class="fa-solid fa-user"></i>
+        </a>
       </div>
     </div>
   </header>
 
   <!-- PRODUITS -->
   <section class="products">
-
     <div class="product">
-      <img src="https://via.placeholder.com/400x500" alt="T-shirt Become">
+      <img src="https://via.placeholder.com/400x500">
       <div class="product-info">
         <h3>T-shirt Become Essential</h3>
         <div class="price">29 €</div>
@@ -160,32 +152,14 @@
     </div>
 
     <div class="product">
-      <img src="https://via.placeholder.com/400x500" alt="Sweat Become">
+      <img src="https://via.placeholder.com/400x500">
       <div class="product-info">
         <h3>Sweat Become Premium</h3>
         <div class="price">59 €</div>
       </div>
     </div>
-
-    <div class="product">
-      <img src="https://via.placeholder.com/400x500" alt="Pantalon Become">
-      <div class="product-info">
-        <h3>Pantalon Become</h3>
-        <div class="price">69 €</div>
-      </div>
-    </div>
-
-    <div class="product">
-      <img src="https://via.placeholder.com/400x500" alt="Veste Become">
-      <div class="product-info">
-        <h3>Veste Become</h3>
-        <div class="price">119 €</div>
-      </div>
-    </div>
-
   </section>
 
-  <!-- SERVICE WORKER -->
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
