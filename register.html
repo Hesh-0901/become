@@ -18,7 +18,8 @@
       --muted: #9A9A9A;
       --accent: #C2A16A;
       --border: #2C2C2C;
-      --radius: 16px;
+      --radius: 14px;
+      --error: #FF6B6B;
     }
 
     * {
@@ -35,7 +36,7 @@
     }
 
     .top-bar {
-      height: 56px;
+      height: 52px;
       display: flex;
       align-items: center;
       padding: 0 16px;
@@ -44,7 +45,7 @@
     .back-btn {
       color: var(--muted);
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -53,69 +54,80 @@
     .wrapper {
       display: flex;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
     }
 
     .card {
       width: 100%;
-      max-width: 440px;
+      max-width: 420px;
       background: var(--surface);
       border-radius: var(--radius);
-      padding: 32px 24px;
+      padding: 26px 22px;
       border: 1px solid var(--border);
       box-shadow: 0 30px 60px rgba(0,0,0,0.6);
     }
 
     .title {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .subtitle {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--muted);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .field {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .field label {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--muted);
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .field input,
     .field select {
       width: 100%;
-      padding: 12px;
+      padding: 10px 12px;
+      height: 42px;
       border-radius: 10px;
       background: #161616;
       border: 1px solid var(--border);
       color: var(--text);
+      font-size: 13px;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
       font-size: 14px;
+      cursor: pointer;
     }
 
     .checkbox {
       display: flex;
-      align-items: flex-start;
       gap: 10px;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--muted);
-      margin: 18px 0;
-    }
-
-    .checkbox input {
-      margin-top: 4px;
+      margin: 14px 0;
+      line-height: 1.4;
     }
 
     .btn {
       width: 100%;
-      padding: 14px;
+      padding: 13px;
       border-radius: 999px;
       border: none;
       font-size: 14px;
@@ -127,11 +139,12 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      margin-top: 10px;
     }
 
     .error {
-      color: #FF6B6B;
-      font-size: 13px;
+      color: var(--error);
+      font-size: 12px;
       margin-top: 10px;
       display: none;
     }
@@ -150,7 +163,7 @@
     <div class="card">
 
       <div class="title">Créer un compte</div>
-      <div class="subtitle">Rejoignez Become en quelques instants</div>
+      <div class="subtitle">Rejoignez Become rapidement</div>
 
       <form id="registerForm">
 
@@ -175,7 +188,7 @@
         </div>
 
         <div class="field">
-          <label>Numéro de téléphone</label>
+          <label>Téléphone</label>
           <input type="tel" id="phone" required>
         </div>
 
@@ -184,9 +197,16 @@
           <input type="email" id="email" required>
         </div>
 
-        <div class="field">
+        <div class="field password-wrapper">
           <label>Mot de passe</label>
           <input type="password" id="password" required>
+          <i class="fa-solid fa-eye toggle-password" data-target="password"></i>
+        </div>
+
+        <div class="field password-wrapper">
+          <label>Confirmer le mot de passe</label>
+          <input type="password" id="confirmPassword" required>
+          <i class="fa-solid fa-eye toggle-password" data-target="confirmPassword"></i>
         </div>
 
         <div class="field">
@@ -217,7 +237,7 @@
     </div>
   </main>
 
-  <!-- BACKEND -->
+  <!-- LOGIC -->
   <script type="module">
     import { auth, db } from "./js/firebase.config.js";
     import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -226,14 +246,31 @@
     const form = document.getElementById("registerForm");
     const errorMsg = document.getElementById("errorMsg");
 
+    // 👁️ Toggle password visibility
+    document.querySelectorAll(".toggle-password").forEach(icon => {
+      icon.addEventListener("click", () => {
+        const input = document.getElementById(icon.dataset.target);
+        input.type = input.type === "password" ? "text" : "password";
+        icon.classList.toggle("fa-eye");
+        icon.classList.toggle("fa-eye-slash");
+      });
+    });
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       errorMsg.style.display = "none";
 
-      try {
-        const email = email.value;
-        const password = document.getElementById("password").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
 
+      if (password !== confirmPassword) {
+        errorMsg.textContent = "Les mots de passe ne correspondent pas";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
@@ -248,7 +285,7 @@
           createdAt: new Date()
         });
 
-        window.location.href = "index.html";
+        window.location.replace("customer.html");
 
       } catch (error) {
         errorMsg.textContent = error.message;
