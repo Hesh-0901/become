@@ -94,29 +94,55 @@
     }
 
     /* IMAGE */
-    .image-box {
-      border: 2px dashed var(--border);
-      border-radius: 14px;
-      height: 320px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 10px;
-      cursor: pointer;
-      background: var(--soft);
-    }
+    .image-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 14px;
+  background: var(--soft);
+  border: 2px dashed var(--border);
+  overflow: hidden;
+  cursor: pointer;
+}
 
-    .image-box i {
-      font-size: 32px;
-      color: var(--accent);
-    }
+.image-frame input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
 
-    .image-box span {
-      font-size: 12px;
-      color: var(--muted);
-      text-align: center;
-    }
+.image-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 50%;
+  display: none;
+}
+
+.image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  gap: 8px;
+  pointer-events: none;
+}
+
+.image-placeholder i {
+  font-size: 32px;
+  color: var(--accent);
+}
+
+.slider {
+  margin-top: 10px;
+  width: 100%;
+}
 
     .preview {
       width: 100%;
@@ -155,19 +181,30 @@
 </div>
 
 <form class="form">
-
+  
   <!-- IMAGE -->
-  <div class="group">
-    <label>Photo de l’article (ratio 3:4)</label>
+<div class="group">
+  <label class="label">Photo de l’article (ratio 3:4)</label>
 
-    <label class="image-box">
+  <div class="image-frame" id="imageFrame">
+    <img id="preview" />
+    <div class="image-placeholder" id="placeholder">
       <i class="fa-solid fa-image"></i>
-      <span>Clique pour ajouter une photo<br>Rognage automatique 3:4</span>
-      <input type="file" id="imageInput" accept="image/*" hidden>
-    </label>
-
-    <img id="preview" class="preview">
+      <span>Ajouter une photo</span>
+    </div>
+    <input type="file" id="imageInput" accept="image/*">
   </div>
+
+  <!-- Contrôle cadrage -->
+  <input
+    type="range"
+    id="positionY"
+    min="0"
+    max="100"
+    value="50"
+    class="slider"
+  >
+</div>
 
   <!-- TITLE -->
   <div class="group">
@@ -245,6 +282,25 @@
         preview.style.display = "block";
       }, "image/jpeg", 0.9);
     };
+  });
+</script>
+  <script>
+  const input = document.getElementById("imageInput");
+  const preview = document.getElementById("preview");
+  const placeholder = document.getElementById("placeholder");
+  const slider = document.getElementById("positionY");
+
+  input.addEventListener("change", () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+    placeholder.style.display = "none";
+  });
+
+  slider.addEventListener("input", () => {
+    preview.style.objectPosition = `center ${slider.value}%`;
   });
 </script>
 
