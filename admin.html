@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Become — Admin</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0F0F0F">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg: #0F0F0F;
+      --surface: #1C1C1C;
+      --input: #141414;
+      --text: #F5F5F5;
+      --muted: #8E8E8E;
+      --accent: #C2A16A;
+      --border: #2A2A2A;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(180deg, #0F0F0F, #161616);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      letter-spacing: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .logout {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    main {
+      padding: 16px;
+      max-width: 520px;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 18px;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .field {
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      font-size: 11px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .field input {
+      width: 100%;
+      height: 34px;
+      padding: 0 10px;
+      border-radius: 8px;
+      background: var(--input);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 12.5px;
+    }
+
+    .btn {
+      width: 100%;
+      height: 40px;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #1A1A1A;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .status {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="brand">BECOME — ADMIN</div>
+    <button class="logout" id="logoutBtn">
+      <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+    </button>
+  </header>
+
+  <main>
+
+    <div class="card">
+      <div class="title">
+        <i class="fa-solid fa-plus"></i> Ajouter un produit
+      </div>
+
+      <form id="productForm">
+
+        <div class="field">
+          <label>Nom du produit</label>
+          <input type="text" id="name" required>
+        </div>
+
+        <div class="field">
+          <label>Prix (€)</label>
+          <input type="number" id="price" required>
+        </div>
+
+        <div class="field">
+          <label>Stock (optionnel)</label>
+          <input type="number" id="stock">
+        </div>
+
+        <div class="field">
+          <label>Image du produit</label>
+          <input type="file" id="image" accept="image/*" required>
+        </div>
+
+        <button type="submit" class="btn">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          Publier le produit
+        </button>
+
+        <div class="status" id="status"></div>
+      </form>
+    </div>
+
+  </main>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { auth, db } from "./js/firebase.config.js";
+    import { onAuthStateChanged, signOut } from
+      "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, getDoc, addDoc, collection, serverTimestamp } from
+      "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from
+      "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    const storage = getStorage();
+    const form = document.getElementById("productForm");
+    const status = document.getElementById("status");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    // 🔐 Protection admin
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "user.html";
+        return;
+      }
+
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if (!snap.exists() || snap.data().role !== "admin") {
+        window.location.href = "customer.html";
+      }
+    });
+
+    // ➕ Ajout produit
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      status.textContent = "Chargement…";
+
+      const name = document.getElementById("name").value.trim();
+      const price = Number(document.getElementById("price").value);
+      const stock = document.getElementById("stock").value;
+      const imageFile = document.getElementById("image").files[0];
+
+      try {
+        const imageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
+        await uploadBytes(imageRef, imageFile);
+        const imageUrl = await getDownloadURL(imageRef);
+
+        await addDoc(collection(db, "products"), {
+          name,
+          price,
+          stock: stock ? Number(stock) : null,
+          image: imageUrl,
+          active: true,
+          createdAt: serverTimestamp()
+        });
+
+        status.textContent = "Produit publié avec succès.";
+        form.reset();
+
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Erreur lors de l’ajout du produit.";
+      }
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "user.html";
+    });
+  </script>
+
+</body>
+</html>
