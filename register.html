@@ -309,65 +309,62 @@
     "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const form = document.querySelector("form");
+  const errorMsg = document.getElementById("errorMsg");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    errorMsg.style.display = "none";
 
-    // Récupération des champs
-    const firstName = document.getElementById("firstName").value.trim();
-    const lastName = document.getElementById("lastName").value.trim();
-    const gender = document.getElementById("gender").value;
-    const phone = document.getElementById("phone").value.trim();
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
     const passwordConfirm = document.getElementById("passwordConfirm").value;
-    const city = document.getElementById("city").value.trim();
-    const district = document.getElementById("district").value.trim();
-    const terms = document.getElementById("terms").checked;
-
-    // Vérifications minimales (pro)
-    if (!terms) {
-      alert("Vous devez accepter les conditions.");
-      return;
-    }
 
     if (password !== passwordConfirm) {
-      alert("Les mots de passe ne correspondent pas.");
+      errorMsg.textContent = "Les mots de passe ne correspondent pas";
+      errorMsg.style.display = "block";
       return;
     }
 
     try {
-      // 1️⃣ Création du compte Auth
+      // 🔐 1. AUTH
       const userCredential =
         await createUserWithEmailAndPassword(auth, email, password);
 
       const user = userCredential.user;
 
-      // 2️⃣ Création du document Firestore
+      // 📦 2. FIRESTORE
       await setDoc(doc(db, "users", user.uid), {
-        firstName,
-        lastName,
-        gender,
-        phone,
-        email,
-        city,
-        district,
-
-        role: "client",        // 👈 RÔLE CACHÉ PAR DÉFAUT
-        active: true,
-
+        uid: user.uid,
+        email: user.email,
+        firstName: firstName.value,
+        lastName: lastName.value,
+        gender: gender.value,
+        phone: phone.value,
+        city: city.value,
+        district: district.value,
+        role: "client", // 🔐 rôle caché
         createdAt: serverTimestamp()
       });
 
-      // 3️⃣ Redirection client
+      // 🚀 3. REDIRECTION
       window.location.href = "customer.html";
 
     } catch (error) {
       console.error(error);
-      alert("Erreur lors de l’inscription.");
+
+      if (error.code === "auth/email-already-in-use") {
+        errorMsg.textContent = "Cet email est déjà utilisé";
+      } else if (error.code === "auth/invalid-email") {
+        errorMsg.textContent = "Email invalide";
+      } else if (error.code === "auth/weak-password") {
+        errorMsg.textContent = "Mot de passe trop faible (min 6 caractères)";
+      } else {
+        errorMsg.textContent = "Erreur lors de l’inscription";
+      }
+
+      errorMsg.style.display = "block";
     }
   });
 </script>
-
 </body>
 </html>
