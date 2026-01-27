@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Become — Mon espace</title>
+  <title>Become — Espace client</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0F0F0F">
@@ -11,105 +11,64 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    :root {
-      --bg: #0F0F0F;
-      --surface: #1C1C1C;
-      --surface-soft: #161616;
-      --text: #F5F5F5;
-      --muted: #8E8E8E;
-      --accent: #C2A16A;
-      --border: #2A2A2A;
-      --radius: 16px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(180deg, #0F0F0F, #161616);
-      color: var(--text);
+      background: #0F0F0F;
+      color: #F5F5F5;
       min-height: 100vh;
+      padding: 20px;
     }
 
-    /* HEADER */
-    header {
-      height: 56px;
+    .header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
-      border-bottom: 1px solid var(--border);
+      align-items: center;
+      margin-bottom: 24px;
     }
 
-    .brand {
-      letter-spacing: 4px;
-      font-size: 12px;
+    .title {
+      font-size: 18px;
       font-weight: 600;
-      color: var(--accent);
     }
 
-    .logout {
-      background: none;
+    .btn {
+      background: #C2A16A;
+      color: #1A1A1A;
       border: none;
-      color: var(--muted);
+      padding: 10px 16px;
+      border-radius: 999px;
       font-size: 13px;
-      cursor: pointer;
-    }
-
-    /* LAYOUT */
-    main {
-      padding: 16px;
-      max-width: 720px;
-      margin: auto;
-    }
-
-    .welcome {
-      margin-bottom: 20px;
-    }
-
-    .welcome h1 {
-      font-size: 20px;
-      margin: 0 0 4px;
-    }
-
-    .welcome p {
-      font-size: 13px;
-      color: var(--muted);
-      margin: 0;
-    }
-
-    .section {
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 16px;
-      border: 1px solid var(--border);
-      margin-bottom: 14px;
-    }
-
-    .section-title {
-      font-size: 14px;
       font-weight: 600;
-      margin-bottom: 10px;
-      display: flex;
+      cursor: pointer;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
+      text-decoration: none;
     }
 
-    .empty {
-      font-size: 12.5px;
-      color: var(--muted);
+    .btn-outline {
+      background: transparent;
+      color: #C2A16A;
+      border: 1px solid #C2A16A;
     }
 
-    .info {
-      font-size: 13px;
-      line-height: 1.6;
+    .card {
+      background: #1C1C1C;
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid #2A2A2A;
     }
 
-    .info span {
-      color: var(--muted);
+    .label {
+      font-size: 12px;
+      color: #8E8E8E;
+      margin-bottom: 4px;
+    }
+
+    .value {
+      font-size: 14px;
+      margin-bottom: 14px;
     }
   </style>
 </head>
@@ -117,94 +76,75 @@
 <body>
 
   <!-- HEADER -->
-  <header>
-    <div class="brand">BECOME</div>
-    <button class="logout" id="logoutBtn">
-      <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
-    </button>
-  </header>
+  <div class="header">
+    <div class="title">Espace client</div>
+
+    <a href="index.html" class="btn btn-outline">
+      <i class="fa-solid fa-house"></i>
+      Boutique
+    </a>
+  </div>
 
   <!-- CONTENT -->
-  <main>
+  <div class="card">
+    <div class="label">Nom</div>
+    <div class="value" id="name">—</div>
 
-    <div class="welcome">
-      <h1 id="userName">Bienvenue</h1>
-      <p>Voici votre espace personnel</p>
-    </div>
+    <div class="label">Email</div>
+    <div class="value" id="email">—</div>
 
-    <div class="section">
-      <div class="section-title">
-        <i class="fa-solid fa-cart-shopping"></i>
-        Mon panier
-      </div>
-      <div class="empty">Votre panier est vide.</div>
-    </div>
+    <div class="label">Rôle</div>
+    <div class="value" id="role">—</div>
 
-    <div class="section">
-      <div class="section-title">
-        <i class="fa-solid fa-box"></i>
-        Colis approuvés
-      </div>
-      <div class="empty">Aucun colis approuvé pour le moment.</div>
-    </div>
+    <button id="logoutBtn" class="btn" style="margin-top:10px;">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      Déconnexion
+    </button>
+  </div>
 
-    <div class="section">
-      <div class="section-title">
-        <i class="fa-solid fa-box-open"></i>
-        Colis désapprouvés
-      </div>
-      <div class="empty">Aucun colis désapprouvé.</div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">
-        <i class="fa-solid fa-user"></i>
-        Mes informations
-      </div>
-      <div class="info" id="userInfo">
-        Chargement…
-      </div>
-    </div>
-
-  </main>
-
-  <!-- FIREBASE LOGIC -->
+  <!-- AUTH GUARD -->
   <script type="module">
     import { auth, db } from "./js/firebase.config.js";
-    import { onAuthStateChanged, signOut } from
-      "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, getDoc } from
-      "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const userName = document.getElementById("userName");
-    const userInfo = document.getElementById("userInfo");
+    const nameEl = document.getElementById("name");
+    const emailEl = document.getElementById("email");
+    const roleEl = document.getElementById("role");
     const logoutBtn = document.getElementById("logoutBtn");
 
     onAuthStateChanged(auth, async (user) => {
+      // ❌ Pas connecté
       if (!user) {
-        window.location.href = "user.html";
+        window.location.href = "login.html";
         return;
       }
 
-      const docRef = doc(db, "users", user.uid);
-      const snap = await getDoc(docRef);
+      // 📦 Récupération Firestore
+      const snap = await getDoc(doc(db, "users", user.uid));
 
-      if (!snap.exists()) return;
+      if (!snap.exists()) {
+        window.location.href = "login.html";
+        return;
+      }
 
       const data = snap.data();
 
-      userName.textContent = `Bienvenue ${data.firstName}`;
-      userInfo.innerHTML = `
-        <span>Nom :</span> ${data.firstName} ${data.lastName}<br>
-        <span>Email :</span> ${data.email}<br>
-        <span>Téléphone :</span> ${data.phone}<br>
-        <span>Ville :</span> ${data.city} — ${data.district}
-      `;
+      // 🔐 Guard rôle
+      if (data.role !== "client") {
+        window.location.href = "admin.html";
+        return;
+      }
+
+      // ✅ Affichage
+      nameEl.textContent = `${data.firstName} ${data.lastName}`;
+      emailEl.textContent = data.email;
+      roleEl.textContent = data.role;
     });
 
     logoutBtn.addEventListener("click", async () => {
       await signOut(auth);
-      window.location.href = "user.html";
+      window.location.href = "login.html";
     });
   </script>
 
