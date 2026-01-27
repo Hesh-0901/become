@@ -37,7 +37,6 @@
       min-height: 100vh;
     }
 
-    /* TOP BAR */
     .top-bar {
       height: 48px;
       display: flex;
@@ -54,7 +53,6 @@
       gap: 6px;
     }
 
-    /* LAYOUT */
     .wrapper {
       display: flex;
       justify-content: center;
@@ -71,7 +69,6 @@
       box-shadow: 0 22px 44px rgba(0,0,0,0.55);
     }
 
-    /* HEADER */
     .brand {
       text-align: center;
       font-size: 12px;
@@ -94,7 +91,6 @@
       line-height: 1.5;
     }
 
-    /* FORM */
     .field {
       margin-bottom: 10px;
     }
@@ -109,7 +105,7 @@
     .field input,
     .field select {
       width: 100%;
-      height: 34px; /* 🔥 HAUTEUR RÉDUITE */
+      height: 34px;
       padding: 0 10px;
       border-radius: var(--radius-sm);
       background: var(--bg-input);
@@ -119,41 +115,35 @@
       outline: none;
     }
 
-    /* PASSWORD */
-    .password-field {
+    .input-wrapper {
       position: relative;
     }
 
-.input-wrapper {
-  position: relative;
-}
+    .input-wrapper input {
+      padding-right: 36px;
+    }
 
-.input-wrapper input {
-  padding-right: 36px; /* espace réservé pour l’icône */
-}
+    .toggle-password {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
 
-.toggle-password {
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
+    .toggle-password i {
+      font-size: 13px;
+    }
 
-.toggle-password i {
-  font-size: 13px;
-}
-
-    /* CHECKBOX */
     .checkbox {
       display: flex;
       gap: 8px;
@@ -167,7 +157,6 @@
       margin-top: 2px;
     }
 
-    /* BUTTON */
     .btn {
       width: 100%;
       height: 40px;
@@ -188,102 +177,102 @@
 
 <body>
 
-  <!-- TOP BAR -->
-  <header class="top-bar">
-    <a href="user.html" class="back-btn">
-      <i class="fa-solid fa-arrow-left"></i> Retour
-    </a>
-  </header>
+<header class="top-bar">
+  <a href="user.html" class="back-btn">
+    <i class="fa-solid fa-arrow-left"></i> Retour
+  </a>
+</header>
 
-  <!-- MAIN -->
-  <main class="wrapper">
-    <div class="card">
+<main class="wrapper">
+  <div class="card">
 
-      <div class="brand">BECOME</div>
+    <div class="brand">BECOME</div>
 
-      <div class="title">Créer un compte</div>
-      <div class="subtitle">
-        Une inscription rapide pour une expérience fluide et premium.
+    <div class="title">Créer un compte</div>
+    <div class="subtitle">
+      Une inscription rapide pour une expérience fluide et premium.
+    </div>
+
+    <form>
+
+      <div class="field">
+        <label>Prénom</label>
+        <input type="text" id="firstName" required>
       </div>
 
-      <form>
-<div class="field">
-  <label>Prénom</label>
-  <input type="text" id="firstName" required>
-</div>
+      <div class="field">
+        <label>Nom</label>
+        <input type="text" id="lastName" required>
+      </div>
 
-<div class="field">
-  <label>Nom</label>
-  <input type="text" id="lastName" required>
-</div>
+      <div class="field">
+        <label>Genre</label>
+        <select id="gender" required>
+          <option value="">Choisir</option>
+          <option value="Homme">Homme</option>
+          <option value="Femme">Femme</option>
+        </select>
+      </div>
 
-<div class="field">
-  <label>Genre</label>
-  <select id="gender" required>
-    <option value="">Choisir</option>
-    <option value="Homme">Homme</option>
-    <option value="Femme">Femme</option>
-  </select>
-</div>
+      <div class="field">
+        <label>Téléphone</label>
+        <input type="tel" id="phone" required>
+      </div>
 
-<div class="field">
-  <label>Téléphone</label>
-  <input type="tel" id="phone" required>
-</div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="email" required>
+      </div>
 
-<div class="field">
-  <label>Email</label>
-  <input type="email" id="email" required>
-</div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <div class="input-wrapper">
+          <input type="password" id="password" required>
+          <button type="button" class="toggle-password">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
 
-<div class="field">
-  <label>Mot de passe</label>
-  <div class="input-wrapper">
-    <input type="password" class="password-input" id="password" required>
-    <button type="button" class="toggle-password" aria-label="Afficher le mot de passe">
-      <i class="fa-solid fa-eye"></i>
-    </button>
+      <div class="field">
+        <label>Confirmer le mot de passe</label>
+        <div class="input-wrapper">
+          <input type="password" id="passwordConfirm" required>
+          <button type="button" class="toggle-password">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Ville</label>
+        <input type="text" id="city" required>
+      </div>
+
+      <div class="field">
+        <label>Quartier</label>
+        <input type="text" id="district" required>
+      </div>
+
+      <div class="checkbox">
+        <input type="checkbox" id="terms" required>
+        <label for="terms">
+          J’accepte les termes et règles d’utilisation de Become
+        </label>
+      </div>
+
+      <div id="errorMsg" style="display:none; font-size:12px; color:#ff6b6b; margin-bottom:10px;"></div>
+
+      <button type="submit" class="btn">
+        <i class="fa-solid fa-user-plus"></i>
+        Créer mon compte
+      </button>
+
+    </form>
+
   </div>
-</div>
+</main>
 
-<div class="field">
-  <label>Confirmer le mot de passe</label>
-  <div class="input-wrapper">
-    <input type="password" class="password-input" id="passwordConfirm" required>
-    <button type="button" class="toggle-password" aria-label="Afficher le mot de passe">
-      <i class="fa-solid fa-eye"></i>
-    </button>
-  </div>
-</div>
-
-<div class="field">
-  <label>Ville</label>
-  <input type="text" id="city" required>
-</div>
-
-<div class="field">
-  <label>Quartier</label>
-  <input type="text" id="district" required>
-</div>
-
-<div class="checkbox">
-  <input type="checkbox" id="terms" required>
-  <label for="terms">
-    J’accepte les termes et règles d’utilisation de Become
-  </label>
-</div>
-
-<button type="submit" class="btn">
-  <i class="fa-solid fa-user-plus"></i>
-  Créer mon compte
-</button>
-       
-      </form>
-
-    </div>
-  </main>
-
-  <!-- PASSWORD TOGGLE -->
 <script>
   document.querySelectorAll(".toggle-password").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -299,43 +288,46 @@
       }
     });
   });
-  </script>
+</script>
+
 <script type="module">
   import { auth, db } from "./js/firebase.config.js";
-  import { createUserWithEmailAndPassword } from
-    "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { doc, setDoc, serverTimestamp } from
-    "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const form = document.querySelector("form");
-  if (!form) return;
-
   const errorMsg = document.getElementById("errorMsg");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     errorMsg.style.display = "none";
 
-    const email = email.value.trim();
-    const password = password.value;
-    const passwordConfirm = passwordConfirm.value;
-    const terms = document.getElementById("terms");
+    const emailValue = document.getElementById("email").value.trim();
+    const passwordValue = document.getElementById("password").value;
+    const passwordConfirmValue = document.getElementById("passwordConfirm").value;
+    const termsChecked = document.getElementById("terms").checked;
 
-    if (!terms.checked) {
+    if (!termsChecked) {
       errorMsg.textContent = "Vous devez accepter les conditions";
       errorMsg.style.display = "block";
       return;
     }
 
-    if (password !== passwordConfirm) {
+    if (passwordValue !== passwordConfirmValue) {
       errorMsg.textContent = "Les mots de passe ne correspondent pas";
+      errorMsg.style.display = "block";
+      return;
+    }
+
+    if (passwordValue.length < 6) {
+      errorMsg.textContent = "Mot de passe trop court (min 6 caractères)";
       errorMsg.style.display = "block";
       return;
     }
 
     try {
       const userCredential =
-        await createUserWithEmailAndPassword(auth, email, password);
+        await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
 
       const user = userCredential.user;
 
@@ -357,8 +349,6 @@
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         errorMsg.textContent = "Cet email est déjà utilisé";
-      } else if (error.code === "auth/weak-password") {
-        errorMsg.textContent = "Mot de passe trop faible (min 6 caractères)";
       } else {
         errorMsg.textContent = "Erreur lors de l’inscription";
       }
@@ -366,5 +356,6 @@
     }
   });
 </script>
+
 </body>
 </html>
