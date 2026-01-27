@@ -11,15 +11,30 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
+    :root {
+      --bg: #0F0F0F;
+      --surface: #1C1C1C;
+      --border: #2A2A2A;
+      --text: #F5F5F5;
+      --muted: #8E8E8E;
+      --accent: #C2A16A;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: #0F0F0F;
-      color: #F5F5F5;
+      background: linear-gradient(180deg, #0F0F0F, #161616);
+      color: var(--text);
       min-height: 100vh;
       padding: 20px;
     }
 
+    /* HEADER */
     .header {
       display: flex;
       justify-content: space-between;
@@ -33,7 +48,7 @@
     }
 
     .btn {
-      background: #C2A16A;
+      background: var(--accent);
       color: #1A1A1A;
       border: none;
       padding: 10px 16px;
@@ -49,26 +64,62 @@
 
     .btn-outline {
       background: transparent;
-      color: #C2A16A;
-      border: 1px solid #C2A16A;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
     }
 
     .card {
-      background: #1C1C1C;
-      border-radius: 16px;
-      padding: 20px;
-      border: 1px solid #2A2A2A;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .card-header i {
+      color: var(--accent);
+    }
+
+    .card-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* PROFILE */
+    .profile {
+      margin-top: 24px;
     }
 
     .label {
-      font-size: 12px;
-      color: #8E8E8E;
+      font-size: 11px;
+      color: var(--muted);
       margin-bottom: 4px;
     }
 
     .value {
       font-size: 14px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
+    }
+
+    .logout {
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -85,8 +136,53 @@
     </a>
   </div>
 
-  <!-- CONTENT -->
-  <div class="card">
+  <!-- DASHBOARD -->
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-header">
+        <i class="fa-solid fa-cart-shopping"></i>
+        Panier
+      </div>
+      <div class="card-desc">
+        Consultez les articles ajoutés à votre panier avant validation.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <i class="fa-solid fa-box-check"></i>
+        Commandes validées
+      </div>
+      <div class="card-desc">
+        Commandes confirmées et en cours de préparation.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <i class="fa-solid fa-truck"></i>
+        Commandes reçues
+      </div>
+      <div class="card-desc">
+        Historique des commandes livrées avec succès.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <i class="fa-solid fa-circle-xmark"></i>
+        Commandes indisponibles
+      </div>
+      <div class="card-desc">
+        Articles annulés ou momentanément indisponibles.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PROFILE -->
+  <div class="card profile">
     <div class="label">Nom</div>
     <div class="value" id="name">—</div>
 
@@ -96,13 +192,13 @@
     <div class="label">Rôle</div>
     <div class="value" id="role">—</div>
 
-    <button id="logoutBtn" class="btn" style="margin-top:10px;">
+    <button id="logoutBtn" class="btn logout">
       <i class="fa-solid fa-right-from-bracket"></i>
       Déconnexion
     </button>
   </div>
 
-  <!-- AUTH GUARD -->
+  <!-- AUTH + ROLE GUARD -->
   <script type="module">
     import { auth, db } from "./js/firebase.config.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -114,15 +210,12 @@
     const logoutBtn = document.getElementById("logoutBtn");
 
     onAuthStateChanged(auth, async (user) => {
-      // ❌ Pas connecté
       if (!user) {
         window.location.href = "login.html";
         return;
       }
 
-      // 📦 Récupération Firestore
       const snap = await getDoc(doc(db, "users", user.uid));
-
       if (!snap.exists()) {
         window.location.href = "login.html";
         return;
@@ -130,13 +223,11 @@
 
       const data = snap.data();
 
-      // 🔐 Guard rôle
       if (data.role !== "client") {
         window.location.href = "admin.html";
         return;
       }
 
-      // ✅ Affichage
       nameEl.textContent = `${data.firstName} ${data.lastName}`;
       emailEl.textContent = data.email;
       roleEl.textContent = data.role;
