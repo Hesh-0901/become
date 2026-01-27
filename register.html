@@ -299,9 +299,8 @@
       }
     });
   });
-</script>
-
-  <script type="module">
+  </script>
+<script type="module">
   import { auth, db } from "./js/firebase.config.js";
   import { createUserWithEmailAndPassword } from
     "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -309,15 +308,24 @@
     "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const form = document.querySelector("form");
+  if (!form) return;
+
   const errorMsg = document.getElementById("errorMsg");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     errorMsg.style.display = "none";
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-    const passwordConfirm = document.getElementById("passwordConfirm").value;
+    const email = email.value.trim();
+    const password = password.value;
+    const passwordConfirm = passwordConfirm.value;
+    const terms = document.getElementById("terms");
+
+    if (!terms.checked) {
+      errorMsg.textContent = "Vous devez accepter les conditions";
+      errorMsg.style.display = "block";
+      return;
+    }
 
     if (password !== passwordConfirm) {
       errorMsg.textContent = "Les mots de passe ne correspondent pas";
@@ -326,13 +334,11 @@
     }
 
     try {
-      // 🔐 1. AUTH
       const userCredential =
         await createUserWithEmailAndPassword(auth, email, password);
 
       const user = userCredential.user;
 
-      // 📦 2. FIRESTORE
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         email: user.email,
@@ -342,26 +348,20 @@
         phone: phone.value,
         city: city.value,
         district: district.value,
-        role: "client", // 🔐 rôle caché
+        role: "client",
         createdAt: serverTimestamp()
       });
 
-      // 🚀 3. REDIRECTION
       window.location.href = "customer.html";
 
     } catch (error) {
-      console.error(error);
-
       if (error.code === "auth/email-already-in-use") {
         errorMsg.textContent = "Cet email est déjà utilisé";
-      } else if (error.code === "auth/invalid-email") {
-        errorMsg.textContent = "Email invalide";
       } else if (error.code === "auth/weak-password") {
         errorMsg.textContent = "Mot de passe trop faible (min 6 caractères)";
       } else {
         errorMsg.textContent = "Erreur lors de l’inscription";
       }
-
       errorMsg.style.display = "block";
     }
   });
