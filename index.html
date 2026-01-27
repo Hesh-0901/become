@@ -102,6 +102,7 @@
     .app-header__action {
       font-size: 15px;
       color: var(--color-muted);
+      cursor: pointer;
     }
 
     /* Grid */
@@ -127,6 +128,7 @@
 
     .product-card__body {
       padding: 8px;
+      background: #F8F6F3;
     }
 
     .product-card__title {
@@ -167,9 +169,9 @@
   <div class="app-header__bar">
     <div class="app-header__brand">BECOME</div>
     <div class="app-header__actions">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <i class="fa-solid fa-cart-shopping"></i>
-      <a href="user.html"><i class="fa-solid fa-user"></i></a>
+      <i class="fa-solid fa-magnifying-glass app-header__action"></i>
+      <i class="fa-solid fa-cart-shopping app-header__action"></i>
+      <i id="userBtn" class="fa-solid fa-user app-header__action"></i>
     </div>
   </div>
 </header>
@@ -177,7 +179,6 @@
 <!-- Products -->
 <main class="product-grid">
 
-<!-- 30 PRODUCTS -->
 <script>
   const products = [
     ["T-shirt Essential",29,"1521572163474-6864f9cf17ab"],
@@ -225,6 +226,42 @@
 </script>
 
 </main>
+
+<!-- Firebase redirect logic -->
+<script type="module">
+  import { auth, db } from "./js/firebase.config.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const userBtn = document.getElementById("userBtn");
+
+  userBtn.addEventListener("click", async () => {
+    const user = auth.currentUser;
+
+    // ❌ Pas connecté → page user
+    if (!user) {
+      window.location.href = "user.html";
+      return;
+    }
+
+    // 📦 Récupérer le rôle
+    const snap = await getDoc(doc(db, "users", user.uid));
+
+    if (!snap.exists()) {
+      window.location.href = "user.html";
+      return;
+    }
+
+    const role = snap.data().role;
+
+    // 🔁 Redirection selon rôle
+    if (role === "admin") {
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "customer.html";
+    }
+  });
+</script>
 
 <script>
   if ("serviceWorker" in navigator) {
