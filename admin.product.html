@@ -102,18 +102,32 @@
 </form>
 
 <script type="module">
-  import { storage } from "./js/firebase.config.js";
+  /* ===== IMPORTS EXISTANTS ===== */
+  import { storage, db } from "./js/firebase.config.js";
   import { ref, uploadBytes, getDownloadURL }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+  import {
+    collection,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  /* ===== DOM ===== */
   const input = document.getElementById("imageInput");
   const preview = document.getElementById("preview");
   const placeholder = document.getElementById("placeholder");
   const slider = document.getElementById("positionY");
   const form = document.querySelector("form");
 
+  const titleInput = form.querySelector("input[type='text']");
+  const descInput = form.querySelector("textarea");
+  const priceInput = form.querySelector("input[type='number']");
+  const stockInput = form.querySelectorAll("input[type='number']")[1];
+
   let originalImage = null;
 
+  /* ===== SELECTION IMAGE ===== */
   input.addEventListener("change", () => {
     const file = input.files[0];
     if (!file) return;
@@ -127,47 +141,86 @@
     originalImage.src = URL.createObjectURL(file);
   });
 
+  /* ===== CADRAGE ===== */
   slider.addEventListener("input", () => {
     preview.style.objectPosition = `center ${slider.value}%`;
   });
 
+  /* ===== SUBMIT ===== */
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (!originalImage) return alert("Ajoute une image");
 
-    const blob = await generateImage();
-    const url = await upload(blob);
+    if (!originalImage) {
+      alert("Ajoute une image");
+      return;
+    }
 
-    console.log("Image Firebase :", url);
-    alert("Produit prêt 🎉");
+    try {
+      /* 1️⃣ Génération image finale */
+      const blob = await generateImage();
+
+      /* 2️⃣ Upload Storage */
+      const imageUrl = await upload(blob);
+
+      /* 3️⃣ Enregistrement Firestore */
+      await addDoc(collection(db, "products"), {
+        title: titleInput.value.trim(),
+        description: descInput.value.trim(),
+        price: Number(priceInput.value),
+        stock: Number(stockInput.value),
+        imageUrl,
+        createdAt: serverTimestamp(),
+        active: true
+      });
+
+      alert("Produit enregistré avec succès 🎉");
+      form.reset();
+      preview.style.display = "none";
+      placeholder.style.display = "flex";
+      originalImage = null;
+
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l’enregistrement");
+    }
   });
 
-  function generateImage(){
-    return new Promise(resolve=>{
-      const canvas=document.createElement("canvas");
-      const ctx=canvas.getContext("2d");
-      const ratio=3/4;
-      const img=originalImage;
+  /* ===== GENERATION IMAGE ===== */
+  function generateImage() {
+    return new Promise(resolve => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const ratio = 3 / 4;
+      const img = originalImage;
 
-      let sw=img.width, sh=img.height;
-      let cw,ch;
-      if(sw/sh>ratio){ch=sh;cw=sh*ratio}else{cw=sw;ch=sw/ratio}
+      let sw = img.width, sh = img.height;
+      let cw, ch;
 
-      const sy=(sh-ch)*(slider.value/100);
-      const sx=(sw-cw)/2;
+      if (sw / sh > ratio) {
+        ch = sh;
+        cw = sh * ratio;
+      } else {
+        cw = sw;
+        ch = sw / ratio;
+      }
 
-      canvas.width=900;canvas.height=1200;
-      ctx.drawImage(img,sx,sy,cw,ch,0,0,900,1200);
-      canvas.toBlob(b=>resolve(b),"image/jpeg",0.9);
+      const sy = (sh - ch) * (slider.value / 100);
+      const sx = (sw - cw) / 2;
+
+      canvas.width = 900;
+      canvas.height = 1200;
+
+      ctx.drawImage(img, sx, sy, cw, ch, 0, 0, 900, 1200);
+      canvas.toBlob(blob => resolve(blob), "image/jpeg", 0.9);
     });
   }
 
-  async function upload(blob){
-    const r=ref(storage,`products/${Date.now()}.jpg`);
-    await uploadBytes(r,blob);
-    return await getDownloadURL(r);
+  /* ===== UPLOAD STORAGE ===== */
+  async function upload(blob) {
+    const fileRef = ref(storage, `products/${Date.now()}.jpg`);
+    await uploadBytes(fileRef, blob);
+    return await getDownloadURL(fileRef);
   }
 </script>
-
 </body>
 </html>
