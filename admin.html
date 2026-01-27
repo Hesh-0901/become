@@ -5,238 +5,196 @@
   <title>Become — Admin</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0F0F0F">
+  <meta name="theme-color" content="#141414">
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     :root {
-      --bg: #0F0F0F;
-      --surface: #1C1C1C;
-      --input: #141414;
-      --text: #F5F5F5;
-      --muted: #8E8E8E;
+      --bg-main: #161616;
+      --bg-card: #1F1F1F;
+      --bg-soft: #262626;
+      --text-main: #F5F5F5;
+      --text-muted: #9A9A9A;
       --accent: #C2A16A;
-      --border: #2A2A2A;
+      --border: #2E2E2E;
       --radius: 16px;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(180deg, #0F0F0F, #161616);
-      color: var(--text);
+      background: var(--bg-main);
+      color: var(--text-main);
+      padding: 16px;
       min-height: 100vh;
     }
 
-    header {
-      height: 56px;
+    /* HEADER */
+    .header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
-      border-bottom: 1px solid var(--border);
+      align-items: center;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
     }
 
-    .brand {
-      letter-spacing: 4px;
-      font-size: 12px;
+    .header-title {
+      font-size: 14px;
       font-weight: 600;
+      letter-spacing: 3px;
       color: var(--accent);
     }
 
-    .logout {
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    main {
-      padding: 16px;
-      max-width: 520px;
-      margin: auto;
-    }
-
-    .card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 18px;
-      border: 1px solid var(--border);
-      margin-bottom: 16px;
-    }
-
-    .title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .field {
-      margin-bottom: 10px;
-    }
-
-    .field label {
-      font-size: 11px;
-      color: var(--muted);
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .field input {
-      width: 100%;
-      height: 34px;
-      padding: 0 10px;
-      border-radius: 8px;
-      background: var(--input);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 12.5px;
-    }
-
-    .btn {
-      width: 100%;
-      height: 40px;
+    .btn-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 8px 14px;
       border-radius: 999px;
-      border: none;
-      background: var(--accent);
-      color: #1A1A1A;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      cursor: pointer;
+      text-decoration: none;
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 8px;
     }
 
-    .status {
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* CARD */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 18px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .card-desc {
       font-size: 12px;
-      color: var(--muted);
-      margin-top: 8px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .card-action {
+      margin-top: auto;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <div class="brand">BECOME — ADMIN</div>
-    <button class="logout" id="logoutBtn">
-      <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
-    </button>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-title">BECOME · ADMIN</div>
+
+    <a href="index.html" class="btn-outline">
+      <i class="fa-solid fa-store"></i>
+      Vitrine
+    </a>
   </header>
 
-  <main>
+  <!-- ADMIN MENU -->
+  <main class="grid">
 
+    <!-- USERS -->
     <div class="card">
-      <div class="title">
-        <i class="fa-solid fa-plus"></i> Ajouter un produit
+      <div class="card-icon">
+        <i class="fa-solid fa-users"></i>
       </div>
+      <div class="card-title">Gérer les utilisateurs</div>
+      <div class="card-desc">
+        Comptes clients, rôles, accès et statuts.
+      </div>
+      <div class="card-action">
+        Accéder
+        <i class="fa-solid fa-arrow-right"></i>
+      </div>
+    </div>
 
-      <form id="productForm">
+    <!-- ORDERS -->
+    <div class="card">
+      <div class="card-icon">
+        <i class="fa-solid fa-box"></i>
+      </div>
+      <div class="card-title">Gérer les commandes</div>
+      <div class="card-desc">
+        Commandes en cours, validées ou non disponibles.
+      </div>
+      <div class="card-action">
+        Accéder
+        <i class="fa-solid fa-arrow-right"></i>
+      </div>
+    </div>
 
-        <div class="field">
-          <label>Nom du produit</label>
-          <input type="text" id="name" required>
-        </div>
-
-        <div class="field">
-          <label>Prix (€)</label>
-          <input type="number" id="price" required>
-        </div>
-
-        <div class="field">
-          <label>Stock (optionnel)</label>
-          <input type="number" id="stock">
-        </div>
-
-        <div class="field">
-          <label>Image du produit</label>
-          <input type="file" id="image" accept="image/*" required>
-        </div>
-
-        <button type="submit" class="btn">
-          <i class="fa-solid fa-cloud-arrow-up"></i>
-          Publier le produit
-        </button>
-
-        <div class="status" id="status"></div>
-      </form>
+    <!-- PRODUCTS -->
+    <div class="card">
+      <div class="card-icon">
+        <i class="fa-solid fa-shirt"></i>
+      </div>
+      <div class="card-title">Charger les articles</div>
+      <div class="card-desc">
+        Ajouter des produits, images et gérer le stock.
+      </div>
+      <div class="card-action">
+        Accéder
+        <i class="fa-solid fa-arrow-right"></i>
+      </div>
     </div>
 
   </main>
-
-  <!-- FIREBASE -->
-  <script type="module">
-    import { auth, db } from "./js/firebase.config.js";
-    import { onAuthStateChanged, signOut } from
-      "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, getDoc, addDoc, collection, serverTimestamp } from
-      "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from
-      "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-
-    const storage = getStorage();
-    const form = document.getElementById("productForm");
-    const status = document.getElementById("status");
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    // 🔐 Protection admin
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "user.html";
-        return;
-      }
-
-      const snap = await getDoc(doc(db, "users", user.uid));
-      if (!snap.exists() || snap.data().role !== "admin") {
-        window.location.href = "customer.html";
-      }
-    });
-
-    // ➕ Ajout produit
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      status.textContent = "Chargement…";
-
-      const name = document.getElementById("name").value.trim();
-      const price = Number(document.getElementById("price").value);
-      const stock = document.getElementById("stock").value;
-      const imageFile = document.getElementById("image").files[0];
-
-      try {
-        const imageRef = ref(storage, `products/${Date.now()}-${imageFile.name}`);
-        await uploadBytes(imageRef, imageFile);
-        const imageUrl = await getDownloadURL(imageRef);
-
-        await addDoc(collection(db, "products"), {
-          name,
-          price,
-          stock: stock ? Number(stock) : null,
-          image: imageUrl,
-          active: true,
-          createdAt: serverTimestamp()
-        });
-
-        status.textContent = "Produit publié avec succès.";
-        form.reset();
-
-      } catch (err) {
-        console.error(err);
-        status.textContent = "Erreur lors de l’ajout du produit.";
-      }
-    });
-
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "user.html";
-    });
-  </script>
 
 </body>
 </html>
