@@ -17,7 +17,7 @@
     :root {
       --bg: #E9E5DF;
       --surface: #FFFFFF;
-      --surface-soft: #EDE8E1;
+      --surface-soft: #E6E1D9;
       --text: #1E1E1E;
       --muted: #6B6B6B;
       --accent: #8B6F47;
@@ -32,7 +32,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial;
       background: var(--bg);
       color: var(--text);
-      padding-bottom: 72px; /* place pour pagination */
+      padding-bottom: 72px;
     }
 
     /* HEADER */
@@ -81,7 +81,6 @@
       }
     }
 
-    /* CARD */
     .card {
       background: var(--surface);
       border-radius: var(--radius);
@@ -91,10 +90,9 @@
 
     .card img {
       width: 100%;
-      aspect-ratio: 3/4;
+      aspect-ratio: 3 / 4;
       object-fit: cover;
       display: block;
-      background: #DDD;
     }
 
     .card-body {
@@ -116,7 +114,7 @@
       color: var(--accent);
     }
 
-    /* PAGINATION FIXE */
+    /* PAGINATION */
     .pagination {
       position: fixed;
       bottom: 0;
@@ -164,45 +162,68 @@
 
 <main class="grid" id="grid"></main>
 
-<!-- PAGINATION -->
 <div class="pagination">
   <button id="prev">←</button>
   <span id="pageInfo"></span>
   <button id="next">→</button>
 </div>
 
-<script>
+<script type="module">
+  import { auth, db } from "./js/firebase.config.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  /* 🔐 USER BUTTON LOGIC */
+  document.getElementById("userBtn").addEventListener("click", () => {
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if (!snap.exists()) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const role = snap.data().role;
+      window.location.href = role === "admin" ? "admin.html" : "customer.html";
+    });
+  });
+
+  /* 🛍️ PRODUCTS */
   const products = [
-    ["T-shirt Essential", 58000],
-    ["Sweat Premium", 118000],
-    ["Pantalon Tailored", 138000],
-    ["Veste Signature", 238000],
-    ["Hoodie Urban", 150000],
-    ["Chemise Classique", 98000],
-    ["Blazer Moderne", 278000],
-    ["Jean Slim", 118000],
-    ["Pull Minimal", 130000],
-    ["Manteau Long", 318000],
-    ["Polo Premium", 78000],
-    ["Short Casual", 70000],
-    ["Veste Denim", 178000],
-    ["Cardigan", 110000],
-    ["Pantalon Cargo", 158000],
-    ["Sweat Zippé", 138000],
-    ["T-shirt Oversize", 68000],
-    ["Chemise Lin", 118000],
-    ["Veste Cuir", 398000],
-    ["Pull Col Roulé", 150000],
-    ["Jean Brut", 138000],
-    ["Sweat Basic", 98000],
-    ["Pantalon Classique", 158000],
-    ["Veste Légère", 198000],
-    ["Hoodie Premium", 170000],
-    ["T-shirt Bio", 64000],
-    ["Chemise Oversize", 110000],
-    ["Blouson Urbain", 258000],
-    ["Pull Laine", 178000],
-    ["Veste Tailoring", 298000]
+    ["T-shirt Essential", 58000, 1011],
+    ["Sweat Premium", 118000, 1012],
+    ["Pantalon Tailored", 138000, 1013],
+    ["Veste Signature", 238000, 1015],
+    ["Hoodie Urban", 150000, 1016],
+    ["Chemise Classique", 98000, 1018],
+    ["Blazer Moderne", 278000, 1020],
+    ["Jean Slim", 118000, 1024],
+    ["Pull Minimal", 130000, 1027],
+    ["Manteau Long", 318000, 1031],
+    ["Polo Premium", 78000, 1035],
+    ["Short Casual", 70000, 1038],
+    ["Veste Denim", 178000, 1040],
+    ["Cardigan", 110000, 1042],
+    ["Pantalon Cargo", 158000, 1045],
+    ["Sweat Zippé", 138000, 1050],
+    ["T-shirt Oversize", 68000, 1052],
+    ["Chemise Lin", 118000, 1055],
+    ["Veste Cuir", 398000, 1060],
+    ["Pull Col Roulé", 150000, 1063],
+    ["Jean Brut", 138000, 1066],
+    ["Sweat Basic", 98000, 1070],
+    ["Pantalon Classique", 158000, 1073],
+    ["Veste Légère", 198000, 1076],
+    ["Hoodie Premium", 170000, 1080],
+    ["T-shirt Bio", 64000, 1083],
+    ["Chemise Oversize", 110000, 1086],
+    ["Blouson Urbain", 258000, 1090],
+    ["Pull Laine", 178000, 1093],
+    ["Veste Tailoring", 298000, 1096]
   ];
 
   const perPage = 10;
@@ -214,13 +235,11 @@
   function render() {
     grid.innerHTML = "";
     const start = (page - 1) * perPage;
-    const slice = products.slice(start, start + perPage);
 
-    slice.forEach(p => {
-      const img = `https://source.unsplash.com/600x800/?fashion,clothing&sig=${Math.random()}`;
+    products.slice(start, start + perPage).forEach(p => {
       grid.innerHTML += `
         <article class="card">
-          <img src="${img}" loading="lazy">
+          <img src="https://picsum.photos/id/${p[2]}/600/800" loading="lazy">
           <div class="card-body">
             <h3 class="title">${p[0]}</h3>
             <div class="price">${p[1].toLocaleString()} CDF</div>
@@ -233,17 +252,11 @@
   }
 
   document.getElementById("prev").onclick = () => {
-    if (page > 1) {
-      page--;
-      render();
-    }
+    if (page > 1) page--, render();
   };
 
   document.getElementById("next").onclick = () => {
-    if (page < Math.ceil(products.length / perPage)) {
-      page++;
-      render();
-    }
+    if (page < Math.ceil(products.length / perPage)) page++, render();
   };
 
   render();
