@@ -156,6 +156,7 @@
       <i class="fa-solid fa-magnifying-glass"></i>
       <i class="fa-solid fa-cart-shopping"></i>
       <i id="userBtn" class="fa-solid fa-user"></i>
+      <i id="installBtn" class="fa-solid fa-download" style="display:none"></i>
     </div>
   </div>
 </header>
@@ -260,6 +261,52 @@
   };
 
   render();
+</script>
+  <script>
+  let deferredPrompt = null;
+  const installBtn = document.getElementById("installBtn");
+
+  // Détecte si l'app est déjà installée
+  const isInstalled =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+
+  // Si déjà installée → ne rien afficher
+  if (isInstalled) {
+    installBtn.style.display = "none";
+  }
+
+  // Android / Desktop (Chrome, Edge…)
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    installBtn.style.display = "inline-block";
+    installBtn.title = "Installer l’application";
+  });
+
+  // Clic sur le bouton installer
+  installBtn.addEventListener("click", async () => {
+    // Cas Android / Desktop
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+
+      if (outcome === "accepted") {
+        installBtn.style.display = "none";
+      }
+
+      deferredPrompt = null;
+      return;
+    }
+
+    // Cas iOS (Safari)
+    alert(
+      "Sur iPhone :\n\n" +
+      "1. Appuie sur le bouton Partager ⬆️\n" +
+      "2. Choisis « Ajouter à l’écran d’accueil »"
+    );
+  });
 </script>
 
 </body>
