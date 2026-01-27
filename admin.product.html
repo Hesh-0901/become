@@ -11,156 +11,60 @@
 
   <style>
     :root {
-      --bg: #161616;
-      --card: #1F1F1F;
-      --soft: #262626;
-      --text: #F5F5F5;
-      --muted: #9A9A9A;
-      --accent: #C2A16A;
-      --border: #2E2E2E;
-      --radius: 16px;
+      --bg:#161616;--card:#1F1F1F;--soft:#262626;
+      --text:#F5F5F5;--muted:#9A9A9A;
+      --accent:#C2A16A;--border:#2E2E2E;--radius:16px;
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial;
-      background: var(--bg);
-      color: var(--text);
-      padding: 16px;
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:system-ui;background:var(--bg);
+      color:var(--text);padding:16px;
     }
-
-    /* HEADER */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      border: 1px solid var(--border);
-      margin-bottom: 20px;
+    .header{
+      display:flex;justify-content:space-between;align-items:center;
+      background:var(--card);border-radius:var(--radius);
+      padding:14px 16px;border:1px solid var(--border);
+      margin-bottom:20px;
     }
+    .title{font-size:14px;font-weight:600;letter-spacing:2px;color:var(--accent)}
+    .back{color:var(--accent);text-decoration:none;font-size:13px;display:flex;gap:6px}
 
-    .title {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      color: var(--accent);
+    .form{
+      background:var(--card);border-radius:var(--radius);
+      border:1px solid var(--border);padding:20px;
+      max-width:520px;margin:auto;
     }
-
-    .back {
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 13px;
-      display: flex;
-      gap: 6px;
-      align-items: center;
+    .group{margin-bottom:18px}
+    label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block}
+    input,textarea{
+      width:100%;background:var(--soft);border:1px solid var(--border);
+      border-radius:10px;color:var(--text);padding:10px;font-size:13px;
     }
+    textarea{min-height:80px;resize:vertical}
 
-    /* FORM */
-    .form {
-      background: var(--card);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      padding: 20px;
-      max-width: 520px;
-      margin: auto;
+    .image-frame{
+      position:relative;width:100%;aspect-ratio:3/4;
+      border-radius:14px;background:var(--soft);
+      border:2px dashed var(--border);overflow:hidden;cursor:pointer;
     }
-
-    .group {
-      margin-bottom: 18px;
+    .image-frame input{position:absolute;inset:0;opacity:0;z-index:2}
+    .image-frame img{
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:cover;object-position:center 50%;display:none;
     }
-
-    label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      display: block;
+    .image-placeholder{
+      position:absolute;inset:0;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;color:var(--muted);gap:8px;
+      pointer-events:none;
     }
+    .image-placeholder i{font-size:32px;color:var(--accent)}
+    .slider{margin-top:10px;width:100%}
 
-    input, textarea {
-      width: 100%;
-      background: var(--soft);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      padding: 10px;
-      font-size: 13px;
-    }
-
-    textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-
-    /* IMAGE FRAME */
-    .image-frame {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      border-radius: 14px;
-      background: var(--soft);
-      border: 2px dashed var(--border);
-      overflow: hidden;
-      cursor: pointer;
-    }
-
-    .image-frame input {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      z-index: 2;
-    }
-
-    .image-frame img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 50%;
-      display: none;
-    }
-
-    .image-placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      gap: 8px;
-      pointer-events: none;
-    }
-
-    .image-placeholder i {
-      font-size: 32px;
-      color: var(--accent);
-    }
-
-    .slider {
-      margin-top: 10px;
-      width: 100%;
-    }
-
-    .btn {
-      width: 100%;
-      height: 44px;
-      border-radius: 999px;
-      border: none;
-      background: var(--accent);
-      color: #1A1A1A;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+    .btn{
+      width:100%;height:44px;border-radius:999px;border:none;
+      background:var(--accent);color:#1A1A1A;font-size:13px;
+      font-weight:600;cursor:pointer;display:flex;
+      align-items:center;justify-content:center;gap:8px;
     }
   </style>
 </head>
@@ -176,10 +80,8 @@
 
 <form class="form">
 
-  <!-- IMAGE -->
   <div class="group">
-    <label>Photo de l’article (ratio 3:4)</label>
-
+    <label>Photo de l’article (3:4)</label>
     <div class="image-frame">
       <img id="preview">
       <div class="image-placeholder" id="placeholder">
@@ -188,56 +90,21 @@
       </div>
       <input type="file" id="imageInput" accept="image/*">
     </div>
-
-    <!-- Contrôle cadrage -->
-    <input
-      type="range"
-      id="positionY"
-      min="0"
-      max="100"
-      value="50"
-      class="slider"
-    >
+    <input type="range" id="positionY" min="0" max="100" value="50" class="slider">
   </div>
 
-  <!-- TITLE -->
-  <div class="group">
-    <label>Titre</label>
-    <input type="text" required>
-  </div>
+  <div class="group"><label>Titre</label><input required></div>
+  <div class="group"><label>Description</label><textarea></textarea></div>
+  <div class="group"><label>Prix (CDF)</label><input type="number" min="0" required></div>
+  <div class="group"><label>Stock</label><input type="number" min="0" required></div>
 
-  <!-- DESCRIPTION -->
-  <div class="group">
-    <label>Description</label>
-    <textarea></textarea>
-  </div>
-
-  <!-- PRICE -->
-  <div class="group">
-    <label>Prix (CDF)</label>
-    <input type="number" min="0" required>
-  </div>
-
-  <!-- STOCK -->
-  <div class="group">
-    <label>Stock disponible</label>
-    <input type="number" min="0" required>
-  </div>
-
-  <button class="btn" type="submit">
-    <i class="fa-solid fa-cloud-arrow-up"></i>
-    Publier l’article
-  </button>
-
+  <button class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Publier</button>
 </form>
 
 <script type="module">
   import { storage } from "./js/firebase.config.js";
-  import {
-    ref,
-    uploadBytes,
-    getDownloadURL
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  import { ref, uploadBytes, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   const input = document.getElementById("imageInput");
   const preview = document.getElementById("preview");
@@ -247,93 +114,58 @@
 
   let originalImage = null;
 
-  /* Sélection image */
   input.addEventListener("change", () => {
     const file = input.files[0];
     if (!file) return;
 
     originalImage = new Image();
+    originalImage.onload = () => {
+      preview.src = originalImage.src;
+      preview.style.display = "block";
+      placeholder.style.display = "none";
+    };
     originalImage.src = URL.createObjectURL(file);
-
-    preview.src = originalImage.src;
-    preview.style.display = "block";
-    placeholder.style.display = "none";
   });
 
-  /* Cadrage vertical */
   slider.addEventListener("input", () => {
     preview.style.objectPosition = `center ${slider.value}%`;
   });
 
-  /* Soumission */
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!originalImage) return alert("Ajoute une image");
 
-    if (!originalImage) {
-      alert("Ajoute une image");
-      return;
-    }
+    const blob = await generateImage();
+    const url = await upload(blob);
 
-    const finalBlob = await generateCroppedImage();
-    const imageUrl = await uploadToStorage(finalBlob);
-
-    console.log("Image uploadée :", imageUrl);
-
-    alert("Produit prêt à être enregistré 🎉");
+    console.log("Image Firebase :", url);
+    alert("Produit prêt 🎉");
   });
 
-  /* Génère image finale selon cadrage */
-  function generateCroppedImage() {
-    return new Promise((resolve) => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
+  function generateImage(){
+    return new Promise(resolve=>{
+      const canvas=document.createElement("canvas");
+      const ctx=canvas.getContext("2d");
+      const ratio=3/4;
+      const img=originalImage;
 
-      const targetRatio = 3 / 4;
-      const img = originalImage;
+      let sw=img.width, sh=img.height;
+      let cw,ch;
+      if(sw/sh>ratio){ch=sh;cw=sh*ratio}else{cw=sw;ch=sw/ratio}
 
-      let sw = img.width;
-      let sh = img.height;
+      const sy=(sh-ch)*(slider.value/100);
+      const sx=(sw-cw)/2;
 
-      let cropW, cropH;
-
-      if (sw / sh > targetRatio) {
-        cropH = sh;
-        cropW = sh * targetRatio;
-      } else {
-        cropW = sw;
-        cropH = sw / targetRatio;
-      }
-
-      const posY = slider.value / 100;
-      const sy = (sh - cropH) * posY;
-      const sx = (sw - cropW) / 2;
-
-      canvas.width = 900;
-      canvas.height = 1200;
-
-      ctx.drawImage(
-        img,
-        sx,
-        sy,
-        cropW,
-        cropH,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-
-      canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.9);
+      canvas.width=900;canvas.height=1200;
+      ctx.drawImage(img,sx,sy,cw,ch,0,0,900,1200);
+      canvas.toBlob(b=>resolve(b),"image/jpeg",0.9);
     });
   }
 
-  /* Upload Firebase Storage */
-  async function uploadToStorage(blob) {
-    const fileName = `products/${Date.now()}.jpg`;
-    const imageRef = ref(storage, fileName);
-
-    await uploadBytes(imageRef, blob);
-    return await getDownloadURL(imageRef);
+  async function upload(blob){
+    const r=ref(storage,`products/${Date.now()}.jpg`);
+    await uploadBytes(r,blob);
+    return await getDownloadURL(r);
   }
 </script>
 
