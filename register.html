@@ -124,19 +124,34 @@
       position: relative;
     }
 
-    .password-field .toggle-password {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 13px;
-      color: var(--text-muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper input {
+  padding-right: 36px; /* espace réservé pour l’icône */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.toggle-password i {
+  font-size: 13px;
+}
 
     /* CHECKBOX */
     .checkbox {
@@ -209,7 +224,6 @@
             <option>Choisir</option>
             <option>Homme</option>
             <option>Femme</option>
-            <option>Autre</option>
           </select>
         </div>
 
@@ -223,21 +237,25 @@
           <input type="email">
         </div>
 
-        <div class="field password-field">
-          <label>Mot de passe</label>
-          <input type="password" class="password-input">
-          <span class="toggle-password">
-            <i class="fa-solid fa-eye"></i>
-          </span>
-        </div>
+<div class="field">
+  <label>Mot de passe</label>
+  <div class="input-wrapper">
+    <input type="password" class="password-input">
+    <button type="button" class="toggle-password" aria-label="Afficher le mot de passe">
+      <i class="fa-solid fa-eye"></i>
+    </button>
+  </div>
+</div>
 
-        <div class="field password-field">
-          <label>Confirmer le mot de passe</label>
-          <input type="password" class="password-input">
-          <span class="toggle-password">
-            <i class="fa-solid fa-eye"></i>
-          </span>
-        </div>
+<div class="field">
+  <label>Confirmer le mot de passe</label>
+  <div class="input-wrapper">
+    <input type="password" class="password-input">
+    <button type="button" class="toggle-password" aria-label="Afficher le mot de passe">
+      <i class="fa-solid fa-eye"></i>
+    </button>
+  </div>
+</div>
 
         <div class="field">
           <label>Ville</label>
@@ -265,22 +283,22 @@
   </main>
 
   <!-- PASSWORD TOGGLE -->
-  <script>
-    document.querySelectorAll(".toggle-password").forEach(toggle => {
-      toggle.addEventListener("click", () => {
-        const input = toggle.parentElement.querySelector(".password-input");
-        const icon = toggle.querySelector("i");
+<script>
+  document.querySelectorAll(".toggle-password").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const input = btn.previousElementSibling;
+      const icon = btn.querySelector("i");
 
-        if (input.type === "password") {
-          input.type = "text";
-          icon.classList.replace("fa-eye", "fa-eye-slash");
-        } else {
-          input.type = "password";
-          icon.classList.replace("fa-eye-slash", "fa-eye");
-        }
-      });
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        input.type = "password";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+      }
     });
-  </script>
+  });
+</script>
 
 </body>
 </html>
