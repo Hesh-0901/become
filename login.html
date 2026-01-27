@@ -174,29 +174,49 @@
   </main>
 
   <!-- FIREBASE LOGIN -->
-  <script type="module">
-    import { auth } from "./js/firebase.config.js";
-    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<script type="module">
+  import { auth, db } from "./js/firebase.config.js";
+  import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const form = document.getElementById("loginForm");
-    const errorMsg = document.getElementById("errorMsg");
+  const form = document.getElementById("loginForm");
+  const errorMsg = document.getElementById("errorMsg");
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      errorMsg.style.display = "none";
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorMsg.style.display = "none";
 
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-      try {
+    try {
+      // 1️⃣ Auth
+      const userCredential =
         await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = "index.html";
-      } catch (error) {
-        errorMsg.textContent = "Email ou mot de passe incorrect";
-        errorMsg.style.display = "block";
-      }
-    });
-  </script>
 
+      const user = userCredential.user;
+
+      // 2️⃣ Récupération du rôle
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+
+      if (!userDoc.exists()) {
+        throw new Error("Profil utilisateur introuvable");
+      }
+
+      const role = userDoc.data().role;
+
+      // 3️⃣ Redirection selon le rôle
+      if (role === "admin") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "customer.html";
+      }
+
+    } catch (error) {
+      errorMsg.textContent = "Email ou mot de passe incorrect";
+      errorMsg.style.display = "block";
+    }
+  });
+</script>
 </body>
 </html>
