@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Become — Produit</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#7A623F">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg:#E9E5DF;--surface:#FFF;--soft:#E6E1D9;
+      --text:#1E1E1E;--muted:#6B6B6B;
+      --accent:#8B6F47;--border:#D6CFC4;
+    }
+
+    body {
+      margin:0;font-family:system-ui;background:var(--bg);
+      color:var(--text);padding-bottom:80px;
+    }
+
+    header {
+      position:sticky;top:0;background:var(--bg);
+      border-bottom:1px solid var(--border);z-index:10;
+    }
+
+    .bar {
+      height:54px;display:flex;align-items:center;
+      padding:0 14px;gap:12px;
+    }
+
+    .back { cursor:pointer;color:var(--muted); }
+    .brand { font-weight:600;letter-spacing:3px;font-size:14px; }
+
+    main { padding:14px;max-width:600px;margin:auto; }
+
+    img {
+      width:100%;aspect-ratio:3/4;object-fit:cover;
+      border-radius:10px;border:1px solid var(--border);
+    }
+
+    h1 { font-size:18px;margin:14px 0 6px; }
+    .price { font-size:18px;font-weight:600;color:var(--accent); }
+    .stock { font-size:13px;margin-top:4px; }
+
+    .desc {
+      margin-top:14px;font-size:14px;
+      color:var(--muted);line-height:1.6;
+    }
+
+    .actions {
+      position:fixed;bottom:0;left:0;right:0;
+      background:var(--bg);border-top:1px solid var(--border);
+      padding:10px;display:flex;gap:10px;
+    }
+
+    button {
+      flex:1;height:44px;border-radius:999px;
+      border:none;font-size:14px;font-weight:600;
+      cursor:pointer;
+    }
+
+    .add { background:var(--surface);border:1px solid var(--border); }
+    .buy { background:var(--accent);color:#fff; }
+    .disabled { opacity:.5;pointer-events:none; }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="bar">
+    <i class="fa-solid fa-arrow-left back" onclick="history.back()"></i>
+    <div class="brand">BECOME</div>
+  </div>
+</header>
+
+<main id="content">Chargement…</main>
+
+<div class="actions">
+  <button id="addBtn" class="add">Ajouter au panier</button>
+  <button id="buyBtn" class="buy">Acheter maintenant</button>
+</div>
+
+<script type="module">
+/* ================= IMPORTS ================= */
+import { db } from "./js/firebase.config.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ================= UTILS ================= */
+const params = new URLSearchParams(location.search);
+const productId = params.get("id");
+
+if (!productId) location.href = "index.html";
+
+const content = document.getElementById("content");
+const addBtn = document.getElementById("addBtn");
+const buyBtn = document.getElementById("buyBtn");
+
+/* ================= LOAD PRODUCT ================= */
+const ref = doc(db, "products", productId);
+const snap = await getDoc(ref);
+
+if (!snap.exists()) {
+  content.textContent = "Produit introuvable";
+  addBtn.classList.add("disabled");
+  buyBtn.classList.add("disabled");
+  throw new Error("Produit introuvable");
+}
+
+const p = snap.data();
+
+content.innerHTML = `
+  <img src="${p.imageUrl}">
+  <h1>${p.title}</h1>
+  <div class="price">${p.price.toLocaleString()} CDF</div>
+  <div class="stock">
+    ${p.stock > 0 ? "En stock" : "Épuisé"}
+  </div>
+  <div class="desc">${p.description || ""}</div>
+`;
+
+if (p.stock === 0) {
+  addBtn.classList.add("disabled");
+  buyBtn.classList.add("disabled");
+}
+
+/* ================= PANIER ================= */
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart") || "[]");
+}
+
+function saveCart(cart) {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function addToCart() {
+  const cart = getCart();
+  const found = cart.find(i => i.id === productId);
+
+  if (found) {
+    found.qty++;
+  } else {
+    cart.push({
+      id: productId,
+      title: p.title,
+      price: p.price,
+      image: p.imageUrl,
+      qty: 1
+    });
+  }
+
+  saveCart(cart);
+}
+
+/* ================= ACTIONS ================= */
+addBtn.onclick = () => {
+  addToCart();
+  addBtn.textContent = "Ajouté ✔️";
+  setTimeout(() => addBtn.textContent = "Ajouter au panier", 1500);
+};
+
+buyBtn.onclick = () => {
+  addToCart();
+  window.location.href = "checkout.html";
+};
+</script>
+
+</body>
+</html>
