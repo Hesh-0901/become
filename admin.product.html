@@ -103,7 +103,8 @@
 
 <script type="module">
   /* ===== IMPORTS EXISTANTS ===== */
-  import { storage, db } from "./js/firebase.config.js";
+  import { storage, db, auth } from "./js/firebase.config.js";
+
   import { ref, uploadBytes, getDownloadURL }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
@@ -112,6 +113,24 @@
     addDoc,
     serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  import {
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  /* ===== ETAT AUTH ===== */
+  let currentUser = null;
+  let authReady = false;
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      alert("❌ Session expirée.\nReconnecte-toi pour accéder à l’administration.");
+      window.location.href = "login.html";
+      return;
+    }
+    currentUser = user;
+    authReady = true;
+  });
 
   /* ===== DOM ===== */
   const input = document.getElementById("imageInput");
@@ -150,13 +169,18 @@
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    if (!authReady || !currentUser) {
+      alert("⏳ Authentification en cours…\nRéessaie dans quelques secondes.");
+      return;
+    }
+
     if (!originalImage) {
-      alert("Ajoute une image");
+      alert("📷 Aucune image sélectionnée.");
       return;
     }
 
     try {
-      /* 1️⃣ Génération image finale */
+      /* 1️⃣ Génération image */
       const blob = await generateImage();
 
       /* 2️⃣ Upload Storage */
@@ -170,10 +194,11 @@
         stock: Number(stockInput.value),
         imageUrl,
         createdAt: serverTimestamp(),
-        active: true
+        active: true,
+        author: currentUser.uid
       });
 
-      alert("Produit enregistré avec succès 🎉");
+      alert("✅ Produit enregistré avec succès !");
       form.reset();
       preview.style.display = "none";
       placeholder.style.display = "flex";
@@ -181,7 +206,12 @@
 
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de l’enregistrement");
+
+      if (err.code === "storage/unauthorized") {
+        alert("🚫 Accès refusé à Firebase Storage.\nVérifie les règles ou ta session.");
+      } else {
+        alert("❌ Erreur lors de l’enregistrement.\nConsulte la console.");
+      }
     }
   });
 
@@ -217,24 +247,18 @@
 
   /* ===== UPLOAD STORAGE ===== */
   async function upload(blob) {
-    const fileRef = ref(storage, `products/${Date.now()}.jpg`);
+    if (!currentUser) {
+      throw new Error("Utilisateur non authentifié");
+    }
+
+    const fileRef = ref(
+      storage,
+      `products/${currentUser.uid}_${Date.now()}.jpg`
+    );
+
     await uploadBytes(fileRef, blob);
     return await getDownloadURL(fileRef);
   }
-  import { auth } from "./js/firebase.config.js";
-import { onAuthStateChanged } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-let currentUser = null;
-
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    alert("Reconnecte-toi");
-    window.location.href = "login.html";
-    return;
-  }
-  currentUser = user;
-});
 </script>
 </body>
 </html>
