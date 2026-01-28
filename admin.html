@@ -4,145 +4,160 @@
   <meta charset="UTF-8" />
   <title>Become — Admin</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#141414">
 
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     :root {
-      --bg-main: #161616;
-      --bg-card: #1F1F1F;
-      --bg-soft: #262626;
-      --text-main: #F5F5F5;
-      --text-muted: #9A9A9A;
-      --accent: #C2A16A;
-      --border: #2E2E2E;
-      --radius: 16px;
+      --bg:#161616;
+      --card:#1F1F1F;
+      --soft:#262626;
+      --text:#F5F5F5;
+      --muted:#9A9A9A;
+      --accent:#C2A16A;
+      --border:#2E2E2E;
+      --radius:16px;
+      --danger:#f44336;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box }
 
     body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: var(--bg-main);
-      color: var(--text-main);
-      padding: 16px;
-      min-height: 100vh;
+      margin:0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial;
+      background:var(--bg);
+      color:var(--text);
+      padding:16px;
+      min-height:100vh;
     }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      border: 1px solid var(--border);
-      margin-bottom: 20px;
+    /* ===== HEADER ===== */
+    header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:14px 16px;
+      margin-bottom:24px;
     }
 
-    .header-title {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 3px;
-      color: var(--accent);
+    .title {
+      font-size:14px;
+      font-weight:600;
+      letter-spacing:3px;
+      color:var(--accent);
     }
 
-    .btn-outline {
-      background: transparent;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
+    .header-actions {
+      display:flex;
+      gap:10px;
     }
 
+    .btn {
+      height:36px;
+      padding:0 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:transparent;
+      color:var(--accent);
+      font-size:12px;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      text-decoration:none;
+    }
+
+    .btn.logout {
+      border-color:var(--danger);
+      color:var(--danger);
+    }
+
+    /* ===== GRID ===== */
     .grid {
-      display: grid;
-      grid-template-columns: repeat(1, 1fr);
-      gap: 16px;
+      display:grid;
+      gap:16px;
     }
 
-    @media (min-width: 768px) {
+    @media (min-width:768px) {
       .grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns:repeat(3,1fr);
       }
     }
 
+    /* ===== CARD ===== */
     .card {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      padding: 20px;
-      border: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      text-decoration:none;
+      color:inherit;
+      transition:.2s ease;
     }
 
     .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      transform:translateY(-2px);
+      background:var(--soft);
     }
 
-    .card-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: var(--bg-soft);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--accent);
-      font-size: 18px;
+    .icon {
+      width:46px;
+      height:46px;
+      border-radius:50%;
+      background:var(--soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      color:var(--accent);
     }
 
-    .card-title {
-      font-size: 14px;
-      font-weight: 600;
+    .card h3 {
+      margin:0;
+      font-size:15px;
+      font-weight:600;
     }
 
-    .card-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.5;
+    .card p {
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
     }
 
-    .card-action {
-      margin-top: auto;
-      font-size: 12px;
-      color: var(--accent);
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .go {
+      margin-top:auto;
+      font-size:12px;
+      font-weight:600;
+      color:var(--accent);
+      display:flex;
+      align-items:center;
+      gap:6px;
     }
   </style>
 </head>
 
 <body>
 
-<header class="header">
-  <div class="header-title">BECOME · ADMIN</div>
+<header>
+  <div class="title">BECOME · ADMIN</div>
 
-  <div style="display:flex; gap:10px">
-    <a href="index.html" class="btn-outline">
+  <div class="header-actions">
+    <a href="index.html" class="btn">
       <i class="fa-solid fa-store"></i>
       Vitrine
     </a>
 
-    <!-- ✅ BOUTON DÉCONNEXION (AJOUTÉ) -->
-    <button id="logoutBtn" class="btn-outline">
+    <button id="logoutBtn" class="btn logout">
       <i class="fa-solid fa-right-from-bracket"></i>
       Déconnexion
     </button>
@@ -151,45 +166,41 @@
 
 <main class="grid">
 
-  <div class="card">
-    <div class="card-icon"><i class="fa-solid fa-users"></i></div>
-    <div class="card-title">Gérer les utilisateurs</div>
-    <div class="card-desc">Comptes clients, rôles, accès et statuts.</div>
-    <div class="card-action">Accéder <i class="fa-solid fa-arrow-right"></i></div>
-  </div>
-
-  <div class="card">
-    <div class="card-icon"><i class="fa-solid fa-box"></i></div>
-    <div class="card-title">Gérer les commandes</div>
-    <div class="card-desc">Commandes en cours, validées ou non disponibles.</div>
-    <div class="card-action">Accéder <i class="fa-solid fa-arrow-right"></i></div>
-  </div>
-
-  <a href="admin.product.html" class="card" style="text-decoration:none; color:inherit;">
-    <div class="card-icon"><i class="fa-solid fa-shirt"></i></div>
-    <div class="card-title">Charger les articles</div>
-    <div class="card-desc">Ajouter des produits, images et gérer le stock.</div>
-    <div class="card-action">Accéder <i class="fa-solid fa-arrow-right"></i></div>
+  <a href="#" class="card">
+    <div class="icon"><i class="fa-solid fa-users"></i></div>
+    <h3>Utilisateurs</h3>
+    <p>Gestion des comptes, rôles et accès.</p>
+    <div class="go">Accéder <i class="fa-solid fa-arrow-right"></i></div>
   </a>
 
-  <!-- ✅ MODIFIER UN ARTICLE (AJOUTÉ) -->
-  <a href="admin-products.html" class="card" style="text-decoration:none; color:inherit;">
-    <div class="card-icon"><i class="fa-solid fa-pen-to-square"></i></div>
-    <div class="card-title">Modifier un article</div>
-    <div class="card-desc">Modifier, désactiver ou supprimer des produits existants.</div>
-    <div class="card-action">Accéder <i class="fa-solid fa-arrow-right"></i></div>
+  <a href="#" class="card">
+    <div class="icon"><i class="fa-solid fa-box"></i></div>
+    <h3>Commandes</h3>
+    <p>Suivi des commandes clients.</p>
+    <div class="go">Accéder <i class="fa-solid fa-arrow-right"></i></div>
+  </a>
+
+  <a href="admin.product.html" class="card">
+    <div class="icon"><i class="fa-solid fa-shirt"></i></div>
+    <h3>Ajouter un produit</h3>
+    <p>Créer de nouveaux articles.</p>
+    <div class="go">Accéder <i class="fa-solid fa-arrow-right"></i></div>
+  </a>
+
+  <a href="admin-products.html" class="card">
+    <div class="icon"><i class="fa-solid fa-pen-to-square"></i></div>
+    <h3>Modifier un produit</h3>
+    <p>Modifier, désactiver ou supprimer.</p>
+    <div class="go">Accéder <i class="fa-solid fa-arrow-right"></i></div>
   </a>
 
 </main>
 
-<!-- ✅ SCRIPT UNIQUE DÉCONNEXION (CORRIGÉ) -->
 <script type="module">
   import { auth } from "./js/firebase.config.js";
   import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  const logoutBtn = document.getElementById("logoutBtn");
-
-  logoutBtn.addEventListener("click", async () => {
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
     await signOut(auth);
     window.location.href = "login.html";
   });
