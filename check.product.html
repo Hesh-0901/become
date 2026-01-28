@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin — Produit</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#141414">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg:#161616;--card:#1F1F1F;--soft:#262626;
+      --text:#F5F5F5;--muted:#9A9A9A;
+      --accent:#C2A16A;--border:#2E2E2E;
+      --danger:#f44336;--ok:#4caf50;
+    }
+
+    * { box-sizing:border-box }
+
+    body {
+      margin:0;font-family:system-ui;background:var(--bg);
+      color:var(--text);padding:16px;
+    }
+
+    header {
+      display:flex;align-items:center;gap:12px;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:14px;padding:14px 16px;margin-bottom:20px;
+    }
+
+    header h1 {
+      font-size:14px;letter-spacing:2px;
+      color:var(--accent);margin:0;
+    }
+
+    .back { cursor:pointer;color:var(--accent); }
+
+    .form {
+      max-width:520px;margin:auto;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:16px;padding:20px;
+    }
+
+    .group { margin-bottom:18px }
+    label { font-size:12px;color:var(--muted);display:block;margin-bottom:6px }
+
+    input, textarea {
+      width:100%;background:var(--soft);
+      border:1px solid var(--border);
+      border-radius:10px;padding:10px;
+      color:var(--text);font-size:13px;
+    }
+
+    textarea { min-height:80px;resize:vertical }
+
+    .image-frame {
+      position:relative;width:100%;
+      aspect-ratio:3/4;border-radius:14px;
+      border:2px dashed var(--border);
+      background:var(--soft);overflow:hidden;
+      cursor:pointer;
+    }
+
+    .image-frame img {
+      position:absolute;inset:0;
+      width:100%;height:100%;
+      object-fit:cover;display:none;
+    }
+
+    .image-frame input {
+      position:absolute;inset:0;
+      opacity:0;z-index:2;
+    }
+
+    .placeholder {
+      position:absolute;inset:0;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      color:var(--muted);gap:8px;
+      pointer-events:none;
+    }
+
+    .placeholder i { font-size:32px;color:var(--accent) }
+
+    .slider { width:100%;margin-top:8px }
+
+    .actions {
+      display:flex;gap:10px;margin-top:20px;
+    }
+
+    button {
+      flex:1;height:44px;border-radius:999px;
+      border:none;font-weight:600;
+      font-size:13px;cursor:pointer;
+    }
+
+    .save { background:var(--accent);color:#1A1A1A }
+    .toggle { background:var(--soft);color:var(--text) }
+    .delete { background:var(--danger);color:#fff }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <i class="fa-solid fa-arrow-left back" onclick="location.href='admin-products.html'"></i>
+  <h1>PRODUIT</h1>
+</header>
+
+<form class="form" id="form">
+  <div class="group">
+    <label>Image produit (3:4)</label>
+    <div class="image-frame">
+      <img id="preview">
+      <div class="placeholder" id="placeholder">
+        <i class="fa-solid fa-image"></i>
+        <span>Remplacer l’image</span>
+      </div>
+      <input type="file" id="imageInput" accept="image/*">
+    </div>
+    <input type="range" id="positionY" min="0" max="100" value="50" class="slider">
+  </div>
+
+  <div class="group">
+    <label>Nom</label>
+    <input id="title">
+  </div>
+
+  <div class="group">
+    <label>Description</label>
+    <textarea id="description"></textarea>
+  </div>
+
+  <div class="group">
+    <label>Prix (CDF)</label>
+    <input type="number" id="price">
+  </div>
+
+  <div class="group">
+    <label>Stock</label>
+    <input type="number" id="stock">
+  </div>
+
+  <div class="actions">
+    <button type="button" id="toggleBtn" class="toggle">Désactiver</button>
+    <button type="submit" class="save">Enregistrer</button>
+    <button type="button" id="deleteBtn" class="delete">Supprimer</button>
+  </div>
+</form>
+
+<script type="module">
+/* ================= IMPORTS ================= */
+import { auth, db, storage } from "./js/firebase.config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+/* ================= AUTH ================= */
+const params = new URLSearchParams(location.search);
+const productId = params.get("id");
+if (!productId) location.href = "admin-products.html";
+
+let productRef, productData;
+let originalImage = null;
+
+/* ================= DOM ================= */
+const preview = document.getElementById("preview");
+const placeholder = document.getElementById("placeholder");
+const imageInput = document.getElementById("imageInput");
+const slider = document.getElementById("positionY");
+
+const titleInput = document.getElementById("title");
+const descInput = document.getElementById("description");
+const priceInput = document.getElementById("price");
+const stockInput = document.getElementById("stock");
+
+const toggleBtn = document.getElementById("toggleBtn");
+const deleteBtn = document.getElementById("deleteBtn");
+const form = document.getElementById("form");
+
+/* ================= LOAD ================= */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) location.href = "login.html";
+
+  const roleSnap = await getDoc(doc(db, "users", user.uid));
+  if (!roleSnap.exists() || roleSnap.data().role !== "admin") {
+    location.href = "index.html";
+    return;
+  }
+
+  productRef = doc(db, "products", productId);
+  const snap = await getDoc(productRef);
+
+  if (!snap.exists()) {
+    alert("Produit introuvable");
+    location.href = "admin-products.html";
+    return;
+  }
+
+  productData = snap.data();
+
+  preview.src = productData.imageUrl;
+  preview.style.display = "block";
+  placeholder.style.display = "none";
+
+  titleInput.value = productData.title;
+  descInput.value = productData.description || "";
+  priceInput.value = productData.price;
+  stockInput.value = productData.stock;
+
+  toggleBtn.textContent = productData.active ? "Désactiver" : "Réactiver";
+});
+
+/* ================= IMAGE ================= */
+imageInput.addEventListener("change", () => {
+  const file = imageInput.files[0];
+  if (!file) return;
+
+  originalImage = new Image();
+  originalImage.onload = () => {
+    preview.src = originalImage.src;
+    preview.style.display = "block";
+    placeholder.style.display = "none";
+  };
+  originalImage.src = URL.createObjectURL(file);
+});
+
+slider.addEventListener("input", () => {
+  preview.style.objectPosition = `center ${slider.value}%`;
+});
+
+function generateImage() {
+  return new Promise(resolve => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const img = originalImage;
+    const ratio = 3 / 4;
+    let sw = img.width, sh = img.height;
+    let cw, ch;
+
+    if (sw / sh > ratio) {
+      ch = sh;
+      cw = sh * ratio;
+    } else {
+      cw = sw;
+      ch = sw / ratio;
+    }
+
+    const sy = (sh - ch) * (slider.value / 100);
+    const sx = (sw - cw) / 2;
+
+    canvas.width = 900;
+    canvas.height = 1200;
+    ctx.drawImage(img, sx, sy, cw, ch, 0, 0, 900, 1200);
+
+    canvas.toBlob(b => resolve(b), "image/jpeg", 0.9);
+  });
+}
+
+/* ================= SAVE ================= */
+form.onsubmit = async (e) => {
+  e.preventDefault();
+
+  let imageUrl = productData.imageUrl;
+
+  if (originalImage) {
+    const blob = await generateImage();
+    const fileRef = ref(storage, `products/${productId}.jpg`);
+    await uploadBytes(fileRef, blob);
+    imageUrl = await getDownloadURL(fileRef);
+  }
+
+  await updateDoc(productRef, {
+    title: titleInput.value.trim(),
+    description: descInput.value.trim(),
+    price: Number(priceInput.value),
+    stock: Number(stockInput.value),
+    imageUrl
+  });
+
+  alert("Produit mis à jour");
+};
+
+/* ================= TOGGLE ================= */
+toggleBtn.onclick = async () => {
+  await updateDoc(productRef, {
+    active: !productData.active
+  });
+
+  location.reload();
+};
+
+/* ================= DELETE ================= */
+deleteBtn.onclick = async () => {
+  if (!confirm("Supprimer définitivement ce produit ?")) return;
+
+  await deleteDoc(productRef);
+
+  try {
+    await deleteObject(ref(storage, `products/${productId}.jpg`));
+  } catch {}
+
+  location.href = "admin-products.html";
+};
+</script>
+
+</body>
+</html>
