@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin — Produits</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#141414">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg:#161616;--card:#1F1F1F;--soft:#262626;
+      --text:#F5F5F5;--muted:#9A9A9A;
+      --accent:#C2A16A;--border:#2E2E2E;
+    }
+
+    body {
+      margin:0;font-family:system-ui;background:var(--bg);
+      color:var(--text);padding:16px;
+    }
+
+    header {
+      display:flex;justify-content:space-between;align-items:center;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:14px;padding:14px 16px;margin-bottom:20px;
+    }
+
+    h1 { font-size:14px;letter-spacing:2px;color:var(--accent);margin:0; }
+
+    table {
+      width:100%;border-collapse:collapse;
+      background:var(--card);border-radius:14px;
+      overflow:hidden;border:1px solid var(--border);
+    }
+
+    th, td {
+      padding:12px 10px;
+      font-size:12px;text-align:left;
+      border-bottom:1px solid var(--border);
+    }
+
+    th { color:var(--muted);font-weight:500; }
+
+    tr { cursor:pointer; }
+    tr:hover { background:var(--soft); }
+
+    .off { color:#f44336;font-weight:600; }
+    .on { color:#4caf50;font-weight:600; }
+
+    .empty {
+      text-align:center;color:var(--muted);
+      margin-top:40px;font-size:13px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>GESTION DES PRODUITS</h1>
+  <a href="admin.html" style="color:var(--accent);font-size:12px;text-decoration:none">
+    ← Admin
+  </a>
+</header>
+
+<table id="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Date</th>
+      <th>Nom</th>
+      <th>Statut</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div id="empty" class="empty" style="display:none">
+  Aucun produit enregistré
+</div>
+
+<script type="module">
+/* ================= IMPORTS ================= */
+import { auth, db } from "./js/firebase.config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  collection,
+  query,
+  orderBy,
+  getDocs,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ================= AUTH ADMIN ================= */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    location.href = "login.html";
+    return;
+  }
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if (!snap.exists() || snap.data().role !== "admin") {
+    location.href = "index.html";
+    return;
+  }
+
+  loadProducts();
+});
+
+/* ================= LOAD PRODUCTS ================= */
+const tbody = document.querySelector("tbody");
+const empty = document.getElementById("empty");
+
+async function loadProducts() {
+  const q = query(
+    collection(db, "products"),
+    orderBy("createdAt", "desc")
+  );
+
+  const snap = await getDocs(q);
+
+  if (snap.empty) {
+    empty.style.display = "block";
+    return;
+  }
+
+  let number = snap.size;
+
+  snap.forEach(docSnap => {
+    const p = docSnap.data();
+    const tr = document.createElement("tr");
+
+    const date = p.createdAt
+      ? p.createdAt.toDate().toLocaleDateString("fr-FR")
+      : "—";
+
+    tr.innerHTML = `
+      <td>${number--}</td>
+      <td>${date}</td>
+      <td>${p.title}</td>
+      <td class="${p.active ? "on" : "off"}">
+        ${p.active ? "Actif" : "Désactivé"}
+      </td>
+    `;
+
+    tr.onclick = () => {
+      location.href = `check.product.html?id=${docSnap.id}`;
+    };
+
+    tbody.appendChild(tr);
+  });
+}
+</script>
+
+</body>
+</html>
