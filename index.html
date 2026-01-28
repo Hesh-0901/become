@@ -218,9 +218,161 @@ document.getElementById("userBtn").addEventListener("click", () => {
 
 /* ================= PRODUITS ================= */
 /* ⚠️ inchangé – ton code existant reste tel quel */
-</script>
+<script type="module">
+/* ================== IMPORTS ================== */
+import { auth, db } from "./js/firebase.config.js";
 
-<script>
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+  startAfter,
+  getDocs,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ================== USER BUTTON ================== */
+document.getElementById("userBtn").addEventListener("click", () => {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (!snap.exists()) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    window.location.href =
+      snap.data().role === "admin" ? "admin.html" : "customer.html";
+  });
+});
+
+/* ================== PRODUCTS ================== */
+const grid = document.getElementById("grid");
+const pageInfo = document.getElementById("pageInfo");
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
+
+const PER_PAGE = 10;
+let currentPage = 1;
+let cursors = [];
+let lastVisible = null;
+
+/* ⏱️ recent < 10 min */
+function isRecent(createdAt) {
+  if (!createdAt) return false;
+  return Date.now() - createdAt.toDate().getTime() < 10 * 60 * 1000;
+}
+
+/* 🔀 random */
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+/* 🧱 card */
+function createCard(docSnap) {
+  const p = docSnap.data();
+
+  const el = document.createElement("article");
+  el.className = "card";
+  el.style.opacity = p.stock > 0 ? "1" : "0.6";
+  el.style.cursor = "pointer";
+
+  el.innerHTML = `
+    <img src="${p.imageUrl}" loading="lazy">
+    <div class="card-body">
+      <h3 class="title">${p.title}</h3>
+      <div class="price">
+        ${p.price.toLocaleString()} CDF
+        ${p.stock === 0 ? `<span style="font-size:11px;color:#777"> — Épuisé</span>` : ""}
+      </div>
+    </div>
+  `;
+
+  el.onclick = () => {
+    window.location.href = \`product.html?id=${docSnap.id}\`;
+  };
+
+  return el;
+}
+
+/* 🔥 load */
+async function loadProducts(direction = "next") {
+  grid.innerHTML = "";
+  pageInfo.textContent = "Chargement…";
+
+  let q = query(
+    collection(db, "products"),
+    where("active", "==", true),
+    orderBy("createdAt", "desc"),
+    limit(PER_PAGE)
+  );
+
+  if (direction === "next" && lastVisible) {
+    q = query(q, startAfter(lastVisible));
+  }
+
+  if (direction === "prev" && cursors.length > 1) {
+    cursors.pop();
+    lastVisible = cursors[cursors.length - 1];
+    q = query(
+      collection(db, "products"),
+      where("active", "==", true),
+      orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
+      limit(PER_PAGE)
+    );
+  }
+
+  const snap = await getDocs(q);
+  if (snap.empty) {
+    pageInfo.textContent = "Aucun produit";
+    return;
+  }
+
+  const docs = snap.docs;
+  lastVisible = docs[docs.length - 1];
+
+  if (direction === "next") {
+    cursors.push(lastVisible);
+  }
+
+  const recent = [];
+  const old = [];
+
+  docs.forEach(d => {
+    isRecent(d.data().createdAt) ? recent.push(d) : old.push(d);
+  });
+
+  shuffle(old);
+  [...recent, ...old].forEach(d => grid.appendChild(createCard(d)));
+
+  pageInfo.textContent = `Page ${currentPage}`;
+}
+
+/* ◀ ▶ pagination */
+prevBtn.onclick = () => {
+  if (currentPage === 1) return;
+  currentPage--;
+  loadProducts("prev");
+};
+
+nextBtn.onclick = () => {
+  currentPage++;
+  loadProducts("next");
+};
+
+/* 🚀 init */
+loadProducts();
+</script>
 /* ================= PANIER HEADER ================= */
 const cartBtn = document.getElementById("cartBtn");
 const cartCount = document.getElementById("cartCount");
