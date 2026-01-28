@@ -221,6 +221,20 @@
     await uploadBytes(fileRef, blob);
     return await getDownloadURL(fileRef);
   }
+  import { auth } from "./js/firebase.config.js";
+import { onAuthStateChanged } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+let currentUser = null;
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    alert("Reconnecte-toi");
+    window.location.href = "login.html";
+    return;
+  }
+  currentUser = user;
+});
 </script>
 </body>
 </html>
