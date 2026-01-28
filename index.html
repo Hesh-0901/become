@@ -171,144 +171,159 @@
 </div>
 
 <script type="module">
-  import { auth, db } from "./js/firebase.config.js";
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+/* ================== IMPORTS ================== */
+import { auth, db } from "./js/firebase.config.js";
 
-  /* 🔐 USER BUTTON LOGIC */
-  document.getElementById("userBtn").addEventListener("click", () => {
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-        return;
-      }
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-      const snap = await getDoc(doc(db, "users", user.uid));
-      if (!snap.exists()) {
-        window.location.href = "login.html";
-        return;
-      }
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+  startAfter,
+  getDocs,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-      const role = snap.data().role;
-      window.location.href = role === "admin" ? "admin.html" : "customer.html";
-    });
-  });
-
-  /* 🛍️ PRODUCTS */
-  const products = [
-    ["T-shirt Essential", 58000, 1011],
-    ["Sweat Premium", 118000, 1012],
-    ["Pantalon Tailored", 138000, 1013],
-    ["Veste Signature", 238000, 1015],
-    ["Hoodie Urban", 150000, 1016],
-    ["Chemise Classique", 98000, 1018],
-    ["Blazer Moderne", 278000, 1020],
-    ["Jean Slim", 118000, 1024],
-    ["Pull Minimal", 130000, 1027],
-    ["Manteau Long", 318000, 1031],
-    ["Polo Premium", 78000, 1035],
-    ["Short Casual", 70000, 1038],
-    ["Veste Denim", 178000, 1040],
-    ["Cardigan", 110000, 1042],
-    ["Pantalon Cargo", 158000, 1045],
-    ["Sweat Zippé", 138000, 1050],
-    ["T-shirt Oversize", 68000, 1052],
-    ["Chemise Lin", 118000, 1055],
-    ["Veste Cuir", 398000, 1060],
-    ["Pull Col Roulé", 150000, 1063],
-    ["Jean Brut", 138000, 1066],
-    ["Sweat Basic", 98000, 1070],
-    ["Pantalon Classique", 158000, 1073],
-    ["Veste Légère", 198000, 1076],
-    ["Hoodie Premium", 170000, 1080],
-    ["T-shirt Bio", 64000, 1083],
-    ["Chemise Oversize", 110000, 1086],
-    ["Blouson Urbain", 258000, 1090],
-    ["Pull Laine", 178000, 1093],
-    ["Veste Tailoring", 298000, 1096]
-  ];
-
-  const perPage = 10;
-  let page = 1;
-
-  const grid = document.getElementById("grid");
-  const pageInfo = document.getElementById("pageInfo");
-
-  function render() {
-    grid.innerHTML = "";
-    const start = (page - 1) * perPage;
-
-    products.slice(start, start + perPage).forEach(p => {
-      grid.innerHTML += `
-        <article class="card">
-          <img src="https://picsum.photos/id/${p[2]}/600/800" loading="lazy">
-          <div class="card-body">
-            <h3 class="title">${p[0]}</h3>
-            <div class="price">${p[1].toLocaleString()} CDF</div>
-          </div>
-        </article>
-      `;
-    });
-
-    pageInfo.textContent = `Page ${page} / ${Math.ceil(products.length / perPage)}`;
-  }
-
-  document.getElementById("prev").onclick = () => {
-    if (page > 1) page--, render();
-  };
-
-  document.getElementById("next").onclick = () => {
-    if (page < Math.ceil(products.length / perPage)) page++, render();
-  };
-
-  render();
-</script>
-  <script>
-  let deferredPrompt = null;
-  const installBtn = document.getElementById("installBtn");
-
-  // Détecte si l'app est déjà installée
-  const isInstalled =
-    window.matchMedia("(display-mode: standalone)").matches ||
-    window.navigator.standalone === true;
-
-  // Si déjà installée → ne rien afficher
-  if (isInstalled) {
-    installBtn.style.display = "none";
-  }
-
-  // Android / Desktop (Chrome, Edge…)
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-
-    installBtn.style.display = "inline-block";
-    installBtn.title = "Installer l’application";
-  });
-
-  // Clic sur le bouton installer
-  installBtn.addEventListener("click", async () => {
-    // Cas Android / Desktop
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-
-      if (outcome === "accepted") {
-        installBtn.style.display = "none";
-      }
-
-      deferredPrompt = null;
+/* ================== USER BUTTON ================== */
+document.getElementById("userBtn").addEventListener("click", () => {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
       return;
     }
 
-    // Cas iOS (Safari)
-    alert(
-      "Sur iPhone :\n\n" +
-      "1. Appuie sur le bouton Partager ⬆️\n" +
-      "2. Choisis « Ajouter à l’écran d’accueil »"
-    );
-  });
-</script>
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (!snap.exists()) {
+      window.location.href = "login.html";
+      return;
+    }
 
+    window.location.href =
+      snap.data().role === "admin" ? "admin.html" : "customer.html";
+  });
+});
+
+/* ================== PRODUCTS ================== */
+const grid = document.getElementById("grid");
+const pageInfo = document.getElementById("pageInfo");
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
+
+const PER_PAGE = 10;
+let currentPage = 1;
+let cursors = [];
+let lastVisible = null;
+
+/* ⏱️ recent < 10 min */
+function isRecent(createdAt) {
+  if (!createdAt) return false;
+  return Date.now() - createdAt.toDate().getTime() < 10 * 60 * 1000;
+}
+
+/* 🔀 random */
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+/* 🧱 card */
+function createCard(docSnap) {
+  const p = docSnap.data();
+
+  const el = document.createElement("article");
+  el.className = "card";
+  el.style.opacity = p.stock > 0 ? "1" : "0.6";
+  el.style.cursor = "pointer";
+
+  el.innerHTML = `
+    <img src="${p.imageUrl}" loading="lazy">
+    <div class="card-body">
+      <h3 class="title">${p.title}</h3>
+      <div class="price">
+        ${p.price.toLocaleString()} CDF
+        ${p.stock === 0 ? `<span style="font-size:11px;color:#777"> — Épuisé</span>` : ""}
+      </div>
+    </div>
+  `;
+
+  el.onclick = () => {
+    window.location.href = `product.html?id=${docSnap.id}`;
+  };
+
+  return el;
+}
+
+/* 🔥 load */
+async function loadProducts(direction = "next") {
+  grid.innerHTML = "";
+  pageInfo.textContent = "Chargement…";
+
+  let q = query(
+    collection(db, "products"),
+    where("active", "==", true),
+    orderBy("createdAt", "desc"),
+    limit(PER_PAGE)
+  );
+
+  if (direction === "next" && lastVisible) {
+    q = query(q, startAfter(lastVisible));
+  }
+
+  if (direction === "prev" && cursors.length > 1) {
+    cursors.pop();
+    lastVisible = cursors[cursors.length - 1];
+    q = query(
+      collection(db, "products"),
+      where("active", "==", true),
+      orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
+      limit(PER_PAGE)
+    );
+  }
+
+  const snap = await getDocs(q);
+  if (snap.empty) {
+    pageInfo.textContent = "Aucun produit";
+    return;
+  }
+
+  const docs = snap.docs;
+  lastVisible = docs[docs.length - 1];
+
+  if (direction === "next") {
+    cursors.push(lastVisible);
+  }
+
+  const recent = [];
+  const old = [];
+
+  docs.forEach(d => {
+    isRecent(d.data().createdAt) ? recent.push(d) : old.push(d);
+  });
+
+  shuffle(old);
+  [...recent, ...old].forEach(d => grid.appendChild(createCard(d)));
+
+  pageInfo.textContent = `Page ${currentPage}`;
+}
+
+/* ◀ ▶ pagination */
+prevBtn.onclick = () => {
+  if (currentPage === 1) return;
+  currentPage--;
+  loadProducts("prev");
+};
+
+nextBtn.onclick = () => {
+  currentPage++;
+  loadProducts("next");
+};
+
+/* 🚀 init */
+loadProducts();
+</script>
 </body>
 </html>
