@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Become — Commander</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#7A623F">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg:#E9E5DF;
+      --surface:#FFF;
+      --soft:#E6E1D9;
+      --text:#1E1E1E;
+      --muted:#6B6B6B;
+      --accent:#8B6F47;
+      --border:#D6CFC4;
+    }
+
+    * { box-sizing:border-box }
+
+    body {
+      margin:0;
+      font-family:system-ui;
+      background:var(--bg);
+      color:var(--text);
+      padding-bottom:100px;
+    }
+
+    header {
+      position:sticky;
+      top:0;
+      background:var(--bg);
+      border-bottom:1px solid var(--border);
+    }
+
+    .bar {
+      height:54px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:0 14px;
+    }
+
+    .title {
+      font-weight:600;
+      letter-spacing:2px;
+      font-size:14px;
+    }
+
+    main {
+      padding:14px;
+      max-width:600px;
+      margin:auto;
+    }
+
+    .box {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+      margin-bottom:14px;
+    }
+
+    h3 {
+      margin:0 0 10px;
+      font-size:13px;
+      letter-spacing:1px;
+    }
+
+    .item {
+      display:flex;
+      justify-content:space-between;
+      font-size:13px;
+      margin-bottom:6px;
+    }
+
+    label {
+      font-size:12px;
+      color:var(--muted);
+      display:block;
+      margin-bottom:4px;
+    }
+
+    input, textarea {
+      width:100%;
+      padding:10px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:var(--soft);
+      font-size:13px;
+    }
+
+    textarea { resize:vertical }
+
+    .checkout {
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background:var(--bg);
+      border-top:1px solid var(--border);
+      padding:12px;
+    }
+
+    .total {
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:10px;
+    }
+
+    .btn {
+      width:100%;
+      height:46px;
+      border-radius:999px;
+      border:none;
+      background:var(--accent);
+      color:#fff;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="bar">
+    <i class="fa-solid fa-arrow-left" onclick="history.back()"></i>
+    <div class="title">COMMANDE</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- RÉCAP -->
+  <div class="box">
+    <h3>RÉCAPITULATIF</h3>
+    <div id="recap"></div>
+  </div>
+
+  <!-- CLIENT -->
+  <div class="box">
+    <h3>INFORMATIONS CLIENT</h3>
+
+    <label>Nom</label>
+    <input id="name" required>
+
+    <label>Téléphone</label>
+    <input id="phone" required>
+
+    <label>Adresse / Livraison</label>
+    <textarea id="address"></textarea>
+  </div>
+
+</main>
+
+<div class="checkout">
+  <div class="total" id="total"></div>
+  <button class="btn" id="confirmBtn">Valider la commande</button>
+</div>
+
+<script type="module">
+import { db } from "./js/firebase.config.js";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  doc,
+  updateDoc,
+  increment
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ===== PANIER ===== */
+const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+const recap = document.getElementById("recap");
+const totalEl = document.getElementById("total");
+
+if (cart.length === 0) {
+  location.href = "panier.html";
+}
+
+let total = 0;
+
+cart.forEach(p => {
+  total += p.price * p.qty;
+  recap.innerHTML += `
+    <div class="item">
+      <span>${p.title} × ${p.qty}</span>
+      <span>${(p.price * p.qty).toLocaleString()} CDF</span>
+    </div>
+  `;
+});
+
+totalEl.textContent = `Total : ${total.toLocaleString()} CDF`;
+
+/* ===== CONFIRM ===== */
+document.getElementById("confirmBtn").onclick = async () => {
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address = document.getElementById("address").value.trim();
+
+  if (!name || !phone) {
+    alert("Veuillez remplir les informations");
+    return;
+  }
+
+  // 1️⃣ créer commande
+  await addDoc(collection(db, "orders"), {
+    items: cart,
+    total,
+    customer: { name, phone, address },
+    status: "pending",
+    createdAt: serverTimestamp()
+  });
+
+  // 2️⃣ décrémenter stock
+  for (const p of cart) {
+    await updateDoc(doc(db, "products", p.id), {
+      stock: increment(-p.qty)
+    });
+  }
+
+  // 3️⃣ vider panier
+  localStorage.removeItem("cart");
+
+  alert("Commande envoyée avec succès !");
+  location.href = "index.html";
+};
+</script>
+
+</body>
+</html>
