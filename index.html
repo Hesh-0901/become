@@ -155,7 +155,21 @@
     <div class="brand">BECOME</div>
     <div class="actions">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <i class="fa-solid fa-cart-shopping"></i>
+    <div style="position:relative">
+  <i id="cartBtn" class="fa-solid fa-cart-shopping"></i>
+  <span id="cartCount"
+        style="
+          position:absolute;
+          top:-6px;
+          right:-8px;
+          background:#8B6F47;
+          color:#fff;
+          font-size:10px;
+          padding:2px 6px;
+          border-radius:999px;
+          display:none;">
+  </span>
+</div>
       <i id="userBtn" class="fa-solid fa-user"></i>
       <i id="installBtn" class="fa-solid fa-download" style="display:none"></i>
     </div>
@@ -324,6 +338,33 @@ nextBtn.onclick = () => {
 
 /* 🚀 init */
 loadProducts();
+</script>
+  <script>
+/* ===== PANIER HEADER ===== */
+const cartBtn = document.getElementById("cartBtn");
+const cartCount = document.getElementById("cartCount");
+
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart") || "[]");
+}
+
+function updateCartIcon() {
+  const cart = getCart();
+  const count = cart.reduce((sum, p) => sum + p.qty, 0);
+
+  if (count > 0) {
+    cartCount.textContent = count;
+    cartCount.style.display = "inline-block";
+  } else {
+    cartCount.style.display = "none";
+  }
+}
+
+cartBtn.addEventListener("click", () => {
+  window.location.href = "panier.html";
+});
+
+updateCartIcon();
 </script>
 </body>
 </html>
