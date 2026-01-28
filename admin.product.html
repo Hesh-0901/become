@@ -66,10 +66,29 @@
       font-weight:600;cursor:pointer;display:flex;
       align-items:center;justify-content:center;gap:8px;
     }
+    #statusBox {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f1f1f;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  z-index: 9999;
+  display: none;
+  max-width: 90%;
+}
+#statusBox.ok { border-color: #4caf50; color: #4caf50; }
+#statusBox.warn { border-color: #ff9800; color: #ff9800; }
+#statusBox.err { border-color: #f44336; color: #f44336; }
   </style>
 </head>
 
 <body>
+  <div id="statusBox"></div>
 
 <div class="header">
   <div class="title">AJOUTER UN ARTICLE</div>
@@ -118,18 +137,31 @@
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+  /* ===== UI ALERTES ===== */
+  const statusBox = document.getElementById("statusBox");
+
+  function notify(type, message) {
+    statusBox.className = type;
+    statusBox.textContent = message;
+    statusBox.style.display = "block";
+    setTimeout(() => statusBox.style.display = "none", 5000);
+  }
+
   /* ===== ETAT AUTH ===== */
   let currentUser = null;
   let authReady = false;
 
+  notify("warn", "⏳ Vérification de la session…");
+
   onAuthStateChanged(auth, (user) => {
     if (!user) {
-      alert("❌ Session expirée.\nReconnecte-toi pour accéder à l’administration.");
-      window.location.href = "login.html";
+      notify("err", "❌ Session expirée. Redirection…");
+      setTimeout(() => window.location.href = "login.html", 1500);
       return;
     }
     currentUser = user;
     authReady = true;
+    notify("ok", "✅ Authentifié");
   });
 
   /* ===== DOM ===== */
@@ -151,6 +183,8 @@
     const file = input.files[0];
     if (!file) return;
 
+    notify("ok", "📷 Image sélectionnée");
+
     originalImage = new Image();
     originalImage.onload = () => {
       preview.src = originalImage.src;
@@ -169,24 +203,24 @@
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    if (!authReady || !currentUser) {
-      alert("⏳ Authentification en cours…\nRéessaie dans quelques secondes.");
+    if (!authReady) {
+      notify("warn", "⏳ Authentification pas encore prête");
       return;
     }
 
     if (!originalImage) {
-      alert("📷 Aucune image sélectionnée.");
+      notify("err", "📷 Aucune image sélectionnée");
       return;
     }
 
     try {
-      /* 1️⃣ Génération image */
+      notify("warn", "🧠 Génération de l’image…");
       const blob = await generateImage();
 
-      /* 2️⃣ Upload Storage */
+      notify("warn", "☁️ Upload vers Firebase Storage…");
       const imageUrl = await upload(blob);
 
-      /* 3️⃣ Enregistrement Firestore */
+      notify("warn", "🗄️ Enregistrement Firestore…");
       await addDoc(collection(db, "products"), {
         title: titleInput.value.trim(),
         description: descInput.value.trim(),
@@ -198,7 +232,7 @@
         author: currentUser.uid
       });
 
-      alert("✅ Produit enregistré avec succès !");
+      notify("ok", "✅ Produit enregistré avec succès !");
       form.reset();
       preview.style.display = "none";
       placeholder.style.display = "flex";
@@ -208,9 +242,11 @@
       console.error(err);
 
       if (err.code === "storage/unauthorized") {
-        alert("🚫 Accès refusé à Firebase Storage.\nVérifie les règles ou ta session.");
+        notify("err", "🚫 Storage refusé (règles ou CORS)");
+      } else if (err.message?.includes("CORS")) {
+        notify("err", "🌍 Erreur CORS Firebase Storage");
       } else {
-        alert("❌ Erreur lors de l’enregistrement.\nConsulte la console.");
+        notify("err", "❌ Erreur inconnue (console)");
       }
     }
   });
@@ -247,10 +283,6 @@
 
   /* ===== UPLOAD STORAGE ===== */
   async function upload(blob) {
-    if (!currentUser) {
-      throw new Error("Utilisateur non authentifié");
-    }
-
     const fileRef = ref(
       storage,
       `products/${currentUser.uid}_${Date.now()}.jpg`
