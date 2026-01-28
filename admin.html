@@ -196,8 +196,36 @@
     <i class="fa-solid fa-arrow-right"></i>
   </div>
 </a>
+<!-- EDIT PRODUCTS -->
+<a href="admin-products.html" class="card" style="text-decoration:none; color:inherit;">
+  <div class="card-icon">
+    <i class="fa-solid fa-pen-to-square"></i>
+  </div>
 
+  <div class="card-title">Modifier un article</div>
+
+  <div class="card-desc">
+    Modifier, désactiver ou supprimer des produits existants.
+  </div>
+
+  <div class="card-action">
+    Accéder
+    <i class="fa-solid fa-arrow-right"></i>
+  </div>
+</a>
   </main>
+<script type="module">
+  import { auth } from "./js/firebase.config.js";
+  import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+  }
+</script>
 </body>
 </html>
