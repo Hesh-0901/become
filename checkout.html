@@ -2,260 +2,249 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Become — Facture</title>
+  <title>Become — Commander</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#E9E5DF">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#7A623F">
 
-  <!-- PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    :root{
+    :root {
       --bg:#E9E5DF;
-      --surface:#FFFFFF;
-      --soft:#F5F2EC;
+      --surface:#FFF;
+      --soft:#E6E1D9;
       --text:#1E1E1E;
       --muted:#6B6B6B;
       --accent:#8B6F47;
       --border:#D6CFC4;
     }
 
-    *{box-sizing:border-box}
+    * { box-sizing:border-box }
 
-    body{
+    body {
       margin:0;
+      font-family:system-ui;
       background:var(--bg);
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
       color:var(--text);
-      padding:16px;
+      padding-bottom:100px;
     }
 
-    /* FACTURE */
-    .invoice{
-      background:var(--surface);
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:20px;
+    header {
+      position:sticky;
+      top:0;
+      background:var(--bg);
+      border-bottom:1px solid var(--border);
+    }
+
+    .bar {
+      height:54px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:0 14px;
+    }
+
+    .title {
+      font-weight:600;
+      letter-spacing:2px;
+      font-size:14px;
+    }
+
+    main {
+      padding:14px;
       max-width:600px;
       margin:auto;
     }
 
-    .header{
+    .box {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+      margin-bottom:14px;
+    }
+
+    h3 {
+      margin:0 0 10px;
+      font-size:13px;
+      letter-spacing:1px;
+    }
+
+    .item {
       display:flex;
       justify-content:space-between;
-      align-items:center;
-      margin-bottom:20px;
-    }
-
-    .logo{
-      font-weight:700;
-      letter-spacing:3px;
-      color:var(--accent);
-      font-size:16px;
-    }
-
-    .meta{
-      font-size:12px;
-      color:var(--muted);
-      text-align:right;
-    }
-
-    h1{
-      font-size:18px;
-      margin:0 0 10px;
-    }
-
-    .section{
-      margin-bottom:16px;
-    }
-
-    .section-title{
-      font-size:12px;
-      font-weight:600;
-      letter-spacing:1px;
+      font-size:13px;
       margin-bottom:6px;
     }
 
-    .box{
-      background:var(--soft);
-      border-radius:10px;
+    label {
+      font-size:12px;
+      color:var(--muted);
+      display:block;
+      margin-bottom:4px;
+    }
+
+    input, textarea {
+      width:100%;
       padding:10px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:var(--soft);
       font-size:13px;
     }
 
-    .row{
-      display:flex;
-      justify-content:space-between;
-      margin-bottom:6px;
+    textarea { resize:vertical }
+
+    .checkout {
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background:var(--bg);
+      border-top:1px solid var(--border);
+      padding:12px;
     }
 
-    .row:last-child{margin-bottom:0}
-
-    .total{
-      font-size:16px;
-      font-weight:700;
-      color:var(--accent);
+    .total {
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:10px;
     }
 
-    .note{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.5;
-      margin-top:10px;
-    }
-
-    /* ACTIONS */
-    .actions{
-      max-width:600px;
-      margin:16px auto 0;
-      display:flex;
-      gap:10px;
-    }
-
-    button{
-      flex:1;
+    .btn {
+      width:100%;
       height:46px;
       border-radius:999px;
       border:none;
-      font-weight:600;
-      cursor:pointer;
-      font-size:14px;
-    }
-
-    .pdf{
       background:var(--accent);
       color:#fff;
-    }
-
-    .home{
-      background:transparent;
-      border:1px solid var(--border);
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
     }
   </style>
 </head>
 
 <body>
 
-<!-- FACTURE -->
-<div id="invoice" class="invoice">
-
-  <div class="header">
-    <div class="logo">BECOME</div>
-    <div class="meta">
-      <div id="invoiceDate">—</div>
-      <div id="invoiceId">Commande —</div>
-    </div>
+<header>
+  <div class="bar">
+    <i class="fa-solid fa-arrow-left" onclick="history.back()"></i>
+    <div class="title">COMMANDE</div>
   </div>
+</header>
 
-  <h1>Facture</h1>
+<main>
+
+  <!-- RÉCAP -->
+  <div class="box">
+    <h3>RÉCAPITULATIF</h3>
+    <div id="recap"></div>
+  </div>
 
   <!-- CLIENT -->
-  <div class="section">
-    <div class="section-title">CLIENT</div>
-    <div class="box">
-      <div id="clientName">—</div>
-      <div id="clientPhone">—</div>
-      <div id="clientAddress">—</div>
-    </div>
+  <div class="box">
+    <h3>INFORMATIONS CLIENT</h3>
+
+    <label>Nom</label>
+    <input id="name" required>
+
+    <label>Téléphone</label>
+    <input id="phone" required>
+
+    <label>Adresse / Livraison</label>
+    <textarea id="address"></textarea>
   </div>
 
-  <!-- ARTICLES -->
-  <div class="section">
-    <div class="section-title">ARTICLES</div>
-    <div class="box" id="items"></div>
-  </div>
+</main>
 
-  <!-- TOTAL -->
-  <div class="section">
-    <div class="box">
-      <div class="row total">
-        <span>Total</span>
-        <span id="total">—</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- NOTE -->
-  <div class="note">
-    Merci pour votre commande 🙏  
-    Vous pouvez suivre l’avancement de celle-ci depuis l’application.  
-    Merci de procéder au paiement afin d’accélérer le traitement.
-  </div>
-
+<div class="checkout">
+  <div class="total" id="total"></div>
+  <button class="btn" id="confirmBtn">Valider la commande</button>
 </div>
 
-<!-- ACTIONS -->
-<div class="actions">
-  <button class="home" onclick="location.href='index.html'">
-    Retour boutique
-  </button>
-  <button class="pdf" id="pdfBtn">
-    Télécharger PDF
-  </button>
-</div>
+<script type="module">
+import { auth, db } from "./js/firebase.config.js";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  doc,
+  updateDoc,
+  increment
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-<script>
-/* ===== RÉCUP COMMANDE (exemple simple) ===== */
-/* Tu pourras remplacer ça par Firestore plus tard */
+/* ===== PANIER ===== */
+const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+const recap = document.getElementById("recap");
+const totalEl = document.getElementById("total");
 
-const order = JSON.parse(localStorage.getItem("lastOrder") || "{}");
-
-/* FALLBACK DEMO */
-const demo = {
-  id: "BC-001",
-  createdAt: new Date(),
-  customer: {
-    name: "Client Become",
-    phone: "+243…",
-    address: "Lubumbashi"
-  },
-  items: [
-    { title:"Produit A", qty:1, price:25000 },
-    { title:"Produit B", qty:2, price:12000 }
-  ]
-};
-
-const data = order.items ? order : demo;
-
-/* ===== RENDER ===== */
-document.getElementById("invoiceDate").textContent =
-  new Date(data.createdAt || Date.now()).toLocaleString();
-
-document.getElementById("invoiceId").textContent =
-  `Commande ${data.id || "—"}`;
-
-document.getElementById("clientName").textContent = data.customer.name;
-document.getElementById("clientPhone").textContent = data.customer.phone;
-document.getElementById("clientAddress").textContent = data.customer.address || "";
+if (cart.length === 0) {
+  location.href = "panier.html";
+}
 
 let total = 0;
-const itemsEl = document.getElementById("items");
 
-data.items.forEach(p=>{
+cart.forEach(p => {
   total += p.price * p.qty;
-  itemsEl.innerHTML += `
-    <div class="row">
+  recap.innerHTML += `
+    <div class="item">
       <span>${p.title} × ${p.qty}</span>
-      <span>${(p.price*p.qty).toLocaleString()} CDF</span>
+      <span>${(p.price * p.qty).toLocaleString()} CDF</span>
     </div>
   `;
 });
 
-document.getElementById("total").textContent =
-  `${total.toLocaleString()} CDF`;
+totalEl.textContent = `Total : ${total.toLocaleString()} CDF`;
 
-/* ===== PDF ===== */
-document.getElementById("pdfBtn").onclick = () => {
-  html2pdf()
-    .from(document.getElementById("invoice"))
-    .set({
-      margin: 10,
-      filename: `facture-${data.id || "become"}.pdf`,
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-    })
-    .save();
+/* ===== CONFIRM ===== */
+document.getElementById("confirmBtn").onclick = async () => {
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address = document.getElementById("address").value.trim();
+
+  if (!name || !phone) {
+    alert("Veuillez remplir les informations");
+    return;
+  }
+
+  const user = auth.currentUser;
+  if (!user) {
+    alert("Veuillez vous connecter");
+    return;
+  }
+
+  // 1️⃣ créer commande (LIÉE AU USER)
+  const orderRef = await addDoc(collection(db, "orders"), {
+    userId: user.uid,               // ✅ LIAISON UTILISATEUR
+    items: cart,
+    total,
+    customer: { name, phone, address },
+    status: "pending",
+    createdAt: serverTimestamp()
+  });
+
+  // 2️⃣ décrémenter stock
+  for (const p of cart) {
+    await updateDoc(doc(db, "products", p.id), {
+      stock: increment(-p.qty)
+    });
+  }
+
+  // 3️⃣ sauvegarde pour facture
+  localStorage.setItem("lastOrder", JSON.stringify({
+    id: orderRef.id,
+    items: cart,
+    total,
+    customer: { name, phone, address },
+    createdAt: Date.now()
+  }));
+
+  // 4️⃣ vider panier
+  localStorage.removeItem("cart");
+
+  location.href = "facture.html";
 };
 </script>
 
