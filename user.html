@@ -289,21 +289,32 @@ import { onAuthStateChanged, signOut }
 
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
+const userBtn = document.getElementById("userBtn");
 
 loginBtn.onclick = () => {
   location.href = "login.html";
 };
 
+userBtn.onclick = () => {
+  location.href = "customer.html";
+};
+
 onAuthStateChanged(auth, user => {
-  if (user) {
-    loginBtn.style.display = "none";
-    logoutBtn.style.display = "block";
+  if (!user) {
+    // ❌ Pas connecté → dehors
+    location.href = "login.html";
+    return;
   }
+
+  // ✅ Connecté
+  loginBtn.style.display = "none";
+  logoutBtn.style.display = "block";
+  userBtn.style.display = "block";
 });
 
 logoutBtn.onclick = async () => {
   await signOut(auth);
-  location.reload();
+  location.href = "login.html";
 };
 </script>
 
