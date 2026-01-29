@@ -5,165 +5,174 @@
   <title>Become — Espace client</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#141414">
+  <meta name="theme-color" content="#E9E5DF">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    :root {
-      --bg-main: #151515;
-      --bg-card: #1F1F1F;
-      --bg-soft: #262626;
-      --text-main: #F5F5F5;
-      --text-muted: #9A9A9A;
-      --accent: #C2A16A;
-      --border: #2E2E2E;
-      --radius: 16px;
+    :root{
+      --bg:#E9E5DF;
+      --surface:#FFFFFF;
+      --soft:#F5F2EC;
+      --text:#1E1E1E;
+      --muted:#6B6B6B;
+      --accent:#8B6F47;
+      --border:#D6CFC4;
+      --radius:18px;
     }
 
-    * { box-sizing: border-box; }
+    *{ box-sizing:border-box }
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: var(--bg-main);
-      color: var(--text-main);
-      padding: 16px;
-      min-height: 100vh;
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
+      background:var(--bg);
+      color:var(--text);
+      padding:20px;
     }
 
-    .profile-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      border: 1px solid var(--border);
-      margin-bottom: 18px;
+    /* HEADER */
+    .profile-bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:var(--surface);
+      border-radius:var(--radius);
+      padding:14px 16px;
+      border:1px solid var(--border);
+      margin-bottom:20px;
     }
 
-    .profile-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .profile-left{
+      display:flex;
+      align-items:center;
+      gap:12px;
     }
 
-    .avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: var(--bg-soft);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--accent);
-      font-size: 18px;
+    .avatar{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      background:var(--soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--accent);
+      font-size:18px;
     }
 
-    .profile-name {
-      font-size: 14px;
-      font-weight: 600;
+    .profile-name{
+      font-size:14px;
+      font-weight:600;
     }
 
-    .profile-email {
-      font-size: 12px;
-      color: var(--text-muted);
+    .profile-email{
+      font-size:12px;
+      color:var(--muted);
     }
 
-    .home-btn {
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 14px;
+    .home-btn{
+      color:var(--accent);
+      font-size:16px;
+      text-decoration:none;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin-bottom: 18px;
+    /* GRID */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:14px;
+      margin-bottom:20px;
     }
 
-    .card {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      padding: 18px;
-      border: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .card{
+      background:var(--surface);
+      border-radius:var(--radius);
+      padding:18px;
+      border:1px solid var(--border);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
     }
 
-    .card i {
-      font-size: 20px;
-      color: var(--accent);
+    .card i{
+      font-size:20px;
+      color:var(--accent);
     }
 
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
+    .card-title{
+      font-size:13px;
+      font-weight:600;
     }
 
-    .card-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.4;
+    .card-desc{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.4;
     }
 
-    .card-action {
-      margin-top: auto;
-      font-size: 12px;
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 500;
+    .card-action{
+      margin-top:auto;
+      font-size:12px;
+      color:var(--accent);
+      text-decoration:none;
+      font-weight:500;
     }
 
-    .full { grid-column: span 2; }
+    .full{ grid-column:span 2 }
 
-    .actions {
-      display: flex;
-      gap: 10px;
+    /* ACTIONS */
+    .actions{
+      display:flex;
+      gap:10px;
     }
 
-    .btn {
-      flex: 1;
-      height: 42px;
-      border-radius: 999px;
-      border: none;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+    .btn{
+      flex:1;
+      height:46px;
+      border-radius:999px;
+      border:none;
+      font-size:13px;
+      font-weight:600;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
     }
 
-    .btn-outline {
-      background: transparent;
-      color: var(--accent);
-      border: 1px solid var(--accent);
+    .btn-outline{
+      background:transparent;
+      color:var(--accent);
+      border:1px solid var(--accent);
     }
   </style>
 </head>
 
 <body>
 
+  <!-- HEADER PROFIL -->
   <div class="profile-bar">
     <div class="profile-left">
-      <div class="avatar"><i class="fa-solid fa-user"></i></div>
+      <div class="avatar">
+        <i class="fa-solid fa-user"></i>
+      </div>
       <div>
         <div class="profile-name" id="name">—</div>
         <div class="profile-email" id="email">—</div>
       </div>
     </div>
 
-    <a href="index.html" class="home-btn">
+    <!-- 🏬 Retour vitrine -->
+    <a href="index.html" class="home-btn" title="Retour à la vitrine">
       <i class="fa-solid fa-store"></i>
     </a>
   </div>
 
+  <!-- DASHBOARD -->
   <div class="grid">
+
     <div class="card">
       <i class="fa-solid fa-cart-shopping"></i>
       <div class="card-title">Panier</div>
@@ -198,8 +207,10 @@
       <div class="card-desc">Identité, sécurité, préférences</div>
       <a class="card-action" href="#">Gérer</a>
     </div>
+
   </div>
 
+  <!-- ACTIONS -->
   <div class="actions">
     <button id="logoutBtn" class="btn btn-outline">
       <i class="fa-solid fa-right-from-bracket"></i>
@@ -207,6 +218,7 @@
     </button>
   </div>
 
+  <!-- AUTH GUARD -->
   <script type="module">
     import { auth } from "./js/firebase.config.js";
     import { onAuthStateChanged, signOut } from
@@ -216,7 +228,7 @@
     const emailEl = document.getElementById("email");
     const logoutBtn = document.getElementById("logoutBtn");
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, user => {
       if (!user) {
         location.href = "login.html";
         return;
