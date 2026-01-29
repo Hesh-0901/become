@@ -175,7 +175,7 @@
 
     <div class="field password">
       <label>Mot de passe</label>
-      <input id="password" type="password" required>
+      <input id="password" type="password" autocomplete="new-password" required>
       <button type="button" onclick="toggle('password',this)">
         <i class="fa-solid fa-eye"></i>
       </button>
@@ -183,7 +183,7 @@
 
     <div class="field password">
       <label>Confirmer</label>
-      <input id="passwordConfirm" type="password" required>
+      <input id="passwordConfirm" type="password" autocomplete="new-password" required>
       <button type="button" onclick="toggle('passwordConfirm',this)">
         <i class="fa-solid fa-eye"></i>
       </button>
@@ -214,7 +214,7 @@ function toggle(id,btn){
 </script>
 
 <script type="module">
-import { auth, db } from "/js/firebase.config.js";
+import { auth, db } from "./js/firebase.config.js";
 import { createUserWithEmailAndPassword } from
   "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, setDoc, serverTimestamp } from
@@ -227,32 +227,35 @@ form.addEventListener("submit", async e=>{
   e.preventDefault();
   errorMsg.style.display="none";
 
-  const password=passwordConfirm.value;
-  if(password!==passwordConfirm.value){
+  if(password.value !== passwordConfirm.value){
     return show("Les mots de passe ne correspondent pas");
   }
 
   try{
-    const cred=await createUserWithEmailAndPassword(auth,email.value,password);
+    const cred = await createUserWithEmailAndPassword(
+      auth,
+      email.value.trim(),
+      password.value
+    );
 
     await setDoc(doc(db,"users",cred.user.uid),{
-      uid:cred.user.uid,
-      email:email.value,
-      firstName:firstName.value,
-      lastName:lastName.value,
-      gender:gender.value,
-      phone:phone.value,
-      city:city.value,
-      district:district.value,
-      role:"customer",
-      createdAt:serverTimestamp()
+      uid: cred.user.uid,
+      email: cred.user.email,
+      firstName: firstName.value,
+      lastName: lastName.value,
+      gender: gender.value,
+      phone: phone.value,
+      city: city.value,
+      district: district.value,
+      role: "customer",
+      createdAt: serverTimestamp()
     });
 
     location.href="customer.html";
+
   }catch(e){
-    show(e.code==="auth/email-already-in-use"
-      ?"Email déjà utilisé"
-      :"Erreur inscription");
+    console.error(e.code, e.message);
+    show(e.code);
   }
 });
 
