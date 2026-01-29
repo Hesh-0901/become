@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Become — Produit</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#7A623F">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -87,7 +87,9 @@
 <script type="module">
 /* ================= IMPORTS ================= */
 import { db } from "./js/firebase.config.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { addToCart } from "./js/cart.js";
+import { doc, getDoc } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ================= UTILS ================= */
 const params = new URLSearchParams(location.search);
@@ -127,43 +129,27 @@ if (p.stock === 0) {
   buyBtn.classList.add("disabled");
 }
 
-/* ================= PANIER ================= */
-function getCart() {
-  return JSON.parse(localStorage.getItem("cart") || "[]");
-}
-
-function saveCart(cart) {
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
-
-function addToCart() {
-  const cart = getCart();
-  const found = cart.find(i => i.id === productId);
-
-  if (found) {
-    found.qty++;
-  } else {
-    cart.push({
-      id: productId,
-      title: p.title,
-      price: p.price,
-      image: p.imageUrl,
-      qty: 1
-    });
-  }
-
-  saveCart(cart);
-}
-
 /* ================= ACTIONS ================= */
 addBtn.onclick = () => {
-  addToCart();
+  addToCart({
+    id: productId,
+    title: p.title,
+    price: p.price,
+    image: p.imageUrl
+  });
+
   addBtn.textContent = "Ajouté ✔️";
   setTimeout(() => addBtn.textContent = "Ajouter au panier", 1500);
 };
 
 buyBtn.onclick = () => {
-  addToCart();
+  addToCart({
+    id: productId,
+    title: p.title,
+    price: p.price,
+    image: p.imageUrl
+  });
+
   window.location.href = "checkout.html";
 };
 </script>
