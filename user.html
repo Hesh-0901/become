@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Become — Bienvenue</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#7A623F">
 
   <link rel="icon" href="icons/logo/favicon-32.png">
@@ -32,7 +32,6 @@
       color:var(--text);
     }
 
-    /* ================= HEADER ================= */
     header{
       position:sticky;
       top:0;
@@ -49,23 +48,10 @@
       justify-content:space-between;
     }
 
-    .header-left{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
     .header-logo{
       height:22px;
     }
 
-    .header-right i{
-      font-size:17px;
-      color:var(--accent);
-      cursor:pointer;
-    }
-
-    /* ================= CONTENT ================= */
     main{
       padding:26px 20px 40px;
       display:flex;
@@ -93,7 +79,7 @@
     h1{
       font-size:26px;
       letter-spacing:3px;
-      margin:0 0 14px;
+      margin-bottom:14px;
     }
 
     .intro{
@@ -101,39 +87,6 @@
       color:var(--muted);
       line-height:1.7;
       margin-bottom:30px;
-    }
-
-    .blocks{
-      display:grid;
-      gap:14px;
-      margin-bottom:32px;
-    }
-
-    .block{
-      background:var(--soft);
-      border-radius:14px;
-      padding:14px;
-      display:flex;
-      gap:12px;
-      text-align:left;
-    }
-
-    .block i{
-      color:var(--accent);
-      font-size:16px;
-      margin-top:3px;
-    }
-
-    .block strong{
-      display:block;
-      font-size:13px;
-      margin-bottom:3px;
-    }
-
-    .block span{
-      font-size:12.5px;
-      color:var(--muted);
-      line-height:1.5;
     }
 
     .btn{
@@ -152,128 +105,39 @@
       color:#fff;
     }
 
-    .secondary{
-      background:transparent;
-      border:1px solid var(--border);
-      color:var(--text);
-    }
-
-    .trust{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.6;
-      margin-top:18px;
-    }
-
     .logout{
-      margin-top:18px;
+      margin-top:14px;
       font-size:12px;
       color:#b00020;
       cursor:pointer;
-      display:none;
     }
   </style>
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
 <header>
   <div class="header-bar">
-    <div class="header-left">
-      <img src="icons/logo/logo.png" alt="Become" class="header-logo">
-    </div>
-
-    <div class="header-right">
-      <!-- 🔙 Aller à la vitrine -->
-      <i class="fa-solid fa-store" title="Aller à la boutique"
-         onclick="location.href='index.html'"></i>
-    </div>
+    <img src="icons/logo/logo.png" alt="Become" class="header-logo">
   </div>
 </header>
 
-<!-- ================= MAIN ================= -->
 <main>
   <div class="container">
     <div class="card">
 
-      <!-- LOGO CENTRAL -->
       <img src="icons/logo/logo.png" alt="Become" class="logo">
 
-      <!-- TITRE -->
       <h1>Bienvenue chez BECOME</h1>
 
-      <!-- INTRO -->
       <p class="intro">
-        Une boutique pensée pour te faire gagner du temps,
-        acheter en toute confiance et retrouver facilement
-        exactement ce que tu cherches.
+        Accède à ton espace personnel et profite d’une expérience
+        simple, sécurisée et premium.
       </p>
 
-      <!-- BLOCS VALEUR -->
-      <div class="blocks">
+      <!-- 🔘 Bouton dynamique -->
+      <button id="dashboardBtn" class="btn primary" style="display:none"></button>
 
-        <div class="block">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <div>
-            <strong>Recherche intelligente</strong>
-            <span>
-              Trouve directement un article précis,
-              sans faire défiler des dizaines d’images.
-            </span>
-          </div>
-        </div>
-
-        <div class="block">
-          <i class="fa-solid fa-shield-check"></i>
-          <div>
-            <strong>Confiance & transparence</strong>
-            <span>
-              Produits réels, prix clairs,
-              disponibilité mise à jour en temps réel.
-            </span>
-          </div>
-        </div>
-
-        <div class="block">
-          <i class="fa-solid fa-cart-shopping"></i>
-          <div>
-            <strong>Panier personnel</strong>
-            <span>
-              Mets de côté ce que tu aimes
-              et finalise quand tu es prêt.
-            </span>
-          </div>
-        </div>
-
-        <div class="block">
-          <i class="fa-solid fa-heart"></i>
-          <div>
-            <strong>Expérience humaine</strong>
-            <span>
-              Une boutique conçue pour le confort,
-              la simplicité et la sérénité.
-            </span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ACTIONS -->
-      <button id="loginBtn" class="btn primary">
-        Se connecter
-      </button>
-
-      <button class="btn secondary" onclick="location.href='login.html'">
-        Créer un compte
-      </button>
-
-      <div class="trust">
-        💡 Connecte-toi pour suivre tes commandes,
-        retrouver ton panier et profiter d’une expérience personnalisée.
-      </div>
-
-      <!-- LOGOUT -->
       <div id="logoutBtn" class="logout">
         Se déconnecter
       </div>
@@ -283,33 +147,39 @@
 </main>
 
 <script type="module">
-import { auth } from "./js/firebase.config.js";
+import { auth, db } from "./js/firebase.config.js";
 import { onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const loginBtn = document.getElementById("loginBtn");
+const dashboardBtn = document.getElementById("dashboardBtn");
 const logoutBtn = document.getElementById("logoutBtn");
-const userBtn = document.getElementById("userBtn");
 
-loginBtn.onclick = () => {
-  location.href = "login.html";
-};
-
-userBtn.onclick = () => {
-  location.href = "customer.html";
-};
-
-onAuthStateChanged(auth, user => {
+onAuthStateChanged(auth, async user => {
   if (!user) {
-    // ❌ Pas connecté → dehors
     location.href = "login.html";
     return;
   }
 
-  // ✅ Connecté
-  loginBtn.style.display = "none";
-  logoutBtn.style.display = "block";
-  userBtn.style.display = "block";
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if (!snap.exists()) {
+    await signOut(auth);
+    location.href = "login.html";
+    return;
+  }
+
+  const role = snap.data().role;
+
+  if (role === "admin") {
+    dashboardBtn.textContent = "Accéder au panneau admin";
+    dashboardBtn.onclick = () => location.href = "admin.html";
+  } else {
+    dashboardBtn.textContent = "Accéder à ma boutique";
+    dashboardBtn.onclick = () => location.href = "customer.html";
+  }
+
+  dashboardBtn.style.display = "block";
 });
 
 logoutBtn.onclick = async () => {
