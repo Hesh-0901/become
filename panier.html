@@ -255,6 +255,17 @@ orderBtn.onclick = () => {
 };
 
 render();
+  /* ===== ajouté ===== */
+  function getCart() {
+  if (!CART_KEY) return [];
+  return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+}
+
+function saveCart(cart) {
+  if (!CART_KEY) return;
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
 </script>
 
 </body>
