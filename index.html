@@ -271,6 +271,46 @@ const updateCartIcon=()=>{
 
 cartBtn.onclick=()=>location.href="panier.html";
 updateCartIcon();
+
+let deferredPrompt = null;
+const installBtn = document.getElementById("installBtn");
+
+/* 📱 Vérifie si l'app est déjà installée */
+const isInstalled =
+  window.matchMedia("(display-mode: standalone)").matches ||
+  window.navigator.standalone === true;
+
+if (isInstalled) {
+  installBtn.style.display = "none";
+}
+
+/* 🤖 Android / Desktop */
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = "inline-block";
+  installBtn.title = "Installer l’application";
+});
+
+/* 🖱️ Clic installer */
+installBtn.addEventListener("click", async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      installBtn.style.display = "none";
+    }
+    deferredPrompt = null;
+    return;
+  }
+
+  /* 🍎 iOS (Safari) */
+  alert(
+    "Sur iPhone :\n\n" +
+    "1. Appuie sur le bouton Partager ⬆️\n" +
+    "2. Choisis « Ajouter à l’écran d’accueil »"
+  );
+});
 </script>
 
 </body>
