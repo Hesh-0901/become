@@ -224,6 +224,7 @@ const form = document.getElementById("loginForm");
 const errorMsg = document.getElementById("errorMsg");
 const togglePwd = document.getElementById("togglePwd");
 const passwordInput = document.getElementById("password");
+const emailInput = document.getElementById("email");
 
 /* 👁️ Afficher / masquer mot de passe */
 togglePwd.onclick = () => {
@@ -239,31 +240,40 @@ form.addEventListener("submit", async (e) => {
   errorMsg.style.display = "none";
 
   try {
-    const email = email.value;
+    const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    const { user } =
-      await signInWithEmailAndPassword(auth, email, password);
+    // 🔐 Auth Firebase
+    const { user } = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
+    // 📄 Profil Firestore
     const snap = await getDoc(doc(db, "users", user.uid));
-    if (!snap.exists()) throw new Error();
+    if (!snap.exists()) {
+      throw new Error("profil-introuvable");
+    }
 
+    // 🚀 Redirection
     location.href =
       snap.data().role === "admin"
         ? "admin.html"
         : "customer.html";
 
-  } catch {
-    errorMsg.textContent = "Email ou mot de passe incorrect";
+  } catch (error) {
+    console.error("LOGIN ERROR:", error.code, error.message);
+
+    errorMsg.textContent =
+      error.code === "auth/wrong-password" ||
+      error.code === "auth/user-not-found"
+        ? "Email ou mot de passe incorrect"
+        : "Erreur de connexion";
+
     errorMsg.style.display = "block";
   }
-  catch (error) {
-  console.error("LOGIN ERROR:", error.code, error.message);
-  errorMsg.textContent = error.code;
-  errorMsg.style.display = "block";
-}
 });
 </script>
-
 </body>
 </html>
