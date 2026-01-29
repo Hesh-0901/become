@@ -1,360 +1,265 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Become — Inscription</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0F0F0F">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#E9E5DF">
 
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    :root {
-      --bg-main: #0F0F0F;
-      --bg-card: #1C1C1C;
-      --bg-input: #141414;
-      --text-main: #F5F5F5;
-      --text-muted: #8E8E8E;
-      --accent: #C2A16A;
-      --border: #2A2A2A;
-
-      --radius-sm: 8px;
-      --radius-lg: 16px;
+    :root{
+      --bg:#E9E5DF;
+      --surface:#FFFFFF;
+      --soft:#FFF0DF;
+      --text:#1E1E1E;
+      --muted:#6B6B6B;
+      --accent:#8B6F47;
+      --border:#D6CFC4;
+      --radius:18px;
+      --error:#C0392B;
     }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      background:var(--bg);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
+      color:var(--text);
     }
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(180deg, #0F0F0F, #161616);
-      color: var(--text-main);
-      min-height: 100vh;
+    header{
+      height:56px;
+      display:flex;
+      align-items:center;
+      padding:0 16px;
     }
 
-    .top-bar {
-      height: 48px;
-      display: flex;
-      align-items: center;
-      padding: 0 16px;
+    header a{
+      color:var(--accent);
+      text-decoration:none;
+      font-size:14px;
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
 
-    .back-btn {
-      font-size: 12px;
-      color: var(--text-muted);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    main{
+      display:flex;
+      justify-content:center;
+      padding:20px;
     }
 
-    .wrapper {
-      display: flex;
-      justify-content: center;
-      padding: 14px;
+    .card{
+      width:100%;
+      max-width:420px;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:28px;
     }
 
-    .card {
-      width: 100%;
-      max-width: 420px;
-      background: var(--bg-card);
-      border-radius: var(--radius-lg);
-      padding: 22px 20px 24px;
-      border: 1px solid var(--border);
-      box-shadow: 0 22px 44px rgba(0,0,0,0.55);
+    .brand{
+      text-align:center;
+      font-weight:600;
+      letter-spacing:4px;
+      color:var(--accent);
+      margin-bottom:16px;
     }
 
-    .brand {
-      text-align: center;
-      font-size: 12px;
-      letter-spacing: 4px;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 14px;
+    h1{
+      font-size:20px;
+      margin:0 0 6px;
     }
 
-    .title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 4px;
+    p{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:22px;
     }
 
-    .subtitle {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      margin-bottom: 18px;
-      line-height: 1.5;
+    .field{margin-bottom:12px}
+
+    label{
+      font-size:12px;
+      color:var(--muted);
+      display:block;
+      margin-bottom:4px;
     }
 
-    .field {
-      margin-bottom: 10px;
+    input, select{
+      width:100%;
+      height:38px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      padding:0 12px;
+      background:var(--soft);
+      font-size:13px;
     }
 
-    .field label {
-      font-size: 11px;
-      color: var(--text-muted);
-      display: block;
-      margin-bottom: 3px;
+    .password{
+      position:relative;
     }
 
-    .field input,
-    .field select {
-      width: 100%;
-      height: 34px;
-      padding: 0 10px;
-      border-radius: var(--radius-sm);
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      font-size: 12.5px;
-      outline: none;
+    .password button{
+      position:absolute;
+      right:8px;
+      top:50%;
+      transform:translateY(-50%);
+      background:none;
+      border:none;
+      color:var(--muted);
+      cursor:pointer;
     }
 
-    .input-wrapper {
-      position: relative;
+    .checkbox{
+      display:flex;
+      gap:8px;
+      font-size:12px;
+      color:var(--muted);
+      margin:14px 0;
     }
 
-    .input-wrapper input {
-      padding-right: 36px;
+    .btn{
+      width:100%;
+      height:46px;
+      border-radius:999px;
+      border:none;
+      background:var(--accent);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
     }
 
-    .toggle-password {
-      position: absolute;
-      right: 6px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .toggle-password i {
-      font-size: 13px;
-    }
-
-    .checkbox {
-      display: flex;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin: 14px 0 16px;
-      line-height: 1.4;
-    }
-
-    .checkbox input {
-      margin-top: 2px;
-    }
-
-    .btn {
-      width: 100%;
-      height: 40px;
-      border-radius: 999px;
-      border: none;
-      background: var(--accent);
-      color: #1A1A1A;
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      cursor: pointer;
+    .error{
+      color:var(--error);
+      font-size:12px;
+      margin-bottom:10px;
+      display:none;
     }
   </style>
 </head>
 
 <body>
 
-<header class="top-bar">
-  <a href="user.html" class="back-btn">
-    <i class="fa-solid fa-arrow-left"></i> Retour
-  </a>
+<header>
+  <a href="user.html"><i class="fa-solid fa-arrow-left"></i> Retour</a>
 </header>
 
-<main class="wrapper">
-  <div class="card">
+<main>
+  <form class="card" id="registerForm">
 
     <div class="brand">BECOME</div>
 
-    <div class="title">Créer un compte</div>
-    <div class="subtitle">
-      Une inscription rapide pour une expérience fluide et premium.
+    <h1>Créer un compte</h1>
+    <p>Une inscription simple, sécurisée et premium.</p>
+
+    <div class="field"><label>Prénom</label><input id="firstName" required></div>
+    <div class="field"><label>Nom</label><input id="lastName" required></div>
+
+    <div class="field">
+      <label>Genre</label>
+      <select id="gender" required>
+        <option value="">Choisir</option>
+        <option>Homme</option>
+        <option>Femme</option>
+      </select>
     </div>
 
-    <form>
+    <div class="field"><label>Téléphone</label><input id="phone" required></div>
+    <div class="field"><label>Email</label><input id="email" type="email" required></div>
 
-      <div class="field">
-        <label>Prénom</label>
-        <input type="text" id="firstName" required>
-      </div>
-
-      <div class="field">
-        <label>Nom</label>
-        <input type="text" id="lastName" required>
-      </div>
-
-      <div class="field">
-        <label>Genre</label>
-        <select id="gender" required>
-          <option value="">Choisir</option>
-          <option value="Homme">Homme</option>
-          <option value="Femme">Femme</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Téléphone</label>
-        <input type="tel" id="phone" required>
-      </div>
-
-      <div class="field">
-        <label>Email</label>
-        <input type="email" id="email" required>
-      </div>
-
-      <div class="field">
-        <label>Mot de passe</label>
-        <div class="input-wrapper">
-          <input type="password" id="password" required>
-          <button type="button" class="toggle-password">
-            <i class="fa-solid fa-eye"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Confirmer le mot de passe</label>
-        <div class="input-wrapper">
-          <input type="password" id="passwordConfirm" required>
-          <button type="button" class="toggle-password">
-            <i class="fa-solid fa-eye"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Ville</label>
-        <input type="text" id="city" required>
-      </div>
-
-      <div class="field">
-        <label>Quartier</label>
-        <input type="text" id="district" required>
-      </div>
-
-      <div class="checkbox">
-        <input type="checkbox" id="terms" required>
-        <label for="terms">
-          J’accepte les termes et règles d’utilisation de Become
-        </label>
-      </div>
-
-      <div id="errorMsg" style="display:none; font-size:12px; color:#ff6b6b; margin-bottom:10px;"></div>
-
-      <button type="submit" class="btn">
-        <i class="fa-solid fa-user-plus"></i>
-        Créer mon compte
+    <div class="field password">
+      <label>Mot de passe</label>
+      <input id="password" type="password" required>
+      <button type="button" onclick="toggle('password',this)">
+        <i class="fa-solid fa-eye"></i>
       </button>
+    </div>
 
-    </form>
+    <div class="field password">
+      <label>Confirmer</label>
+      <input id="passwordConfirm" type="password" required>
+      <button type="button" onclick="toggle('passwordConfirm',this)">
+        <i class="fa-solid fa-eye"></i>
+      </button>
+    </div>
 
-  </div>
+    <div class="field"><label>Ville</label><input id="city" required></div>
+    <div class="field"><label>Quartier</label><input id="district" required></div>
+
+    <div class="checkbox">
+      <input type="checkbox" id="terms" required>
+      <label for="terms">J’accepte les conditions d’utilisation</label>
+    </div>
+
+    <div id="errorMsg" class="error"></div>
+
+    <button class="btn">Créer mon compte</button>
+  </form>
 </main>
 
 <script>
-  document.querySelectorAll(".toggle-password").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const input = btn.previousElementSibling;
-      const icon = btn.querySelector("i");
-
-      if (input.type === "password") {
-        input.type = "text";
-        icon.classList.replace("fa-eye", "fa-eye-slash");
-      } else {
-        input.type = "password";
-        icon.classList.replace("fa-eye-slash", "fa-eye");
-      }
-    });
-  });
+function toggle(id,btn){
+  const i=document.getElementById(id);
+  const icon=btn.querySelector("i");
+  i.type=i.type==="password"?"text":"password";
+  icon.classList.toggle("fa-eye");
+  icon.classList.toggle("fa-eye-slash");
+}
 </script>
 
 <script type="module">
-  import { auth, db } from "./js/firebase.config.js";
-  import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { auth, db } from "/js/firebase.config.js";
+import { createUserWithEmailAndPassword } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, setDoc, serverTimestamp } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  const form = document.querySelector("form");
-  const errorMsg = document.getElementById("errorMsg");
+const form=document.getElementById("registerForm");
+const errorMsg=document.getElementById("errorMsg");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    errorMsg.style.display = "none";
+form.addEventListener("submit", async e=>{
+  e.preventDefault();
+  errorMsg.style.display="none";
 
-    const emailValue = document.getElementById("email").value.trim();
-    const passwordValue = document.getElementById("password").value;
-    const passwordConfirmValue = document.getElementById("passwordConfirm").value;
-    const termsChecked = document.getElementById("terms").checked;
+  const password=passwordConfirm.value;
+  if(password!==passwordConfirm.value){
+    return show("Les mots de passe ne correspondent pas");
+  }
 
-    if (!termsChecked) {
-      errorMsg.textContent = "Vous devez accepter les conditions";
-      errorMsg.style.display = "block";
-      return;
-    }
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,email.value,password);
 
-    if (passwordValue !== passwordConfirmValue) {
-      errorMsg.textContent = "Les mots de passe ne correspondent pas";
-      errorMsg.style.display = "block";
-      return;
-    }
+    await setDoc(doc(db,"users",cred.user.uid),{
+      uid:cred.user.uid,
+      email:email.value,
+      firstName:firstName.value,
+      lastName:lastName.value,
+      gender:gender.value,
+      phone:phone.value,
+      city:city.value,
+      district:district.value,
+      role:"customer",
+      createdAt:serverTimestamp()
+    });
 
-    if (passwordValue.length < 6) {
-      errorMsg.textContent = "Mot de passe trop court (min 6 caractères)";
-      errorMsg.style.display = "block";
-      return;
-    }
+    location.href="customer.html";
+  }catch(e){
+    show(e.code==="auth/email-already-in-use"
+      ?"Email déjà utilisé"
+      :"Erreur inscription");
+  }
+});
 
-    try {
-      const userCredential =
-        await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
-
-      const user = userCredential.user;
-
-      await setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        email: user.email,
-        firstName: firstName.value,
-        lastName: lastName.value,
-        gender: gender.value,
-        phone: phone.value,
-        city: city.value,
-        district: district.value,
-        role: "client",
-        createdAt: serverTimestamp()
-      });
-
-      window.location.href = "customer.html";
-
-    } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        errorMsg.textContent = "Cet email est déjà utilisé";
-      } else {
-        errorMsg.textContent = "Erreur lors de l’inscription";
-      }
-      errorMsg.style.display = "block";
-    }
-  });
+function show(t){
+  errorMsg.textContent=t;
+  errorMsg.style.display="block";
+}
 </script>
 
 </body>
