@@ -243,34 +243,22 @@ form.addEventListener("submit", async (e) => {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    // 🔐 Auth Firebase
-    const { user } = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    // 🔐 Auth
+    const { user } = await signInWithEmailAndPassword(auth, email, password);
 
-    // 📄 Profil Firestore
+    // 📄 Firestore profile
     const snap = await getDoc(doc(db, "users", user.uid));
-    if (!snap.exists()) {
-      throw new Error("profil-introuvable");
-    }
+    if (!snap.exists()) throw new Error("profil-introuvable");
 
-    // 🚀 Redirection
+    // 🚀 Redirection CENTRALISÉE
     location.href =
       snap.data().role === "admin"
         ? "admin.html"
-        : "customer.html";
+        : "user.html";
 
   } catch (error) {
     console.error("LOGIN ERROR:", error.code, error.message);
-
-    errorMsg.textContent =
-      error.code === "auth/wrong-password" ||
-      error.code === "auth/user-not-found"
-        ? "Email ou mot de passe incorrect"
-        : "Erreur de connexion";
-
+    errorMsg.textContent = "Email ou mot de passe incorrect";
     errorMsg.style.display = "block";
   }
 });
