@@ -164,6 +164,22 @@
 </div>
 
 <script>
+  import { auth } from "./js/firebase.config.js";
+import { onAuthStateChanged } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+let CART_KEY = null;
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    location.href = "login.html";
+    return;
+  }
+
+  CART_KEY = `cart_${user.uid}`;
+  render(); // ⚠️ très important
+});
+
 /* ===== PANIER UTILS ===== */
 const list = document.getElementById("list");
 const totalEl = document.getElementById("total");
