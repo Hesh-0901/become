@@ -218,14 +218,8 @@ import {
 
 /* ================= USER ================= */
 document.getElementById("userBtn").onclick = () => {
-  onAuthStateChanged(auth, async user => {
-    if (!user) return location.href="login.html";
-    const snap = await getDoc(doc(db,"users",user.uid));
-    if (!snap.exists()) return location.href="login.html";
-    location.href = snap.data().role==="admin" ? "admin.html" : "customer.html";
-  });
+  location.href = "user.html";
 };
-
 /* ================= PRODUITS ================= */
 const grid=document.getElementById("grid");
 const pageInfo=document.getElementById("pageInfo");
