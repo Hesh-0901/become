@@ -73,9 +73,7 @@
       border-radius:8px;
     }
 
-    .info {
-      flex:1;
-    }
+    .info { flex:1 }
 
     .name {
       font-size:14px;
@@ -162,6 +160,7 @@
   <div class="total" id="total"></div>
   <button class="btn" id="orderBtn">Commander</button>
 </div>
+
 <script type="module">
 import { auth } from "./js/firebase.config.js";
 import { onAuthStateChanged }
@@ -173,7 +172,7 @@ const orderBtn = document.getElementById("orderBtn");
 
 let CART_KEY = null;
 
-/* ===== AUTH ===== */
+/* ================= AUTH ================= */
 onAuthStateChanged(auth, user => {
   if (!user) {
     location.href = "login.html";
@@ -181,10 +180,10 @@ onAuthStateChanged(auth, user => {
   }
 
   CART_KEY = `cart_${user.uid}`;
-  render(); // ✅ maintenant OK
+  render();
 });
 
-/* ===== PANIER UTILS ===== */
+/* ================= PANIER ================= */
 function getCart() {
   if (!CART_KEY) return [];
   return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
@@ -236,7 +235,7 @@ function render() {
   totalEl.textContent = `Total : ${total.toLocaleString()} CDF`;
 }
 
-/* ===== ACTIONS ===== */
+/* ================= ACTIONS ================= */
 window.changeQty = (i, delta) => {
   const cart = getCart();
   cart[i].qty += delta;
@@ -256,7 +255,6 @@ orderBtn.onclick = () => {
   location.href = "checkout.html";
 };
 </script>
-
 
 </body>
 </html>
