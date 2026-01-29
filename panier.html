@@ -162,14 +162,18 @@
   <div class="total" id="total"></div>
   <button class="btn" id="orderBtn">Commander</button>
 </div>
+<script type="module">
+import { auth } from "./js/firebase.config.js";
+import { onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-<script>
-  import { auth } from "./js/firebase.config.js";
-import { onAuthStateChanged } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+const list = document.getElementById("list");
+const totalEl = document.getElementById("total");
+const orderBtn = document.getElementById("orderBtn");
 
 let CART_KEY = null;
 
+/* ===== AUTH ===== */
 onAuthStateChanged(auth, user => {
   if (!user) {
     location.href = "login.html";
@@ -177,20 +181,18 @@ onAuthStateChanged(auth, user => {
   }
 
   CART_KEY = `cart_${user.uid}`;
-  render(); // ⚠️ très important
+  render(); // ✅ maintenant OK
 });
 
 /* ===== PANIER UTILS ===== */
-const list = document.getElementById("list");
-const totalEl = document.getElementById("total");
-const orderBtn = document.getElementById("orderBtn");
-
 function getCart() {
-  return JSON.parse(localStorage.getItem("cart") || "[]");
+  if (!CART_KEY) return [];
+  return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
 }
 
 function saveCart(cart) {
-  localStorage.setItem("cart", JSON.stringify(cart));
+  if (!CART_KEY) return;
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
 function render() {
@@ -251,22 +253,10 @@ window.removeItem = (i) => {
 };
 
 orderBtn.onclick = () => {
-  window.location.href = "checkout.html";
+  location.href = "checkout.html";
 };
-
-render();
-  /* ===== ajouté ===== */
-  function getCart() {
-  if (!CART_KEY) return [];
-  return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-}
-
-function saveCart(cart) {
-  if (!CART_KEY) return;
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-}
-
 </script>
+
 
 </body>
 </html>
