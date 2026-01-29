@@ -86,6 +86,7 @@
       margin-bottom:20px;
     }
 
+    /* 👇 cartes = boutons */
     .card{
       background:var(--surface);
       border-radius:var(--radius);
@@ -94,6 +95,14 @@
       display:flex;
       flex-direction:column;
       gap:10px;
+      text-decoration:none;
+      color:inherit;
+      cursor:pointer;
+      transition:.15s;
+    }
+
+    .card:hover{
+      background:var(--soft);
     }
 
     .card i{
@@ -110,14 +119,6 @@
       font-size:12px;
       color:var(--muted);
       line-height:1.4;
-    }
-
-    .card-action{
-      margin-top:auto;
-      font-size:12px;
-      color:var(--accent);
-      text-decoration:none;
-      font-weight:500;
     }
 
     .full{ grid-column:span 2 }
@@ -173,40 +174,35 @@
   <!-- DASHBOARD -->
   <div class="grid">
 
-    <div class="card">
+    <a class="card" href="panier.html">
       <i class="fa-solid fa-cart-shopping"></i>
       <div class="card-title">Panier</div>
       <div class="card-desc">Produits ajoutés, prêts à commander</div>
-      <a class="card-action" href="panier.html">Voir</a>
-    </div>
+    </a>
 
-    <div class="card">
+    <a class="card" href="#">
       <i class="fa-solid fa-clock"></i>
       <div class="card-title">Commandes en cours</div>
       <div class="card-desc">En attente ou en préparation</div>
-      <a class="card-action" href="#">Suivre</a>
-    </div>
+    </a>
 
-    <div class="card">
+    <a class="card" href="#">
       <i class="fa-solid fa-box"></i>
       <div class="card-title">Commandes reçues</div>
       <div class="card-desc">Livrées et confirmées</div>
-      <a class="card-action" href="#">Historique</a>
-    </div>
+    </a>
 
-    <div class="card">
+    <a class="card" href="#">
       <i class="fa-solid fa-triangle-exclamation"></i>
       <div class="card-title">Indisponibles</div>
       <div class="card-desc">Produits non disponibles</div>
-      <a class="card-action" href="#">Détails</a>
-    </div>
+    </a>
 
-    <div class="card full">
+    <a class="card full" href="#">
       <i class="fa-solid fa-gear"></i>
       <div class="card-title">Paramètres du compte</div>
       <div class="card-desc">Identité, sécurité, préférences</div>
-      <a class="card-action" href="#">Gérer</a>
-    </div>
+    </a>
 
   </div>
 
@@ -218,24 +214,33 @@
     </button>
   </div>
 
-  <!-- AUTH GUARD -->
+  <!-- AUTH + PROFIL -->
   <script type="module">
-    import { auth } from "./js/firebase.config.js";
+    import { auth, db } from "./js/firebase.config.js";
     import { onAuthStateChanged, signOut } from
       "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, getDoc } from
+      "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const nameEl = document.getElementById("name");
     const emailEl = document.getElementById("email");
     const logoutBtn = document.getElementById("logoutBtn");
 
-    onAuthStateChanged(auth, user => {
+    onAuthStateChanged(auth, async user => {
       if (!user) {
         location.href = "login.html";
         return;
       }
 
-      nameEl.textContent = user.displayName || "Client Become";
-      emailEl.textContent = user.email;
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if (!snap.exists()) {
+        location.href = "login.html";
+        return;
+      }
+
+      const data = snap.data();
+      nameEl.textContent = `${data.firstName} ${data.lastName}`;
+      emailEl.textContent = data.email;
     });
 
     logoutBtn.onclick = async () => {
