@@ -10,11 +10,10 @@ export function saveCart(cart) {
 
 export function addToCart(product) {
   const cart = getCart();
+  const found = cart.find(p => p.id === product.id);
 
-  const existing = cart.find(p => p.id === product.id);
-
-  if (existing) {
-    existing.qty += 1;
+  if (found) {
+    found.qty += 1;
   } else {
     cart.push({
       id: product.id,
@@ -26,4 +25,25 @@ export function addToCart(product) {
   }
 
   saveCart(cart);
+}
+
+export function removeFromCart(index) {
+  const cart = getCart();
+  cart.splice(index, 1);
+  saveCart(cart);
+}
+
+export function changeQty(index, delta) {
+  const cart = getCart();
+  cart[index].qty += delta;
+  if (cart[index].qty <= 0) cart.splice(index, 1);
+  saveCart(cart);
+}
+
+export function getCartCount() {
+  return getCart().reduce((sum, p) => sum + p.qty, 0);
+}
+
+export function clearCart() {
+  localStorage.removeItem("cart");
 }
