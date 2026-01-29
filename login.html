@@ -257,6 +257,11 @@ form.addEventListener("submit", async (e) => {
     errorMsg.textContent = "Email ou mot de passe incorrect";
     errorMsg.style.display = "block";
   }
+  catch (error) {
+  console.error("LOGIN ERROR:", error.code, error.message);
+  errorMsg.textContent = error.code;
+  errorMsg.style.display = "block";
+}
 });
 </script>
 
