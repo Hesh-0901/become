@@ -4,15 +4,14 @@
   <meta charset="UTF-8">
   <title>Facture — Become</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1a1a1a">
-
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     :root {
-      --primary: #1A1A1A;     /* Noir Profond */
-      --accent: #8B6F47;      /* Bronze/Or Signature */
-      --bg: #F4F4F2;          /* Gris chaud très léger */
+      --primary: #1A1A1A;
+      --accent: #8B6F47;
+      --bg: #F4F4F2;
       --card: #FFFFFF;
       --text-main: #1A1A1A;
       --text-muted: #888888;
@@ -24,26 +23,20 @@
     body {
       margin: 0;
       background: var(--bg);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', -apple-system, sans-serif;
       color: var(--text-main);
       padding: 40px 15px;
     }
 
-    .page {
-      max-width: 800px;
-      margin: 0 auto;
-    }
+    .page { max-width: 850px; margin: 0 auto; }
 
-    /* ===== CARD RENDU LUXE ===== */
     .card {
       background: var(--card);
-      border-radius: 2px; /* Style minimaliste studio */
+      border-radius: 2px;
       box-shadow: 0 30px 60px rgba(0,0,0,0.08);
       position: relative;
-      overflow: hidden;
     }
 
-    /* Barre décorative supérieure */
     .card::before {
       content: "";
       position: absolute;
@@ -52,48 +45,53 @@
       background: var(--accent);
     }
 
-    .invoice-content {
-      padding: 70px 60px;
-    }
+    .invoice-content { padding: 60px; }
 
-    /* ===== HEADER & LOGO ===== */
+    /* ===== HEADER: LOGO AGRANDI & INFOS ===== */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 80px;
+      margin-bottom: 60px;
+    }
+
+    .brand-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
     .brand img {
-      height: 45px; /* Ajuste selon la proportion de ton logo */
+      height: 120px; /* Agrandissement x3 par rapport à la version précédente */
       width: auto;
-      display: block;
+      margin-bottom: 10px;
     }
 
-    .invoice-meta {
-      text-align: right;
-    }
-
-    .meta-label {
-      font-size: 10px;
+    .brand-name {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 4px;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      margin: 0;
+    }
+
+    .brand-tagline {
+      font-size: 12px;
       color: var(--text-muted);
-      margin-bottom: 4px;
+      letter-spacing: 1px;
+      margin-top: 2px;
     }
 
-    .meta-value {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 15px;
-    }
+    .invoice-meta { text-align: right; }
+    .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 4px; }
+    .meta-value { font-size: 15px; font-weight: 600; margin-bottom: 15px; }
 
-    /* ===== CLIENT & PAIEMENT ===== */
+    /* ===== GRIDS ===== */
     .section-grid {
       display: grid;
       grid-template-columns: 1.5fr 1fr;
       gap: 40px;
-      margin-bottom: 60px;
+      margin-bottom: 50px;
     }
 
     .section-title {
@@ -105,128 +103,71 @@
       margin-bottom: 15px;
       border-bottom: 1px solid var(--border);
       padding-bottom: 8px;
-      display: inline-block;
     }
 
-    .client {
-      font-size: 14px;
-      line-height: 1.6;
-    }
+    .client { font-size: 14px; line-height: 1.6; }
+    #name { font-size: 18px; font-weight: 700; margin-bottom: 5px; }
 
-    #name {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 5px;
-    }
-
-    /* ===== TABLEAU DÉTAILS ===== */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 40px;
-    }
-
-    th {
-      text-align: left;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-      padding: 15px 0;
-      border-bottom: 1px solid var(--primary);
-    }
-
-    td {
-      padding: 25px 0;
-      font-size: 14px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    td:nth-child(2) { text-align: center; }
+    /* ===== TABLE ===== */
+    table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); padding: 15px 0; border-bottom: 1px solid var(--primary); }
+    td { padding: 20px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
     td:last-child { text-align: right; font-weight: 600; }
 
-    /* ===== TOTAL BOX ===== */
-    .total-wrapper {
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .total-box {
-      width: 100%;
-      max-width: 300px;
-      text-align: right;
-    }
-
-    .total-label {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-right: 20px;
-    }
-
+    .total-wrapper { display: flex; justify-content: flex-end; }
+    .total-box { text-align: right; }
     .total-value {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 800;
       color: var(--accent);
       border-top: 2px solid var(--primary);
       padding-top: 10px;
+      margin-top: 10px;
       display: inline-block;
-      min-width: 180px;
+      min-width: 200px;
     }
 
-    /* ===== NOTES ===== */
-    .note {
+    /* ===== SIGNATURE ZONE ===== */
+    .signature-container {
       margin-top: 80px;
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.8;
-      max-width: 450px;
-      border-left: 2px solid var(--accent);
-      padding-left: 20px;
-    }
-
-    /* ===== BOUTONS ACTIONS ===== */
-    .actions {
-      margin-top: 40px;
       display: flex;
-      gap: 15px;
-      justify-content: center;
+      justify-content: flex-end;
     }
 
-    button {
-      padding: 16px 35px;
-      border-radius: 4px;
-      font-size: 13px;
+    .signature-box {
+      width: 200px;
+      text-align: center;
+    }
+
+    .signature-line {
+      border-bottom: 1px solid var(--primary);
+      height: 60px;
+      margin-bottom: 10px;
+    }
+
+    .signature-label {
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border: none;
+      letter-spacing: 1px;
     }
 
-    .back {
-      background: transparent;
-      border: 1px solid #D1D1D1;
-      color: var(--text-main);
+    .note {
+      margin-top: 40px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      border-left: 2px solid var(--accent);
+      padding-left: 15px;
     }
 
-    .back:hover { background: #fff; border-color: var(--primary); }
+    /* ===== ACTIONS ===== */
+    .actions { margin-top: 30px; display: flex; gap: 15px; justify-content: center; }
+    button { padding: 14px 30px; border-radius: 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; cursor: pointer; border: none; }
+    .back { background: #fff; border: 1px solid #ddd; }
+    .pdf { background: var(--primary); color: #fff; }
 
-    .pdf {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    .pdf:hover { background: var(--accent); transform: translateY(-2px); }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      .invoice-content { padding: 40px 25px; }
-      .header { flex-direction: column; gap: 30px; }
-      .invoice-meta { text-align: left; }
-      .section-grid { grid-template-columns: 1fr; }
-    }
+    @media print { .actions { display: none; } }
   </style>
 </head>
 <body>
@@ -236,9 +177,14 @@
     <div class="invoice-content">
       
       <div class="header">
-        <div class="brand">
-          <img src="icons/logo/logo.png" alt="Become Logo">
+        <div class="brand-container">
+          <div class="brand">
+            <img src="icons/logo/logo.png" alt="Become Logo">
+          </div>
+          <h2 class="brand-name">BECOME</h2>
+          <span class="brand-tagline">Boutique d'habillement</span>
         </div>
+        
         <div class="invoice-meta">
           <div class="meta-label">Facture N°</div>
           <div class="meta-value" id="orderNumber">---</div>
@@ -258,9 +204,9 @@
         </div>
         <div class="section">
           <div class="section-title">Paiement</div>
-          <div class="client" style="color: var(--text-muted);">
+          <div class="client">
             Virement ou Paiement Manuel<br>
-            <span style="color: var(--text-main); font-weight: 500;">Status : En attente</span>
+            <span style="color: var(--accent); font-weight: 600;">Status : En attente</span>
           </div>
         </div>
       </div>
@@ -271,26 +217,31 @@
           <thead>
             <tr>
               <th style="width: 70%;">Article</th>
-              <th>Qté</th>
+              <th style="text-align:center">Qté</th>
               <th>Montant</th>
             </tr>
           </thead>
-          <tbody id="items">
-            </tbody>
+          <tbody id="items"></tbody>
         </table>
 
         <div class="total-wrapper">
           <div class="total-box">
-            <span class="total-label">TOTAL</span>
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">MONTANT TOTAL</div>
             <div class="total-value" id="total">0 CDF</div>
           </div>
         </div>
       </div>
 
+      <div class="signature-container">
+        <div class="signature-box">
+          <div class="signature-line"></div>
+          <div class="signature-label">Signature</div>
+        </div>
+      </div>
+
       <div class="note">
         Merci pour votre confiance.<br>
-        Paiement manuel — veuillez nous contacter pour finaliser le règlement. 
-        Cette facture est un document officiel de l'établissement <strong>Become</strong>.
+        Cette facture est un document officiel de l'établissement Become.
       </div>
 
     </div>
@@ -310,14 +261,12 @@
   const orderId = params.get("orderId");
   if(!orderId) location.href="index.html";
 
-  // Récupération des données
   const snap = await getDoc(doc(db, "orders", orderId));
   if(!snap.exists()) {
     location.href="index.html";
   } else {
     const o = snap.data();
 
-    // Mapping des éléments (IDs conservés)
     document.getElementById("orderNumber").textContent = o.orderNumber;
     document.getElementById("date").textContent = new Date().toLocaleDateString("fr-FR", {
       day: 'numeric', month: 'long', year: 'numeric'
@@ -336,8 +285,8 @@
       total += lineTotal;
       itemsEl.innerHTML += `
         <tr>
-          <td><span style="font-weight:600; color:var(--primary);">${p.title}</span></td>
-          <td>${p.qty}</td>
+          <td><span style="font-weight:600;">${p.title}</span></td>
+          <td style="text-align:center">${p.qty}</td>
           <td>${lineTotal.toLocaleString()} CDF</td>
         </tr>
       `;
@@ -345,17 +294,15 @@
 
     document.getElementById("total").textContent = `${total.toLocaleString()} CDF`;
 
-    // Fonction PDF améliorée
     document.getElementById("pdfBtn").onclick = () => {
       const element = document.getElementById("invoice");
-      const opt = {
+      html2pdf().set({
         margin: 0,
         filename: `BECOME_FACTURE_${o.orderNumber}.pdf`,
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, useCORS: true, letterRendering: true },
+        html2canvas: { scale: 3, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-      html2pdf().set(opt).from(element).save();
+      }).from(element).save();
     };
   }
 </script>
