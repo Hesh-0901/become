@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Facture — Become</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1a1a1a">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     :root {
-      --primary: #1A1A1A;     /* Deep Obsidian */
-      --accent: #8B6F47;      /* Muted Gold/Bronze */
-      --bg: #F8F9FA;          /* Soft Gray background */
+      --primary: #1A1A1A;     /* Noir Profond */
+      --accent: #8B6F47;      /* Bronze/Or Signature */
+      --bg: #F4F4F2;          /* Gris chaud très léger */
       --card: #FFFFFF;
-      --text-main: #2D2D2D;
-      --text-muted: #757575;
-      --border: #EEEEEE;
+      --text-main: #1A1A1A;
+      --text-muted: #888888;
+      --border: #E8E8E8;
     }
 
     * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
@@ -24,108 +24,106 @@
     body {
       margin: 0;
       background: var(--bg);
-      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       color: var(--text-main);
-      line-height: 1.5;
-      padding: 40px 20px;
+      padding: 40px 15px;
     }
 
-    .container {
+    .page {
       max-width: 800px;
       margin: 0 auto;
     }
 
-    /* ===== INVOICE CARD ===== */
-    .invoice-card {
+    /* ===== CARD RENDU LUXE ===== */
+    .card {
       background: var(--card);
-      border-radius: 4px; /* Clean, professional sharp/soft edges */
-      box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-      overflow: hidden;
+      border-radius: 2px; /* Style minimaliste studio */
+      box-shadow: 0 30px 60px rgba(0,0,0,0.08);
       position: relative;
+      overflow: hidden;
     }
 
-    /* Accent top bar */
-    .invoice-card::before {
+    /* Barre décorative supérieure */
+    .card::before {
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 6px;
+      height: 4px;
       background: var(--accent);
     }
 
-    .content {
-      padding: 60px 50px;
+    .invoice-content {
+      padding: 70px 60px;
     }
 
-    /* ===== HEADER ===== */
+    /* ===== HEADER & LOGO ===== */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 60px;
+      margin-bottom: 80px;
     }
 
-    .brand-section h1 {
-      margin: 0;
-      font-size: 24px;
-      letter-spacing: 6px;
-      font-weight: 800;
-      color: var(--primary);
-      text-transform: uppercase;
+    .brand img {
+      height: 45px; /* Ajuste selon la proportion de ton logo */
+      width: auto;
+      display: block;
     }
 
-    .meta-section {
+    .invoice-meta {
       text-align: right;
     }
 
-    .meta-item {
-      font-size: 11px;
+    .meta-label {
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       color: var(--text-muted);
       margin-bottom: 4px;
     }
 
     .meta-value {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
-      color: var(--primary);
+      margin-bottom: 15px;
     }
 
-    /* ===== INFO GRID ===== */
-    .info-grid {
+    /* ===== CLIENT & PAIEMENT ===== */
+    .section-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.5fr 1fr;
       gap: 40px;
-      margin-bottom: 50px;
+      margin-bottom: 60px;
     }
 
-    .label {
-      font-size: 10px;
+    .section-title {
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
       color: var(--accent);
-      margin-bottom: 12px;
-      display: block;
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      display: inline-block;
     }
 
-    .client-details {
+    .client {
       font-size: 14px;
-      font-style: normal;
+      line-height: 1.6;
     }
 
-    .client-name {
+    #name {
       font-size: 18px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
     }
 
-    /* ===== TABLE ===== */
+    /* ===== TABLEAU DÉTAILS ===== */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     th {
@@ -139,166 +137,168 @@
     }
 
     td {
-      padding: 20px 0;
+      padding: 25px 0;
       font-size: 14px;
       border-bottom: 1px solid var(--border);
     }
 
-    .col-price { text-align: right; font-weight: 600; }
-    .col-qty { text-align: center; }
+    td:nth-child(2) { text-align: center; }
+    td:last-child { text-align: right; font-weight: 600; }
 
-    /* ===== TOTAL SECTION ===== */
-    .summary-wrapper {
+    /* ===== TOTAL BOX ===== */
+    .total-wrapper {
       display: flex;
       justify-content: flex-end;
-      margin-top: 20px;
     }
 
-    .total-container {
+    .total-box {
       width: 100%;
-      max-width: 250px;
+      max-width: 300px;
+      text-align: right;
     }
 
-    .total-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 0;
-    }
-
-    .total-row.grand-total {
-      border-top: 2px solid var(--primary);
-      margin-top: 10px;
-    }
-
-    .grand-total .total-label {
+    .total-label {
+      font-size: 12px;
       font-weight: 700;
-      font-size: 14px;
+      letter-spacing: 1px;
+      margin-right: 20px;
     }
 
-    .grand-total .total-amount {
-      font-size: 22px;
+    .total-value {
+      font-size: 26px;
       font-weight: 800;
       color: var(--accent);
+      border-top: 2px solid var(--primary);
+      padding-top: 10px;
+      display: inline-block;
+      min-width: 180px;
     }
 
-    /* ===== FOOTER ===== */
-    .footer {
-      margin-top: 60px;
-      padding-top: 30px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .note-text {
+    /* ===== NOTES ===== */
+    .note {
+      margin-top: 80px;
       font-size: 12px;
       color: var(--text-muted);
-      max-width: 300px;
+      line-height: 1.8;
+      max-width: 450px;
+      border-left: 2px solid var(--accent);
+      padding-left: 20px;
     }
 
-    /* ===== BUTTONS ===== */
+    /* ===== BOUTONS ACTIONS ===== */
     .actions {
-      margin-top: 30px;
+      margin-top: 40px;
       display: flex;
       gap: 15px;
       justify-content: center;
     }
 
-    .btn {
-      padding: 14px 28px;
+    button {
+      padding: 16px 35px;
       border-radius: 4px;
       font-size: 13px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s ease;
       border: none;
-      text-decoration: none;
     }
 
-    .btn-pdf { background: var(--primary); color: white; }
-    .btn-pdf:hover { background: var(--accent); }
-    .btn-back { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
-    .btn-back:hover { background: #fff; color: var(--primary); }
+    .back {
+      background: transparent;
+      border: 1px solid #D1D1D1;
+      color: var(--text-main);
+    }
 
+    .back:hover { background: #fff; border-color: var(--primary); }
+
+    .pdf {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .pdf:hover { background: var(--accent); transform: translateY(-2px); }
+
+    /* Responsive */
     @media (max-width: 600px) {
-      .content { padding: 30px 20px; }
-      .info-grid { grid-template-columns: 1fr; }
-      .header { flex-direction: column; gap: 20px; }
-      .meta-section { text-align: left; }
+      .invoice-content { padding: 40px 25px; }
+      .header { flex-direction: column; gap: 30px; }
+      .invoice-meta { text-align: left; }
+      .section-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div id="invoice" class="invoice-card">
-    <div class="content">
+<div class="page">
+  <div id="invoice" class="card">
+    <div class="invoice-content">
       
-      <header class="header">
-        <div class="brand-section">
-          <h1>Become</h1>
+      <div class="header">
+        <div class="brand">
+          <img src="icons/logo/logo.png" alt="Become Logo">
         </div>
-        <div class="meta-section">
-          <div class="meta-item">Facture N°</div>
+        <div class="invoice-meta">
+          <div class="meta-label">Facture N°</div>
           <div class="meta-value" id="orderNumber">---</div>
-          <div style="margin-top: 15px;" class="meta-item">Date d'émission</div>
+          <div class="meta-label">Date d'émission</div>
           <div class="meta-value" id="date">---</div>
         </div>
-      </header>
+      </div>
 
-      <div class="info-grid">
-        <div class="info-block">
-          <span class="label">Facturé à</span>
-          <div class="client-details">
-            <div class="client-name" id="name">---</div>
+      <div class="section-grid">
+        <div class="section">
+          <div class="section-title">Client</div>
+          <div class="client">
+            <div id="name">---</div>
             <div id="phone">---</div>
             <div id="address">---</div>
           </div>
         </div>
-        <div class="info-block">
-          <span class="label">Mode de Paiement</span>
-          <div class="client-details">
-            Paiement Manuel / Virement<br>
-            <span style="color: var(--text-muted); font-size: 12px;">Contactez-nous pour finaliser</span>
+        <div class="section">
+          <div class="section-title">Paiement</div>
+          <div class="client" style="color: var(--text-muted);">
+            Virement ou Paiement Manuel<br>
+            <span style="color: var(--text-main); font-weight: 500;">Status : En attente</span>
           </div>
         </div>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 60%;">Description</th>
-            <th class="col-qty">Qté</th>
-            <th class="col-price">Total</th>
-          </tr>
-        </thead>
-        <tbody id="items">
-          </tbody>
-      </table>
+      <div class="section">
+        <div class="section-title">Détails de la commande</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 70%;">Article</th>
+              <th>Qté</th>
+              <th>Montant</th>
+            </tr>
+          </thead>
+          <tbody id="items">
+            </tbody>
+        </table>
 
-      <div class="summary-wrapper">
-        <div class="total-container">
-          <div class="total-row grand-total">
-            <span class="total-label">MONTANT TOTAL</span>
-            <span class="total-amount" id="total">0 CDF</span>
+        <div class="total-wrapper">
+          <div class="total-box">
+            <span class="total-label">TOTAL</span>
+            <div class="total-value" id="total">0 CDF</div>
           </div>
         </div>
       </div>
 
-      <footer class="footer">
-        <div class="note-text">
-          Merci de votre confiance. Cette facture est un document officiel de votre commande auprès de l'établissement <strong>Become</strong>.
-        </div>
-      </footer>
+      <div class="note">
+        Merci pour votre confiance.<br>
+        Paiement manuel — veuillez nous contacter pour finaliser le règlement. 
+        Cette facture est un document officiel de l'établissement <strong>Become</strong>.
+      </div>
+
     </div>
   </div>
 
   <div class="actions">
-    <button class="btn btn-back" onclick="location.href='index.html'">Retour Boutique</button>
-    <button class="btn btn-pdf" id="pdfBtn">Télécharger PDF</button>
+    <button class="back" onclick="location.href='index.html'">Retour boutique</button>
+    <button class="pdf" id="pdfBtn">Télécharger PDF</button>
   </div>
 </div>
 
@@ -310,60 +310,53 @@
   const orderId = params.get("orderId");
   if(!orderId) location.href="index.html";
 
-  try {
-    const snap = await getDoc(doc(db, "orders", orderId));
-    if(!snap.exists()) {
-      location.href="index.html";
-    } else {
-      const o = snap.data();
+  // Récupération des données
+  const snap = await getDoc(doc(db, "orders", orderId));
+  if(!snap.exists()) {
+    location.href="index.html";
+  } else {
+    const o = snap.data();
 
-      // Basic Info
-      document.getElementById("orderNumber").textContent = o.orderNumber;
-      document.getElementById("date").textContent = new Date().toLocaleDateString("fr-FR", {
-        year: 'numeric', month: 'long', day: 'numeric'
-      });
+    // Mapping des éléments (IDs conservés)
+    document.getElementById("orderNumber").textContent = o.orderNumber;
+    document.getElementById("date").textContent = new Date().toLocaleDateString("fr-FR", {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
 
-      // Customer Info
-      document.getElementById("name").textContent = o.customer.name;
-      document.getElementById("phone").textContent = o.customer.phone;
-      document.getElementById("address").textContent = o.customer.address || "";
+    document.getElementById("name").textContent = o.customer.name;
+    document.getElementById("phone").textContent = o.customer.phone;
+    document.getElementById("address").textContent = o.customer.address || "";
 
-      // Items
-      let total = 0;
-      const itemsEl = document.getElementById("items");
-      itemsEl.innerHTML = ""; // Clear loader
+    let total = 0;
+    const itemsEl = document.getElementById("items");
+    itemsEl.innerHTML = "";
 
-      o.items.forEach(p => {
-        const itemTotal = p.price * p.qty;
-        total += itemTotal;
-        itemsEl.innerHTML += `
-          <tr>
-            <td>
-              <div style="font-weight: 600; color: var(--primary);">${p.title}</div>
-            </td>
-            <td class="col-qty">${p.qty}</td>
-            <td class="col-price">${itemTotal.toLocaleString()} CDF</td>
-          </tr>
-        `;
-      });
+    o.items.forEach(p => {
+      const lineTotal = p.price * p.qty;
+      total += lineTotal;
+      itemsEl.innerHTML += `
+        <tr>
+          <td><span style="font-weight:600; color:var(--primary);">${p.title}</span></td>
+          <td>${p.qty}</td>
+          <td>${lineTotal.toLocaleString()} CDF</td>
+        </tr>
+      `;
+    });
 
-      document.getElementById("total").textContent = `${total.toLocaleString()} CDF`;
+    document.getElementById("total").textContent = `${total.toLocaleString()} CDF`;
 
-      // PDF Trigger
-      document.getElementById("pdfBtn").onclick = () => {
-        const element = document.getElementById("invoice");
-        const opt = {
-          margin: 0,
-          filename: `FACTURE_BECOME_${o.orderNumber}.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 3, useCORS: true, letterRendering: true },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
+    // Fonction PDF améliorée
+    document.getElementById("pdfBtn").onclick = () => {
+      const element = document.getElementById("invoice");
+      const opt = {
+        margin: 0,
+        filename: `BECOME_FACTURE_${o.orderNumber}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 3, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
-    }
-  } catch (e) {
-    console.error("Error loading order:", e);
+      html2pdf().set(opt).from(element).save();
+    };
   }
 </script>
 
