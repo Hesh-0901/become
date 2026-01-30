@@ -4,30 +4,18 @@
   <meta charset="UTF-8">
   <title>Facture — Become</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#7A623F">
 
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <!-- PDF LIB (OBLIGATOIRE POUR MOBILE) -->
+  <!-- PDF (mobile OK) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    :root{
-      --bg:#E9E5DF;
-      --surface:#FFF;
-      --text:#1E1E1E;
-      --muted:#6B6B6B;
-      --accent:#8B6F47;
-      --border:#D6CFC4;
-    }
-
     body{
       margin:0;
       font-family:system-ui;
-      background:var(--bg);
-      color:var(--text);
+      background:#E9E5DF;
+      color:#1E1E1E;
     }
 
     header{
@@ -37,55 +25,31 @@
       letter-spacing:2px;
     }
 
-    /* ===== FACTURE ===== */
     #invoice{
       background:#fff;
-      max-width:800px;
-      margin:14px auto;
-      padding:20px;
-      border-radius:14px;
-      border:1px solid var(--border);
+      max-width:700px;
+      margin:12px auto;
+      padding:16px;
+      border-radius:10px;
     }
 
-    .top{
+    .row{
       display:flex;
       justify-content:space-between;
-      align-items:center;
-      margin-bottom:20px;
+      margin-bottom:6px;
+      font-size:13px;
     }
 
-    .logo img{
-      height:40px;
-    }
-
-    .invoice-title{
-      text-align:right;
-    }
-
-    .invoice-title h2{
-      margin:0;
-      font-size:18px;
+    h2{
+      margin:0 0 10px;
+      font-size:16px;
       letter-spacing:2px;
-    }
-
-    .invoice-title span{
-      font-size:12px;
-      color:var(--muted);
     }
 
     hr{
       border:none;
-      border-top:1px solid var(--border);
-      margin:14px 0;
-    }
-
-    .info{
-      font-size:13px;
-      margin-bottom:16px;
-    }
-
-    .info div{
-      margin-bottom:4px;
+      border-top:1px solid #ddd;
+      margin:12px 0;
     }
 
     table{
@@ -94,66 +58,54 @@
       font-size:13px;
     }
 
-    th, td{
+    th,td{
       text-align:left;
-      padding:8px 4px;
-      border-bottom:1px solid var(--border);
+      padding:6px 4px;
+      border-bottom:1px solid #eee;
     }
 
     th{
       font-size:12px;
-      text-transform:uppercase;
-      color:var(--muted);
+      color:#666;
     }
 
     .total{
       text-align:right;
-      font-size:16px;
       font-weight:600;
+      margin-top:10px;
+    }
+
+    .note{
       margin-top:14px;
-    }
-
-    .status{
-      margin-top:18px;
-      padding:12px;
-      background:#F7F5F2;
-      border-radius:10px;
-      font-size:13px;
-    }
-
-    .footer-note{
-      margin-top:20px;
       font-size:12px;
-      color:var(--muted);
-      text-align:center;
+      color:#555;
     }
 
-    /* ===== ACTIONS ===== */
     .actions{
-      max-width:800px;
+      max-width:700px;
       margin:0 auto 20px;
-      padding:14px;
+      padding:12px;
       display:flex;
       gap:10px;
     }
 
-    .btn{
+    button{
       flex:1;
-      height:46px;
+      height:44px;
       border-radius:999px;
       border:none;
       font-weight:600;
       cursor:pointer;
     }
 
-    .primary{
-      background:var(--accent);
-      color:#fff;
+    .back{
+      background:#fff;
+      border:1px solid #ccc;
     }
 
-    .secondary{
-      background:#fff;
-      border:1px solid var(--border);
+    .pdf{
+      background:#8B6F47;
+      color:#fff;
     }
   </style>
 </head>
@@ -162,28 +114,38 @@
 
 <header>FACTURE</header>
 
-<!-- ================= FACTURE ================= -->
 <div id="invoice">
 
-  <div class="top">
-    <div class="logo">
-      <img src="icons/logo/logo.png" alt="Become">
-    </div>
+  <h2>BECOME</h2>
 
-    <div class="invoice-title">
-      <h2>BECOME</h2>
-      <span id="orderNumber">—</span>
-    </div>
+  <div class="row">
+    <span><strong>N° :</strong></span>
+    <span id="orderNumber"></span>
+  </div>
+
+  <div class="row">
+    <span><strong>Date :</strong></span>
+    <span id="date"></span>
   </div>
 
   <hr>
 
-  <div class="info">
-    <div><strong>Date :</strong> <span id="date"></span></div>
-    <div><strong>Client :</strong> <span id="clientName"></span></div>
-    <div><strong>Téléphone :</strong> <span id="clientPhone"></span></div>
-    <div><strong>Adresse :</strong> <span id="clientAddress"></span></div>
+  <div class="row">
+    <span><strong>Client :</strong></span>
+    <span id="name"></span>
   </div>
+
+  <div class="row">
+    <span><strong>Téléphone :</strong></span>
+    <span id="phone"></span>
+  </div>
+
+  <div class="row">
+    <span><strong>Adresse :</strong></span>
+    <span id="address"></span>
+  </div>
+
+  <hr>
 
   <table>
     <thead>
@@ -198,23 +160,18 @@
 
   <div class="total" id="total"></div>
 
-  <div class="status">
-    💬 Paiement manuel — veuillez nous contacter pour finaliser le paiement.<br>
-    📦 Suivez l’évolution de votre commande dans l’application.
-  </div>
-
-  <div class="footer-note">
-    Merci pour votre confiance — Become
+  <div class="note">
+    Paiement manuel — veuillez nous contacter pour finaliser le paiement.<br>
+    Vous pouvez suivre l’évolution de votre commande dans l’application.
   </div>
 
 </div>
 
-<!-- ================= ACTIONS ================= -->
 <div class="actions">
-  <button class="btn secondary" onclick="location.href='index.html'">
+  <button class="back" onclick="location.href='index.html'">
     Retour boutique
   </button>
-  <button class="btn primary" id="pdfBtn">
+  <button class="pdf" id="pdfBtn">
     Télécharger PDF
   </button>
 </div>
@@ -224,7 +181,6 @@ import { db } from "./js/firebase.config.js";
 import { doc, getDoc } from
   "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ===== PARAM ===== */
 const params = new URLSearchParams(location.search);
 const orderId = params.get("orderId");
 
@@ -232,10 +188,7 @@ if(!orderId){
   location.href="index.html";
 }
 
-/* ===== LOAD ORDER ===== */
-const ref = doc(db,"orders",orderId);
-const snap = await getDoc(ref);
-
+const snap = await getDoc(doc(db,"orders",orderId));
 if(!snap.exists()){
   alert("Facture introuvable");
   location.href="index.html";
@@ -243,15 +196,13 @@ if(!snap.exists()){
 
 const o = snap.data();
 
-/* ===== FILL ===== */
 document.getElementById("orderNumber").textContent = o.orderNumber;
-
 document.getElementById("date").textContent =
   new Date().toLocaleString("fr-FR");
 
-document.getElementById("clientName").textContent = o.customer.name;
-document.getElementById("clientPhone").textContent = o.customer.phone;
-document.getElementById("clientAddress").textContent =
+document.getElementById("name").textContent = o.customer.name;
+document.getElementById("phone").textContent = o.customer.phone;
+document.getElementById("address").textContent =
   o.customer.address || "-";
 
 const itemsEl = document.getElementById("items");
@@ -271,17 +222,13 @@ o.items.forEach(p=>{
 document.getElementById("total").textContent =
   `Total : ${total.toLocaleString()} CDF`;
 
-/* ===== PDF ===== */
 document.getElementById("pdfBtn").onclick = ()=>{
-  const el = document.getElementById("invoice");
-
   html2pdf().set({
-    margin:0.4,
     filename:`FACTURE-${o.orderNumber}.pdf`,
-    image:{ type:"jpeg", quality:0.98 },
-    html2canvas:{ scale:2, useCORS:true },
+    margin:0.5,
+    html2canvas:{ scale:2 },
     jsPDF:{ unit:"cm", format:"a4", orientation:"portrait" }
-  }).from(el).save();
+  }).from(document.getElementById("invoice")).save();
 };
 </script>
 
