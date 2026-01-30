@@ -7,168 +7,195 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <style>
-    :root {
-      --primary: #1A1A1A;
-      --accent: #8B6F47;
-      --bg: #F4F4F2;
-      --card: #FFFFFF;
-      --text-main: #1A1A1A;
-      --text-muted: #888888;
-      --border: #E8E8E8;
-    }
+<style>
+  :root {
+    --primary: #1A1A1A;
+    --accent: #8B6F47;
+    --bg: #F4F4F2;
+    --card: #FFFFFF;
+    --text-main: #1A1A1A;
+    --text-muted: #888888;
+    --border: #E8E8E8;
+  }
 
-    * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
 
-    body {
-      margin: 0;
-      background: var(--bg);
-      font-family: 'Inter', -apple-system, sans-serif;
-      color: var(--text-main);
-      padding: 40px 15px;
-    }
+  body {
+    margin: 0;
+    background: var(--bg);
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text-main);
+    padding: 40px 15px;
+  }
 
-    .page { max-width: 850px; margin: 0 auto; }
+  .page { max-width: 850px; margin: 0 auto; }
 
-    .card {
-      background: var(--card);
-      border-radius: 2px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.08);
-      position: relative;
-    }
+  .card {
+    background: var(--card);
+    border-radius: 2px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+    position: relative;
+  }
 
-    .card::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: var(--accent);
-    }
+  /* Liseré supérieur premium */
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+  }
 
-    .invoice-content { padding: 60px; }
+  .invoice-content { padding: 60px; }
 
-    /* ===== HEADER: LOGO AGRANDI & INFOS ===== */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 60px;
-    }
+  /* ===== HEADER: LOGO AGRANDI & IDENTITÉ ===== */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 60px;
+  }
 
-    .brand-container {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
+  .brand-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-    .brand img {
-      height: 120px; /* Agrandissement x3 par rapport à la version précédente */
-      width: auto;
-      margin-bottom: 10px;
-    }
+  .brand img {
+    height: 120px; /* Grand format x3 */
+    width: auto;
+    margin-bottom: 12px;
+  }
 
-    .brand-name {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      margin: 0;
-    }
+  .brand-name {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin: 0;
+    color: var(--primary);
+  }
 
-    .brand-tagline {
-      font-size: 12px;
-      color: var(--text-muted);
-      letter-spacing: 1px;
-      margin-top: 2px;
-    }
+  .brand-tagline {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
 
-    .invoice-meta { text-align: right; }
-    .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 4px; }
-    .meta-value { font-size: 15px; font-weight: 600; margin-bottom: 15px; }
+  .invoice-meta { text-align: right; }
+  .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 4px; }
+  .meta-value { font-size: 15px; font-weight: 600; margin-bottom: 15px; color: var(--primary); }
 
-    /* ===== GRIDS ===== */
-    .section-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 40px;
-      margin-bottom: 50px;
-    }
+  /* ===== GRIDS & SECTIONS ===== */
+  .section-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 40px;
+    margin-bottom: 50px;
+  }
 
-    .section-title {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--accent);
-      margin-bottom: 15px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
-    }
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
 
-    .client { font-size: 14px; line-height: 1.6; }
-    #name { font-size: 18px; font-weight: 700; margin-bottom: 5px; }
+  .client { font-size: 14px; line-height: 1.6; }
+  #name { font-size: 18px; font-weight: 700; margin-bottom: 5px; }
 
-    /* ===== TABLE ===== */
-    table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-    th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); padding: 15px 0; border-bottom: 1px solid var(--primary); }
-    td { padding: 20px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
-    td:last-child { text-align: right; font-weight: 600; }
+  /* ===== TABLEAU DES ARTICLES ===== */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); padding: 15px 0; border-bottom: 1px solid var(--primary); }
+  td { padding: 20px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+  td:last-child { text-align: right; font-weight: 600; }
 
-    .total-wrapper { display: flex; justify-content: flex-end; }
-    .total-box { text-align: right; }
-    .total-value {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--accent);
-      border-top: 2px solid var(--primary);
-      padding-top: 10px;
-      margin-top: 10px;
-      display: inline-block;
-      min-width: 200px;
-    }
+  /* ===== TOTAL ===== */
+  .total-wrapper { display: flex; justify-content: flex-end; margin-top: 20px; }
+  .total-box { text-align: right; }
+  .total-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    border-top: 2px solid var(--primary);
+    padding-top: 10px;
+    margin-top: 10px;
+    display: inline-block;
+    min-width: 220px;
+  }
 
-    /* ===== SIGNATURE ZONE ===== */
-    .signature-container {
-      margin-top: 80px;
-      display: flex;
-      justify-content: flex-end;
-    }
+  /* ===== ZONE SIGNATURE (MISE À JOUR) ===== */
+  .signature-container {
+    margin-top: 60px;
+    display: flex;
+    justify-content: flex-end;
+  }
 
-    .signature-box {
-      width: 200px;
-      text-align: center;
-    }
+  .signature-box {
+    width: 220px;
+    text-align: center;
+  }
 
-    .signature-line {
-      border-bottom: 1px solid var(--primary);
-      height: 60px;
-      margin-bottom: 10px;
-    }
+  .signature-img {
+    width: 160px; /* Taille adaptée pour ne pas déformer le layout */
+    height: auto;
+    display: block;
+    margin: 0 auto 5px auto;
+    mix-blend-mode: multiply; /* Permet d'enlever le fond blanc si l'image est sur fond blanc */
+  }
 
-    .signature-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+  .signature-line {
+    border-top: 1px solid var(--primary);
+    margin-top: 5px;
+    padding-top: 8px;
+  }
 
-    .note {
-      margin-top: 40px;
-      font-size: 11px;
-      color: var(--text-muted);
-      line-height: 1.6;
-      border-left: 2px solid var(--accent);
-      padding-left: 15px;
-    }
+  .signature-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--primary);
+  }
 
-    /* ===== ACTIONS ===== */
-    .actions { margin-top: 30px; display: flex; gap: 15px; justify-content: center; }
-    button { padding: 14px 30px; border-radius: 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; cursor: pointer; border: none; }
-    .back { background: #fff; border: 1px solid #ddd; }
-    .pdf { background: var(--primary); color: #fff; }
+  /* ===== NOTES & ACTIONS ===== */
+  .note {
+    margin-top: 50px;
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    border-left: 2px solid var(--accent);
+    padding-left: 15px;
+  }
 
-    @media print { .actions { display: none; } }
-  </style>
+  .actions { margin-top: 30px; display: flex; gap: 15px; justify-content: center; }
+  
+  button { 
+    padding: 14px 30px; 
+    border-radius: 4px; 
+    font-size: 12px; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    cursor: pointer; 
+    border: none;
+    transition: all 0.2s ease;
+  }
+
+  .back { background: #fff; border: 1px solid #ddd; color: var(--text-main); }
+  .back:hover { border-color: var(--primary); background: #fafafa; }
+
+  .pdf { background: var(--primary); color: #fff; }
+  .pdf:hover { background: var(--accent); transform: translateY(-1px); }
+
+  @media print { .actions { display: none; } }
+</style>
 </head>
 <body>
 
@@ -234,8 +261,9 @@
 
       <div class="signature-container">
         <div class="signature-box">
+          <img src="icons/signature.png" alt="Signature" class="signature-img">
           <div class="signature-line"></div>
-          <div class="signature-label">Signature</div>
+          <div class="signature-label">Signature (Direction)</div>
         </div>
       </div>
 
@@ -252,7 +280,6 @@
     <button class="pdf" id="pdfBtn">Télécharger PDF</button>
   </div>
 </div>
-
 <script type="module">
   import { db } from "./js/firebase.config.js";
   import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
