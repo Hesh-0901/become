@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <title>Become — Commander</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <meta name="theme-color" content="#7A623F">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    :root {
+    :root{
       --bg:#E9E5DF;
       --surface:#FFF;
       --soft:#E6E1D9;
@@ -20,9 +20,9 @@
       --border:#D6CFC4;
     }
 
-    * { box-sizing:border-box }
+    *{box-sizing:border-box}
 
-    body {
+    body{
       margin:0;
       font-family:system-ui;
       background:var(--bg);
@@ -30,14 +30,14 @@
       padding-bottom:100px;
     }
 
-    header {
+    header{
       position:sticky;
       top:0;
       background:var(--bg);
       border-bottom:1px solid var(--border);
     }
 
-    .bar {
+    .bar{
       height:54px;
       display:flex;
       align-items:center;
@@ -45,19 +45,19 @@
       padding:0 14px;
     }
 
-    .title {
+    .title{
       font-weight:600;
       letter-spacing:2px;
       font-size:14px;
     }
 
-    main {
+    main{
       padding:14px;
       max-width:600px;
       margin:auto;
     }
 
-    .box {
+    .box{
       background:var(--surface);
       border:1px solid var(--border);
       border-radius:12px;
@@ -65,27 +65,27 @@
       margin-bottom:14px;
     }
 
-    h3 {
+    h3{
       margin:0 0 10px;
       font-size:13px;
       letter-spacing:1px;
     }
 
-    .item {
+    .item{
       display:flex;
       justify-content:space-between;
       font-size:13px;
       margin-bottom:6px;
     }
 
-    label {
+    label{
       font-size:12px;
       color:var(--muted);
       display:block;
       margin-bottom:4px;
     }
 
-    input, textarea {
+    input, textarea{
       width:100%;
       padding:10px;
       border-radius:10px;
@@ -94,9 +94,9 @@
       font-size:13px;
     }
 
-    textarea { resize:vertical }
+    textarea{resize:vertical}
 
-    .checkout {
+    .checkout{
       position:fixed;
       bottom:0;
       left:0;
@@ -106,13 +106,13 @@
       padding:12px;
     }
 
-    .total {
+    .total{
       font-size:14px;
       font-weight:600;
       margin-bottom:10px;
     }
 
-    .btn {
+    .btn{
       width:100%;
       height:46px;
       border-radius:999px;
@@ -166,85 +166,84 @@
 
 <script type="module">
 import { auth, db } from "./js/firebase.config.js";
+import { onAuthStateChanged } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   collection,
   addDoc,
-  serverTimestamp,
-  doc,
-  updateDoc,
-  increment
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+/* ===== AUTH ===== */
+let USER = null;
+onAuthStateChanged(auth, user=>{
+  if(!user){
+    location.href="login.html";
+    return;
+  }
+  USER = user;
+});
+
 /* ===== PANIER ===== */
-const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+const CART_KEY = localStorage.getItem("lastCartKey");
+const cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+
+if(cart.length === 0){
+  location.href="panier.html";
+}
+
 const recap = document.getElementById("recap");
 const totalEl = document.getElementById("total");
 
-if (cart.length === 0) {
-  location.href = "panier.html";
-}
-
 let total = 0;
-
-cart.forEach(p => {
+cart.forEach(p=>{
   total += p.price * p.qty;
   recap.innerHTML += `
     <div class="item">
       <span>${p.title} × ${p.qty}</span>
-      <span>${(p.price * p.qty).toLocaleString()} CDF</span>
+      <span>${(p.price*p.qty).toLocaleString()} CDF</span>
     </div>
   `;
 });
-
 totalEl.textContent = `Total : ${total.toLocaleString()} CDF`;
 
+/* ===== NUMÉRO DE COMMANDE ===== */
+function generateOrderNumber(){
+  const d = new Date();
+  const jj = String(d.getDate()).padStart(2,"0");
+  const mm = String(d.getMonth()+1).padStart(2,"0");
+  const key = `orderCount_${jj}${mm}`;
+  const count = (Number(localStorage.getItem(key)) || 0) + 1;
+  localStorage.setItem(key, count);
+  return `BECOME-${jj}${mm}-${String(count).padStart(3,"0")}`;
+}
+
 /* ===== CONFIRM ===== */
-document.getElementById("confirmBtn").onclick = async () => {
+document.getElementById("confirmBtn").onclick = async ()=>{
   const name = document.getElementById("name").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const address = document.getElementById("address").value.trim();
 
-  if (!name || !phone) {
+  if(!name || !phone){
     alert("Veuillez remplir les informations");
     return;
   }
 
-  const user = auth.currentUser;
-  if (!user) {
-    alert("Veuillez vous connecter");
-    return;
-  }
+  const orderNumber = generateOrderNumber();
 
-  // 1️⃣ créer commande (LIÉE AU USER)
-  const orderRef = await addDoc(collection(db, "orders"), {
-    userId: user.uid,               // ✅ LIAISON UTILISATEUR
+  const ref = await addDoc(collection(db,"orders"),{
+    orderNumber,
+    userId: USER.uid,
     items: cart,
     total,
-    customer: { name, phone, address },
-    status: "pending",
+    customer:{ name, phone, address },
+    status:"pending",
     createdAt: serverTimestamp()
   });
 
-  // 2️⃣ décrémenter stock
-  for (const p of cart) {
-    await updateDoc(doc(db, "products", p.id), {
-      stock: increment(-p.qty)
-    });
-  }
+  localStorage.removeItem(CART_KEY);
 
-  // 3️⃣ sauvegarde pour facture
-  localStorage.setItem("lastOrder", JSON.stringify({
-    id: orderRef.id,
-    items: cart,
-    total,
-    customer: { name, phone, address },
-    createdAt: Date.now()
-  }));
-
-  // 4️⃣ vider panier
-  localStorage.removeItem("cart");
-
-  location.href = "facture.html";
+  location.href = `facture.html?orderId=${ref.id}`;
 };
 </script>
 
