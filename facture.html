@@ -13,8 +13,9 @@
     --bg: #F4F4F2;
     --card: #FFFFFF;
     --text-main: #1A1A1A;
-    --text-muted: #666666; /* Un peu plus sombre pour la lisibilité */
+    --text-muted: #666666;
     --border: #E8E8E8;
+    --whatsapp: #25D366;
   }
 
   * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
@@ -44,10 +45,9 @@
     background: var(--accent);
   }
 
-  /* Espace intérieur aéré */
   .invoice-content { 
     padding: 50px 60px; 
-    min-height: 1000px; /* Assure une belle tenue sur A4 */
+    min-height: 1000px;
     display: flex;
     flex-direction: column;
   }
@@ -108,7 +108,6 @@
   .client { font-size: 14px; line-height: 1.6; }
   #name { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--primary); }
 
-  /* TABLEAU AÉRÉ */
   table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
   th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); padding: 15px 0; border-bottom: 1px solid var(--primary); }
   td { padding: 20px 0; font-size: 14px; border-bottom: 1px solid var(--border); line-height: 1.4; }
@@ -120,13 +119,12 @@
   .total-value {
     font-size: 30px;
     font-weight: 900;
-    color: var(--primary); /* Noir pour le total pour plus d'impact */
+    color: var(--primary);
     border-top: 3px solid var(--primary);
     padding-top: 10px;
     min-width: 220px;
   }
 
-  /* SIGNATURE POSÉE EN BAS */
   .signature-container {
     margin-top: 40px;
     display: flex;
@@ -148,9 +146,8 @@
     max-width: 80%;
   }
 
-  /* OPTIMISATION PDF */
-@media print {
-    @page { margin: 0; } /* Supprime les en-têtes/pieds de page du navigateur */
+  @media print {
+    @page { margin: 0; }
     body { margin: 0; padding: 0; }
     .page { max-width: 100%; margin: 0; }
     .card { box-shadow: none; border: none; }
@@ -158,9 +155,18 @@
 
   .actions { margin-top: 30px; display: flex; gap: 15px; justify-content: center; padding-bottom: 40px; }
   button { padding: 15px 35px; border-radius: 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; cursor: pointer; border: none; transition: 0.3s; }
+  
   .back { background: #fff; border: 1px solid #ddd; color: var(--text-main); }
-  .pdf { background: var(--primary); color: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-  .pdf:hover { background: var(--accent); transform: translateY(-2px); }
+  
+  .confirm-btn { 
+    background: var(--whatsapp); 
+    color: #fff; 
+    box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2); 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .confirm-btn:hover { background: #1eb956; transform: translateY(-2px); }
 </style>
 </head>
 <body>
@@ -238,7 +244,7 @@
 
   <div class="actions">
     <button class="back" onclick="location.href='index.html'">Retour boutique</button>
-    <button class="pdf" id="pdfBtn">Télécharger la facture</button>
+    <button class="confirm-btn" id="mainActionBtn">Confirmer votre commande</button>
   </div>
 </div>
 
@@ -253,38 +259,68 @@
   const snap = await getDoc(doc(db, "orders", orderId));
   if(snap.exists()) {
     const o = snap.data();
+    const formattedTotal = Number(o.total || 0).toLocaleString();
+
     document.getElementById("orderNumber").textContent = o.orderNumber;
     document.getElementById("date").textContent = new Date().toLocaleDateString("fr-FR", {day:'numeric', month:'long', year:'numeric'});
     document.getElementById("name").textContent = o.customer.name;
     document.getElementById("phone").textContent = o.customer.phone;
-    document.getElementById("address").textContent = o.customer.address || "";
+    document.getElementById("address").textContent = o.customer.address || "Lubumbashi, RDC";
 
     let total = 0;
+    let detailsArticles = "";
     const itemsEl = document.getElementById("items");
+    
     o.items.forEach(p => {
       const lineTotal = p.price * p.qty;
       total += lineTotal;
+      detailsArticles += `🏷️ ${p.qty}x ${p.title}\n`;
       itemsEl.innerHTML += `<tr><td><span style="font-weight:600; color:var(--primary);">${p.title}</span></td><td style="text-align:center">${p.qty}</td><td>${lineTotal.toLocaleString()} CDF</td></tr>`;
     });
+    
     document.getElementById("total").textContent = `${total.toLocaleString()} CDF`;
 
-document.getElementById("pdfBtn").onclick = () => {
-      const element = document.getElementById("invoice");
+    // ACTION UNIQUE : PDF + WHATSAPP
+    document.getElementById("mainActionBtn").onclick = () => {
       
+      // 1. GENERATION PDF
+      const element = document.getElementById("invoice");
       const opt = {
-        margin: 0, // Supprime les marges du document PDF
+        margin: 0,
         filename: `Facture_Become_${o.orderNumber}.pdf`,
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { 
-          scale: 3, 
-          useCORS: true, 
-          scrollY: 0, // Force le scroll en haut pour éviter le décalage blanc
-          y: 0        // Aligne le rendu précisément au début de l'élément
-        },
+        html2canvas: { scale: 3, useCORS: true, scrollY: 0, y: 0 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       html2pdf().set(opt).from(element).save();
+
+      // 2. ENVOI WHATSAPP (Après un court délai pour laisser le PDF se lancer)
+      setTimeout(() => {
+        const monNumero = "243904128569"; // ⚠️ METS TON NUMERO ICI
+        const message = 
+`Bonjour l'équipe Become !
+Je me suis décidé d'aller au bout de ma demande,
+
+✨ *NOUVELLE COMMANDE - BECOME* ✨
+📑 *Facture :* #${o.orderNumber}
+👤 *Client :* ${o.customer.name}
+📍 *Lieu :* ${o.customer.address || "Lubumbashi, RDC"}
+
+--- *DÉTAILS* ---
+${detailsArticles}
+💰 *TOTAL : ${total.toLocaleString()} CDF*
+
+✅ _Le client a généré sa facture officielle._
+🚀 _En attente de confirmation de paiement._
+
+*J'attends votre confirmation pour les modalités de paiement.*
+
+*Votre client !*`;
+
+        const url = `https://wa.me/${monNumero}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+      }, 1500);
     };
   }
 </script>
