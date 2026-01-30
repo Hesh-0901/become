@@ -275,32 +275,17 @@
     o.items.forEach(p => {
       const lineTotal = p.price * p.qty;
       total += lineTotal;
-      detailsArticles += `• ${p.qty}x ${p.title}\n`; // Format propre pour WhatsApp
+      detailsArticles += `• ${p.qty}x ${p.title}\n`;
       itemsEl.innerHTML += `<tr><td><span style="font-weight:600; color:var(--primary);">${p.title}</span></td><td style="text-align:center">${p.qty}</td><td>${lineTotal.toLocaleString()} CDF</td></tr>`;
     });
     
     document.getElementById("total").textContent = `${total.toLocaleString()} CDF`;
 
-    // ACTION UNIQUE : PDF + WHATSAPP
+    // ACTION UNIQUE : PDF + WHATSAPP (Optimisé Mobile)
     document.getElementById("mainActionBtn").onclick = () => {
       
-      // 1. GENERATION DU PDF
-      const element = document.getElementById("invoice");
-      const opt = {
-        margin: 0,
-        filename: `Facture_Become_${o.orderNumber}.pdf`,
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, useCORS: true, scrollY: 0, y: 0 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-
-      html2pdf().set(opt).from(element).save();
-
-      // 2. ENVOI WHATSAPP (Après 1.5s)
-      setTimeout(() => {
-        const monNumero = "243904128569"; 
-        
-        const message = 
+      const monNumero = "243904128569"; 
+      const message = 
 `✨ *VALIDATION DE COMMANDE | BECOME* ✨
 _________________________________________
 
@@ -326,9 +311,27 @@ _________________________________________
 
 *Hâte de recevoir mes articles !*`;
 
-        const url = `https://wa.me/${monNumero}?text=${encodeURIComponent(message)}`;
-        window.open(url, '_blank');
-      }, 1500); 
+      // 1. On prépare l'URL WhatsApp
+      const url = `https://wa.me/${monNumero}?text=${encodeURIComponent(message)}`;
+
+      // 2. GÉNÉRATION DU PDF (Action immédiate)
+      const element = document.getElementById("invoice");
+      const opt = {
+        margin: 0,
+        filename: `Facture_Become_${o.orderNumber}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0, y: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      // Lancement du PDF
+      html2pdf().set(opt).from(element).save();
+
+      // 3. REDIRECTION WHATSAPP (Action directe sans délai pour mobile)
+      // On utilise un tout petit délai (500ms) pour laisser le temps au navigateur de valider le téléchargement
+      setTimeout(() => {
+          window.location.href = url;
+      }, 800);
     };
   }
 </script>
