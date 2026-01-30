@@ -7,7 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#E9E5DF">
 
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     :root{
@@ -18,6 +22,7 @@
       --muted:#6B6B6B;
       --accent:#8B6F47;
       --border:#D6CFC4;
+      --radius:18px;
     }
 
     *{box-sizing:border-box}
@@ -27,104 +32,94 @@
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
       background:var(--bg);
       color:var(--text);
-      padding:16px;
+      padding:20px;
     }
 
     .invoice{
-      max-width:640px;
+      max-width:600px;
       margin:auto;
       background:var(--surface);
+      border-radius:var(--radius);
       border:1px solid var(--border);
-      border-radius:18px;
-      padding:22px;
+      padding:26px;
     }
 
-    /* HEADER */
-    .header{
+    .top{
       display:flex;
       justify-content:space-between;
       align-items:center;
       margin-bottom:20px;
     }
 
-    .header img{
+    .logo{
       height:26px;
     }
 
-    .badge{
-      background:var(--soft);
-      border-radius:999px;
-      padding:6px 12px;
+    .status{
       font-size:12px;
-      font-weight:600;
       color:var(--accent);
+      font-weight:600;
     }
 
     h1{
       font-size:18px;
-      margin:10px 0 6px;
+      letter-spacing:2px;
+      margin:0 0 6px;
     }
 
-    .meta{
+    .order-number{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:16px;
+    }
+
+    .block{
+      background:var(--soft);
+      border-radius:12px;
+      padding:14px;
+      margin-bottom:14px;
+      font-size:13px;
+    }
+
+    .block strong{
+      display:block;
       font-size:12px;
       color:var(--muted);
-      line-height:1.6;
-    }
-
-    .box{
-      margin-top:18px;
-      padding-top:16px;
-      border-top:1px dashed var(--border);
-    }
-
-    .row{
-      display:flex;
-      justify-content:space-between;
-      font-size:13px;
       margin-bottom:6px;
     }
 
-    .row strong{
-      font-weight:600;
-    }
-
-    /* ITEMS */
     .item{
       display:flex;
       justify-content:space-between;
-      font-size:13px;
       margin-bottom:6px;
     }
 
     .total{
-      margin-top:12px;
-      font-size:16px;
+      font-size:15px;
       font-weight:700;
-      color:var(--accent);
       text-align:right;
+      margin-top:10px;
     }
 
-    /* PAYMENT */
-    .payment{
+    .pay{
       margin-top:20px;
-      background:var(--soft);
-      border-radius:12px;
-      padding:14px;
       font-size:13px;
       line-height:1.6;
+      color:var(--muted);
     }
 
     .actions{
-      margin-top:20px;
       display:flex;
       gap:10px;
+      margin-top:24px;
     }
 
-    button{
+    .btn{
       flex:1;
       height:44px;
       border-radius:999px;
       border:none;
+      font-size:13px;
       font-weight:600;
       cursor:pointer;
     }
@@ -134,7 +129,7 @@
       color:#fff;
     }
 
-    .outline{
+    .secondary{
       background:transparent;
       border:1px solid var(--border);
     }
@@ -145,40 +140,44 @@
 
 <div class="invoice" id="invoice">
 
-  <!-- HEADER -->
-  <div class="header">
-    <img src="icons/logo/logo.png" alt="Become">
-    <div class="badge">FACTURE</div>
+  <div class="top">
+    <img src="icons/logo/logo.png" class="logo" alt="Become">
+    <div class="status">Commande en attente</div>
   </div>
 
-  <h1 id="orderNumber">—</h1>
-  <div class="meta" id="orderMeta"></div>
+  <h1>FACTURE</h1>
+  <div class="order-number" id="orderNumber">—</div>
 
-  <!-- CLIENT -->
-  <div class="box">
+  <div class="block">
     <strong>Client</strong>
-    <div class="meta" id="clientInfo"></div>
+    <div id="clientName">—</div>
+    <div id="clientPhone">—</div>
+    <div id="clientAddress">—</div>
   </div>
 
-  <!-- ITEMS -->
-  <div class="box" id="items"></div>
-
-  <div class="total" id="total"></div>
-
-  <!-- PAYMENT -->
-  <div class="payment">
-    <strong>Paiement</strong><br>
-    Cette commande est en attente de paiement.<br>
-    Merci de nous contacter pour procéder au règlement et lancer la préparation.
+  <div class="block">
+    <strong>Articles</strong>
+    <div id="items"></div>
+    <div class="total" id="total">—</div>
   </div>
 
-  <!-- ACTIONS -->
+  <div class="block">
+    <strong>Date</strong>
+    <div id="date">—</div>
+  </div>
+
+  <div class="pay">
+    💡 Merci pour votre commande chez <strong>BECOME</strong>.<br>
+    Veuillez nous contacter pour effectuer le paiement et suivre
+    l’évolution de votre commande via l’application.
+  </div>
+
   <div class="actions">
-    <button class="outline" onclick="window.print()">
-      Télécharger PDF
+    <button class="btn secondary" onclick="location.href='index.html'">
+      Retour boutique
     </button>
-    <button class="primary" onclick="location.href='customer.html'">
-      Suivre la commande
+    <button class="btn primary" id="pdfBtn">
+      Télécharger PDF
     </button>
   </div>
 
@@ -192,40 +191,61 @@ import { doc, getDoc } from
 /* ===== GET ORDER ===== */
 const params = new URLSearchParams(location.search);
 const orderId = params.get("orderId");
-if (!orderId) location.href = "index.html";
 
-const snap = await getDoc(doc(db,"orders",orderId));
-if (!snap.exists()) location.href = "index.html";
+if(!orderId){
+  location.href="index.html";
+}
+
+const ref = doc(db,"orders",orderId);
+const snap = await getDoc(ref);
+
+if(!snap.exists()){
+  alert("Commande introuvable");
+  location.href="index.html";
+}
 
 const o = snap.data();
 
-/* ===== DISPLAY ===== */
+/* ===== RENDER ===== */
 document.getElementById("orderNumber").textContent =
-  `Commande ${o.orderNumber}`;
+  `N° ${o.orderNumber}`;
 
-document.getElementById("orderMeta").innerHTML = `
-  Date : ${o.createdAt.toDate().toLocaleString()}
-`;
+document.getElementById("clientName").textContent =
+  o.customer.name;
 
-document.getElementById("clientInfo").innerHTML = `
-  ${o.customer.name}<br>
-  ${o.customer.phone}<br>
-  ${o.customer.address || ""}
-`;
+document.getElementById("clientPhone").textContent =
+  o.customer.phone;
 
-let html = "";
+document.getElementById("clientAddress").textContent =
+  o.customer.address || "—";
+
+let total = 0;
 o.items.forEach(p=>{
-  html += `
+  total += p.price * p.qty;
+  document.getElementById("items").innerHTML += `
     <div class="item">
       <span>${p.title} × ${p.qty}</span>
       <span>${(p.price*p.qty).toLocaleString()} CDF</span>
     </div>
   `;
 });
-document.getElementById("items").innerHTML = html;
 
 document.getElementById("total").textContent =
-  `Total : ${o.total.toLocaleString()} CDF`;
+  `Total : ${total.toLocaleString()} CDF`;
+
+document.getElementById("date").textContent =
+  o.createdAt.toDate().toLocaleString();
+
+/* ===== PDF ===== */
+document.getElementById("pdfBtn").onclick = ()=>{
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p","mm","a4");
+
+  pdf.html(document.getElementById("invoice"),{
+    callback:()=>pdf.save(`${o.orderNumber}.pdf`),
+    x:10,y:10
+  });
+};
 </script>
 
 </body>
