@@ -2,127 +2,146 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Become — Facture</title>
+  <title>Facture — Become</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#E9E5DF">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="theme-color" content="#7A623F">
 
+  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- PDF LIB (OBLIGATOIRE POUR MOBILE) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     :root{
       --bg:#E9E5DF;
-      --surface:#FFFFFF;
-      --soft:#F5F2EC;
+      --surface:#FFF;
       --text:#1E1E1E;
       --muted:#6B6B6B;
       --accent:#8B6F47;
       --border:#D6CFC4;
-      --radius:16px;
     }
-
-    *{box-sizing:border-box}
 
     body{
       margin:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont;
+      font-family:system-ui;
       background:var(--bg);
       color:var(--text);
-      padding:16px;
     }
 
-    .invoice{
-      max-width:700px;
-      margin:auto;
-      background:var(--surface);
-      border-radius:var(--radius);
+    header{
+      padding:14px;
+      text-align:center;
+      font-weight:600;
+      letter-spacing:2px;
+    }
+
+    /* ===== FACTURE ===== */
+    #invoice{
+      background:#fff;
+      max-width:800px;
+      margin:14px auto;
+      padding:20px;
+      border-radius:14px;
       border:1px solid var(--border);
-      padding:22px;
     }
 
-    /* HEADER */
-    .header{
+    .top{
       display:flex;
       justify-content:space-between;
       align-items:center;
       margin-bottom:20px;
     }
 
-    .logo{
-      height:28px;
+    .logo img{
+      height:40px;
     }
 
-    .badge{
-      background:var(--soft);
-      border-radius:999px;
-      padding:6px 12px;
-      font-size:12px;
-      font-weight:600;
-      color:var(--accent);
+    .invoice-title{
+      text-align:right;
     }
 
-    h1{
+    .invoice-title h2{
+      margin:0;
       font-size:18px;
-      margin:16px 0 6px;
       letter-spacing:2px;
     }
 
-    .muted{
-      color:var(--muted);
+    .invoice-title span{
       font-size:12px;
+      color:var(--muted);
     }
 
-    /* SECTIONS */
-    .section{
-      margin-top:18px;
-      padding-top:14px;
+    hr{
+      border:none;
       border-top:1px solid var(--border);
+      margin:14px 0;
     }
 
-    .row{
-      display:flex;
-      justify-content:space-between;
+    .info{
       font-size:13px;
-      margin-bottom:6px;
+      margin-bottom:16px;
     }
 
-    /* ITEMS */
-    .item{
-      display:flex;
-      justify-content:space-between;
+    .info div{
+      margin-bottom:4px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
       font-size:13px;
-      margin-bottom:6px;
+    }
+
+    th, td{
+      text-align:left;
+      padding:8px 4px;
+      border-bottom:1px solid var(--border);
+    }
+
+    th{
+      font-size:12px;
+      text-transform:uppercase;
+      color:var(--muted);
     }
 
     .total{
+      text-align:right;
       font-size:16px;
-      font-weight:700;
-      margin-top:10px;
+      font-weight:600;
+      margin-top:14px;
     }
 
-    /* MESSAGE */
-    .notice{
+    .status{
       margin-top:18px;
-      background:var(--soft);
-      padding:14px;
-      border-radius:12px;
+      padding:12px;
+      background:#F7F5F2;
+      border-radius:10px;
       font-size:13px;
-      line-height:1.6;
     }
 
-    /* ACTIONS */
-    .actions{
+    .footer-note{
       margin-top:20px;
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+    }
+
+    /* ===== ACTIONS ===== */
+    .actions{
+      max-width:800px;
+      margin:0 auto 20px;
+      padding:14px;
       display:flex;
       gap:10px;
     }
 
     .btn{
       flex:1;
-      height:44px;
+      height:46px;
       border-radius:999px;
       border:none;
-      font-size:14px;
       font-weight:600;
       cursor:pointer;
     }
@@ -133,132 +152,137 @@
     }
 
     .secondary{
-      background:transparent;
+      background:#fff;
       border:1px solid var(--border);
-    }
-
-    @media print{
-      body{background:#fff;padding:0}
-      .actions{display:none}
-      .invoice{border:none}
     }
   </style>
 </head>
 
 <body>
 
-<div class="invoice" id="invoice">
+<header>FACTURE</header>
 
-  <!-- HEADER -->
-  <div class="header">
-    <img src="icons/logo/logo.png" alt="Become" class="logo">
-    <div class="badge" id="orderNumber">—</div>
-  </div>
+<!-- ================= FACTURE ================= -->
+<div id="invoice">
 
-  <h1>FACTURE</h1>
-  <div class="muted" id="date">—</div>
+  <div class="top">
+    <div class="logo">
+      <img src="icons/logo/logo.png" alt="Become">
+    </div>
 
-  <!-- CLIENT -->
-  <div class="section">
-    <div class="row"><strong>Client</strong></div>
-    <div class="row"><span id="clientName">—</span></div>
-    <div class="row"><span id="clientPhone">—</span></div>
-    <div class="row muted" id="clientAddress">—</div>
-  </div>
-
-  <!-- ITEMS -->
-  <div class="section">
-    <div class="row"><strong>Articles</strong></div>
-    <div id="items"></div>
-    <div class="row total" id="total">—</div>
-  </div>
-
-  <!-- STATUS -->
-  <div class="section">
-    <div class="row">
-      <span>Statut</span>
-      <strong id="status">—</strong>
+    <div class="invoice-title">
+      <h2>BECOME</h2>
+      <span id="orderNumber">—</span>
     </div>
   </div>
 
-  <!-- MESSAGE -->
-  <div class="notice">
-    Merci pour votre commande chez <strong>BECOME</strong> 🤍<br><br>
-    Cette commande est en attente de paiement.<br>
-    Veuillez procéder au paiement via <strong>Mobile Money</strong> ou
-    nous contacter sur <strong>WhatsApp</strong> pour finaliser.<br><br>
-    Vous pourrez suivre l’évolution de votre commande directement
-    dans votre espace client.
+  <hr>
+
+  <div class="info">
+    <div><strong>Date :</strong> <span id="date"></span></div>
+    <div><strong>Client :</strong> <span id="clientName"></span></div>
+    <div><strong>Téléphone :</strong> <span id="clientPhone"></span></div>
+    <div><strong>Adresse :</strong> <span id="clientAddress"></span></div>
   </div>
 
-  <!-- ACTIONS -->
-  <div class="actions">
-    <button class="btn secondary" onclick="location.href='user.html'">
-      Retour
-    </button>
-    <button class="btn primary" onclick="window.print()">
-      Télécharger PDF
-    </button>
+  <table>
+    <thead>
+      <tr>
+        <th>Article</th>
+        <th>Qté</th>
+        <th>Prix</th>
+      </tr>
+    </thead>
+    <tbody id="items"></tbody>
+  </table>
+
+  <div class="total" id="total"></div>
+
+  <div class="status">
+    💬 Paiement manuel — veuillez nous contacter pour finaliser le paiement.<br>
+    📦 Suivez l’évolution de votre commande dans l’application.
+  </div>
+
+  <div class="footer-note">
+    Merci pour votre confiance — Become
   </div>
 
 </div>
 
+<!-- ================= ACTIONS ================= -->
+<div class="actions">
+  <button class="btn secondary" onclick="location.href='index.html'">
+    Retour boutique
+  </button>
+  <button class="btn primary" id="pdfBtn">
+    Télécharger PDF
+  </button>
+</div>
+
 <script type="module">
-import { auth, db } from "./js/firebase.config.js";
-import { onAuthStateChanged } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { db } from "./js/firebase.config.js";
 import { doc, getDoc } from
   "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ===== PARAM ===== */
 const params = new URLSearchParams(location.search);
 const orderId = params.get("orderId");
-if(!orderId) location.href="index.html";
 
-/* ===== AUTH ===== */
-onAuthStateChanged(auth, async user=>{
-  if(!user){
-    location.href="login.html";
-    return;
-  }
+if(!orderId){
+  location.href="index.html";
+}
 
-  const snap = await getDoc(doc(db,"orders",orderId));
-  if(!snap.exists()){
-    alert("Facture introuvable");
-    location.href="index.html";
-    return;
-  }
+/* ===== LOAD ORDER ===== */
+const ref = doc(db,"orders",orderId);
+const snap = await getDoc(ref);
 
-  const o = snap.data();
+if(!snap.exists()){
+  alert("Facture introuvable");
+  location.href="index.html";
+}
 
-  document.getElementById("orderNumber").textContent = o.orderNumber;
-  document.getElementById("date").textContent =
-    new Date(o.createdAt.seconds*1000).toLocaleString();
+const o = snap.data();
 
-  document.getElementById("clientName").textContent = o.customer.name;
-  document.getElementById("clientPhone").textContent = o.customer.phone;
-  document.getElementById("clientAddress").textContent =
-    o.customer.address || "";
+/* ===== FILL ===== */
+document.getElementById("orderNumber").textContent = o.orderNumber;
 
-  const itemsEl = document.getElementById("items");
-  let total = 0;
+document.getElementById("date").textContent =
+  new Date().toLocaleString("fr-FR");
 
-  o.items.forEach(p=>{
-    total += p.price * p.qty;
-    itemsEl.innerHTML += `
-      <div class="item">
-        <span>${p.title} × ${p.qty}</span>
-        <span>${(p.price*p.qty).toLocaleString()} CDF</span>
-      </div>
-    `;
-  });
+document.getElementById("clientName").textContent = o.customer.name;
+document.getElementById("clientPhone").textContent = o.customer.phone;
+document.getElementById("clientAddress").textContent =
+  o.customer.address || "-";
 
-  document.getElementById("total").textContent =
-    `Total : ${total.toLocaleString()} CDF`;
+const itemsEl = document.getElementById("items");
+let total = 0;
 
-  document.getElementById("status").textContent =
-    o.status === "pending" ? "En attente de paiement" : o.status;
+o.items.forEach(p=>{
+  total += p.price * p.qty;
+  itemsEl.innerHTML += `
+    <tr>
+      <td>${p.title}</td>
+      <td>${p.qty}</td>
+      <td>${(p.price*p.qty).toLocaleString()} CDF</td>
+    </tr>
+  `;
 });
+
+document.getElementById("total").textContent =
+  `Total : ${total.toLocaleString()} CDF`;
+
+/* ===== PDF ===== */
+document.getElementById("pdfBtn").onclick = ()=>{
+  const el = document.getElementById("invoice");
+
+  html2pdf().set({
+    margin:0.4,
+    filename:`FACTURE-${o.orderNumber}.pdf`,
+    image:{ type:"jpeg", quality:0.98 },
+    html2canvas:{ scale:2, useCORS:true },
+    jsPDF:{ unit:"cm", format:"a4", orientation:"portrait" }
+  }).from(el).save();
+};
 </script>
 
 </body>
