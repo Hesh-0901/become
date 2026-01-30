@@ -149,11 +149,11 @@
   }
 
   /* OPTIMISATION PDF */
-  @media print {
-    body { padding: 0; background: white; }
-    .card { box-shadow: none; }
-    .invoice-content { padding: 40px 50px; min-height: 100%; }
-    .actions { display: none; }
+@media print {
+    @page { margin: 0; } /* Supprime les en-têtes/pieds de page du navigateur */
+    body { margin: 0; padding: 0; }
+    .page { max-width: 100%; margin: 0; }
+    .card { box-shadow: none; border: none; }
   }
 
   .actions { margin-top: 30px; display: flex; gap: 15px; justify-content: center; padding-bottom: 40px; }
