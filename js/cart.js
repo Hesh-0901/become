@@ -1,16 +1,14 @@
 import { auth } from "./firebase.config.js";
-import { onAuthStateChanged } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 let CART_KEY = null;
 
-/* ================= INIT ================= */
-export function initCart() {
-  onAuthStateChanged(auth, user => {
-    if (!user) return;
-    CART_KEY = `cart_${user.uid}`;
-  });
-}
+/* ================= INIT AUTO ================= */
+onAuthStateChanged(auth, user => {
+  if (!user) return;
+  CART_KEY = `cart_${user.uid}`;
+});
 
 /* ================= UTILS ================= */
 function getCart() {
@@ -25,6 +23,8 @@ function saveCart(cart) {
 
 /* ================= PUBLIC ================= */
 export function addToCart(product) {
+  if (!CART_KEY) return;
+
   const cart = getCart();
   const found = cart.find(p => p.id === product.id);
 
@@ -38,4 +38,13 @@ export function addToCart(product) {
   }
 
   saveCart(cart);
+}
+
+export function getUserCart() {
+  return getCart();
+}
+
+export function clearCart() {
+  if (!CART_KEY) return;
+  localStorage.removeItem(CART_KEY);
 }
