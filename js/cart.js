@@ -1,13 +1,29 @@
-// js/cart.js
+import { auth } from "./firebase.config.js";
+import { onAuthStateChanged } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-export function getCart() {
-  return JSON.parse(localStorage.getItem("cart") || "[]");
+let CART_KEY = null;
+
+/* ================= INIT ================= */
+export function initCart() {
+  onAuthStateChanged(auth, user => {
+    if (!user) return;
+    CART_KEY = `cart_${user.uid}`;
+  });
 }
 
-export function saveCart(cart) {
-  localStorage.setItem("cart", JSON.stringify(cart));
+/* ================= UTILS ================= */
+function getCart() {
+  if (!CART_KEY) return [];
+  return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
 }
 
+function saveCart(cart) {
+  if (!CART_KEY) return;
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+/* ================= PUBLIC ================= */
 export function addToCart(product) {
   const cart = getCart();
   const found = cart.find(p => p.id === product.id);
@@ -16,34 +32,10 @@ export function addToCart(product) {
     found.qty += 1;
   } else {
     cart.push({
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      image: product.image,
+      ...product,
       qty: 1
     });
   }
 
   saveCart(cart);
-}
-
-export function removeFromCart(index) {
-  const cart = getCart();
-  cart.splice(index, 1);
-  saveCart(cart);
-}
-
-export function changeQty(index, delta) {
-  const cart = getCart();
-  cart[index].qty += delta;
-  if (cart[index].qty <= 0) cart.splice(index, 1);
-  saveCart(cart);
-}
-
-export function getCartCount() {
-  return getCart().reduce((sum, p) => sum + p.qty, 0);
-}
-
-export function clearCart() {
-  localStorage.removeItem("cart");
 }
