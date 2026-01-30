@@ -87,9 +87,12 @@
 <script type="module">
 /* ================= IMPORTS ================= */
 import { db } from "./js/firebase.config.js";
-import { addToCart } from "./js/cart.js";
+import { initCart, addToCart } from "./js/cart.js";
 import { doc, getDoc } from
   "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ================= INIT PANIER (OBLIGATOIRE) ================= */
+initCart();
 
 /* ================= UTILS ================= */
 const params = new URLSearchParams(location.search);
@@ -150,7 +153,7 @@ buyBtn.onclick = () => {
     image: p.imageUrl
   });
 
-  window.location.href = "checkout.html";
+  location.href = "checkout.html";
 };
 </script>
 
