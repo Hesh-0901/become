@@ -295,28 +295,55 @@
 
       html2pdf().set(opt).from(element).save();
 
-      // 2. ENVOI WHATSAPP (Après un court délai pour laisser le PDF se lancer)
+// ACTION UNIQUE : PDF + WHATSAPP
+    document.getElementById("mainActionBtn").onclick = () => {
+      
+      // 1. GENERATION DU PDF
+      const element = document.getElementById("invoice");
+      const opt = {
+        margin: 0,
+        filename: `Facture_Become_${o.orderNumber}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 3, useCORS: true, scrollY: 0, y: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save();
+
+      // 2. ENVOI WHATSAPP (Optimisé pour faciliter l'envoi du PDF)
       setTimeout(() => {
-        const monNumero = "243904128569"; // ⚠️ METS TON NUMERO ICI
+        const monNumero = "243904128569"; 
+        
         const message = 
-`Bonjour l'équipe Become !
-Je me suis décidé d'aller au bout de ma demande,
+`✨ *VALIDATION DE COMMANDE | BECOME* ✨
+_________________________________________
 
-✨ *NOUVELLE COMMANDE - BECOME* ✨
-📑 *Facture :* #${o.orderNumber}
-👤 *Client :* ${o.customer.name}
-📍 *Lieu :* ${o.customer.address || "Lubumbashi, RDC"}
+Bonjour l'équipe Become, 
 
---- *DÉTAILS* ---
+Je viens de finaliser ma sélection. Voici les détails de ma commande :
+
+📍 *RÉFÉRENCES*
+• *N° Facture :* #${o.orderNumber}
+• *Client :* ${o.customer.name}
+• *Destination :* ${o.customer.address || "Lubumbashi, RDC"}
+
+👕 *MA SÉLECTION*
 ${detailsArticles}
-💰 *TOTAL : ${total.toLocaleString()} CDF*
+_________________________________________
 
-✅ _Le client a généré sa facture officielle._
-🚀 _En attente de confirmation de paiement._
+💰 *MONTANT TOTAL : ${total.toLocaleString()} CDF*
 
-*J'attends votre confirmation pour les modalités de paiement.*
+✅ _Ma facture PDF a été générée._
+📎 _Je vous la joins à ce message pour confirmation._
 
-*Votre client !*`;
+⏳ *Merci de me transmettre les modalités de paiement pour finaliser mon achat.*
+
+*Hâte de recevoir mes articles !*`;
+
+        const url = `https://wa.me/${monNumero}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+      }, 1500); 
+    };
 
         const url = `https://wa.me/${monNumero}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
