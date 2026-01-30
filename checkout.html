@@ -174,40 +174,51 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ===== AUTH ===== */
+/* ================= AUTH ================= */
 let USER = null;
-onAuthStateChanged(auth, user=>{
-  if(!user){
-    location.href="login.html";
+let CART_KEY = null;
+let cart = [];
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    location.href = "login.html";
     return;
   }
+
   USER = user;
+  CART_KEY = `cart_${user.uid}`;
+  cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+
+  if (cart.length === 0) {
+    location.href = "panier.html";
+    return;
+  }
+
+  renderRecap();
 });
 
-/* ===== PANIER ===== */
-const CART_KEY = localStorage.getItem("lastCartKey");
-const cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+/* ================= RÉCAP ================= */
+function renderRecap() {
+  const recap = document.getElementById("recap");
+  const totalEl = document.getElementById("total");
 
-if(cart.length === 0){
-  location.href="panier.html";
+  let total = 0;
+  recap.innerHTML = "";
+
+  cart.forEach(p => {
+    total += p.price * p.qty;
+    recap.innerHTML += `
+      <div class="item">
+        <span>${p.title} × ${p.qty}</span>
+        <span>${(p.price * p.qty).toLocaleString()} CDF</span>
+      </div>
+    `;
+  });
+
+  totalEl.textContent = `Total : ${total.toLocaleString()} CDF`;
 }
 
-const recap = document.getElementById("recap");
-const totalEl = document.getElementById("total");
-
-let total = 0;
-cart.forEach(p=>{
-  total += p.price * p.qty;
-  recap.innerHTML += `
-    <div class="item">
-      <span>${p.title} × ${p.qty}</span>
-      <span>${(p.price*p.qty).toLocaleString()} CDF</span>
-    </div>
-  `;
-});
-totalEl.textContent = `Total : ${total.toLocaleString()} CDF`;
-
-/* ===== NUMÉRO DE COMMANDE ===== */
+/* ================= NUMÉRO COMMANDE ================= */
 function generateOrderNumber(){
   const d = new Date();
   const jj = String(d.getDate()).padStart(2,"0");
@@ -218,31 +229,31 @@ function generateOrderNumber(){
   return `BECOME-${jj}${mm}-${String(count).padStart(3,"0")}`;
 }
 
-/* ===== CONFIRM ===== */
-document.getElementById("confirmBtn").onclick = async ()=>{
+/* ================= CONFIRM ================= */
+document.getElementById("confirmBtn").onclick = async () => {
   const name = document.getElementById("name").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const address = document.getElementById("address").value.trim();
 
-  if(!name || !phone){
+  if (!name || !phone) {
     alert("Veuillez remplir les informations");
     return;
   }
 
   const orderNumber = generateOrderNumber();
+  const total = cart.reduce((s,p)=>s+p.price*p.qty,0);
 
   const ref = await addDoc(collection(db,"orders"),{
     orderNumber,
     userId: USER.uid,
     items: cart,
     total,
-    customer:{ name, phone, address },
-    status:"pending",
+    customer: { name, phone, address },
+    status: "pending",
     createdAt: serverTimestamp()
   });
 
   localStorage.removeItem(CART_KEY);
-
   location.href = `facture.html?orderId=${ref.id}`;
 };
 </script>
