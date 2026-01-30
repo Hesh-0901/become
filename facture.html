@@ -25,7 +25,7 @@
     background: var(--bg);
     font-family: 'Inter', -apple-system, sans-serif;
     color: var(--text-main);
-    padding: 40px 15px;
+    padding: 20px 15px; /* Réduit pour éviter le vide en haut */
   }
 
   .page { max-width: 850px; margin: 0 auto; }
@@ -35,9 +35,10 @@
     border-radius: 2px;
     box-shadow: 0 30px 60px rgba(0,0,0,0.08);
     position: relative;
+    /* Suppression des marges externes pour le PDF */
+    margin: 0; 
   }
 
-  /* Liseré supérieur premium */
   .card::before {
     content: "";
     position: absolute;
@@ -46,14 +47,15 @@
     background: var(--accent);
   }
 
-  .invoice-content { padding: 60px; }
+  .invoice-content { padding: 40px 50px; }
 
-  /* ===== HEADER: LOGO AGRANDI & IDENTITÉ ===== */
+  /* ===== HEADER: LOGO AGRANDI & PLUS BAS ===== */
   .header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
+    padding-top: 20px; /* Abaisse le logo et le texte du haut */
   }
 
   .brand-container {
@@ -63,13 +65,13 @@
   }
 
   .brand img {
-    height: 120px; /* Grand format x3 */
+    height: 160px; /* Agrandissement x2 supplémentaire (total ~x4) */
     width: auto;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
   }
 
   .brand-name {
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 800;
     letter-spacing: 5px;
     text-transform: uppercase;
@@ -85,16 +87,16 @@
     margin-top: 4px;
   }
 
-  .invoice-meta { text-align: right; }
+  .invoice-meta { text-align: right; margin-top: 10px; }
   .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 4px; }
   .meta-value { font-size: 15px; font-weight: 600; margin-bottom: 15px; color: var(--primary); }
 
-  /* ===== GRIDS & SECTIONS ===== */
+  /* ===== SECTIONS ===== */
   .section-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
     gap: 40px;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
   }
 
   .section-title {
@@ -111,14 +113,13 @@
   .client { font-size: 14px; line-height: 1.6; }
   #name { font-size: 18px; font-weight: 700; margin-bottom: 5px; }
 
-  /* ===== TABLEAU DES ARTICLES ===== */
-  table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-  th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); padding: 15px 0; border-bottom: 1px solid var(--primary); }
-  td { padding: 20px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+  /* ===== TABLEAU ===== */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); padding: 12px 0; border-bottom: 1px solid var(--primary); }
+  td { padding: 18px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
   td:last-child { text-align: right; font-weight: 600; }
 
-  /* ===== TOTAL ===== */
-  .total-wrapper { display: flex; justify-content: flex-end; margin-top: 20px; }
+  .total-wrapper { display: flex; justify-content: flex-end; }
   .total-box { text-align: right; }
   .total-value {
     font-size: 28px;
@@ -126,29 +127,29 @@
     color: var(--accent);
     border-top: 2px solid var(--primary);
     padding-top: 10px;
-    margin-top: 10px;
+    margin-top: 5px;
     display: inline-block;
-    min-width: 220px;
+    min-width: 200px;
   }
 
-  /* ===== ZONE SIGNATURE (MISE À JOUR) ===== */
+  /* ===== SIGNATURE ABAISSÉE ===== */
   .signature-container {
-    margin-top: 60px;
+    margin-top: 100px; /* Abaisse la signature */
     display: flex;
     justify-content: flex-end;
   }
 
   .signature-box {
-    width: 220px;
+    width: 240px;
     text-align: center;
   }
 
   .signature-img {
-    width: 200px; /* Taille adaptée pour ne pas déformer le layout */
+    width: 210px; 
     height: auto;
     display: block;
-    margin: 0 auto 10px auto;
-    mix-blend-mode: multiply; /* Permet d'enlever le fond blanc si l'image est sur fond blanc */
+    margin: 0 auto 5px auto;
+    mix-blend-mode: multiply;
   }
 
   .signature-line {
@@ -165,9 +166,8 @@
     color: var(--primary);
   }
 
-  /* ===== NOTES & ACTIONS ===== */
   .note {
-    margin-top: 50px;
+    margin-top: 60px;
     font-size: 11px;
     color: var(--text-muted);
     line-height: 1.6;
@@ -185,16 +185,16 @@
     text-transform: uppercase; 
     cursor: pointer; 
     border: none;
-    transition: all 0.2s ease;
   }
 
   .back { background: #fff; border: 1px solid #ddd; color: var(--text-main); }
-  .back:hover { border-color: var(--primary); background: #fafafa; }
-
   .pdf { background: var(--primary); color: #fff; }
-  .pdf:hover { background: var(--accent); transform: translateY(-1px); }
 
-  @media print { .actions { display: none; } }
+  /* Assure que le PDF capture exactement l'aspect visuel */
+  @media print {
+    body { background: white; padding: 0; }
+    .card { box-shadow: none; }
+  }
 </style>
 </head>
 <body>
@@ -271,7 +271,6 @@
         Merci pour votre confiance.<br>
         Cette facture est un document officiel de l'établissement Become.
       </div>
-
     </div>
   </div>
 
@@ -280,6 +279,7 @@
     <button class="pdf" id="pdfBtn">Télécharger PDF</button>
   </div>
 </div>
+
 <script type="module">
   import { db } from "./js/firebase.config.js";
   import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -323,11 +323,17 @@
 
     document.getElementById("pdfBtn").onclick = () => {
       const element = document.getElementById("invoice");
+      // Utilisation d'options précises pour coller à l'affichage écran
       html2pdf().set({
-        margin: 0,
+        margin: [0, 0, 0, 0], // Pas de marges PDF pour éviter le vide en haut
         filename: `BECOME_FACTURE_${o.orderNumber}.pdf`,
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, useCORS: true },
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true, 
+          scrollY: 0, 
+          windowWidth: document.documentElement.offsetWidth 
+        },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       }).from(element).save();
     };
