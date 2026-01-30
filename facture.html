@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Facture — Become</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
@@ -25,18 +24,16 @@
     background: var(--bg);
     font-family: 'Inter', -apple-system, sans-serif;
     color: var(--text-main);
-    padding: 20px 15px; /* Réduit pour éviter le vide en haut */
+    padding: 10px; /* Réduit pour éviter tout décalage */
   }
 
-  .page { max-width: 850px; margin: 0 auto; }
+  .page { max-width: 800px; margin: 0 auto; }
 
   .card {
     background: var(--card);
     border-radius: 2px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.08);
     position: relative;
-    /* Suppression des marges externes pour le PDF */
-    margin: 0; 
+    margin: 0;
   }
 
   .card::before {
@@ -47,154 +44,107 @@
     background: var(--accent);
   }
 
+  /* Padding interne flexible */
   .invoice-content { padding: 40px 50px; }
 
-  /* ===== HEADER: LOGO AGRANDI & PLUS BAS ===== */
   .header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 40px;
-    padding-top: 20px; /* Abaisse le logo et le texte du haut */
-  }
-
-  .brand-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    margin-bottom: 30px;
+    padding-top: 10px;
   }
 
   .brand img {
-    height: 160px; /* Agrandissement x2 supplémentaire (total ~x4) */
+    height: 140px; /* Équilibre entre visibilité et espace */
     width: auto;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
 
   .brand-name {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 800;
     letter-spacing: 5px;
     text-transform: uppercase;
     margin: 0;
-    color: var(--primary);
   }
 
   .brand-tagline {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--text-muted);
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    margin-top: 4px;
   }
 
-  .invoice-meta { text-align: right; margin-top: 10px; }
-  .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 4px; }
-  .meta-value { font-size: 15px; font-weight: 600; margin-bottom: 15px; color: var(--primary); }
+  .invoice-meta { text-align: right; }
+  .meta-label { font-size: 9px; text-transform: uppercase; color: var(--text-muted); }
+  .meta-value { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
 
-  /* ===== SECTIONS ===== */
   .section-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
-    gap: 40px;
-    margin-bottom: 40px;
+    gap: 30px;
+    margin-bottom: 30px;
   }
 
   .section-title {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     color: var(--accent);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
+    padding-bottom: 5px;
   }
 
-  .client { font-size: 14px; line-height: 1.6; }
-  #name { font-size: 18px; font-weight: 700; margin-bottom: 5px; }
-
-  /* ===== TABLEAU ===== */
-  table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
-  th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); padding: 12px 0; border-bottom: 1px solid var(--primary); }
-  td { padding: 18px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+  th { text-align: left; font-size: 10px; text-transform: uppercase; color: var(--text-muted); padding: 10px 0; border-bottom: 1px solid var(--primary); }
+  td { padding: 12px 0; font-size: 13px; border-bottom: 1px solid var(--border); }
   td:last-child { text-align: right; font-weight: 600; }
 
   .total-wrapper { display: flex; justify-content: flex-end; }
-  .total-box { text-align: right; }
   .total-value {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 800;
     color: var(--accent);
     border-top: 2px solid var(--primary);
-    padding-top: 10px;
-    margin-top: 5px;
-    display: inline-block;
-    min-width: 200px;
+    padding-top: 5px;
+    min-width: 180px;
+    text-align: right;
   }
 
-  /* ===== SIGNATURE ABAISSÉE ===== */
   .signature-container {
-    margin-top: 100px; /* Abaisse la signature */
+    margin-top: 50px; /* Réduit pour laisser de la place aux articles */
     display: flex;
     justify-content: flex-end;
   }
 
-  .signature-box {
-    width: 240px;
-    text-align: center;
-  }
-
-  .signature-img {
-    width: 210px; 
-    height: auto;
-    display: block;
-    margin: 0 auto 5px auto;
-    mix-blend-mode: multiply;
-  }
-
-  .signature-line {
-    border-top: 1px solid var(--primary);
-    margin-top: 5px;
-    padding-top: 8px;
-  }
-
-  .signature-label {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--primary);
-  }
+  .signature-box { width: 200px; text-align: center; }
+  .signature-img { width: 160px; height: auto; display: block; margin: 0 auto; mix-blend-mode: multiply; }
+  .signature-line { border-top: 1px solid var(--primary); margin-top: 2px; padding-top: 5px; }
+  .signature-label { font-size: 9px; font-weight: 700; text-transform: uppercase; }
 
   .note {
-    margin-top: 60px;
-    font-size: 11px;
+    margin-top: 30px;
+    font-size: 10px;
     color: var(--text-muted);
-    line-height: 1.6;
     border-left: 2px solid var(--accent);
     padding-left: 15px;
   }
 
-  .actions { margin-top: 30px; display: flex; gap: 15px; justify-content: center; }
-  
-  button { 
-    padding: 14px 30px; 
-    border-radius: 4px; 
-    font-size: 12px; 
-    font-weight: 700; 
-    text-transform: uppercase; 
-    cursor: pointer; 
-    border: none;
-  }
-
-  .back { background: #fff; border: 1px solid #ddd; color: var(--text-main); }
-  .pdf { background: var(--primary); color: #fff; }
-
-  /* Assure que le PDF capture exactement l'aspect visuel */
+  /* FORCE LA PAGE UNIQUE AU MOMENT DE L'EXPORT */
   @media print {
-    body { background: white; padding: 0; }
-    .card { box-shadow: none; }
+    html, body { height: 99%; overflow: hidden; }
+    .invoice-content { padding: 20px 40px; }
+    .card { box-shadow: none; border: none; }
+    .actions { display: none; }
   }
+
+  .actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
+  button { padding: 12px 25px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; cursor: pointer; border: none; }
+  .back { background: #fff; border: 1px solid #ddd; }
+  .pdf { background: var(--primary); color: #fff; }
 </style>
 </head>
 <body>
@@ -205,13 +155,10 @@
       
       <div class="header">
         <div class="brand-container">
-          <div class="brand">
-            <img src="icons/logo/logo.png" alt="Become Logo">
-          </div>
+          <div class="brand"><img src="icons/logo/logo.png" alt="Become Logo"></div>
           <h2 class="brand-name">BECOME</h2>
           <span class="brand-tagline">Boutique d'habillement</span>
         </div>
-        
         <div class="invoice-meta">
           <div class="meta-label">Facture N°</div>
           <div class="meta-value" id="orderNumber">---</div>
@@ -224,7 +171,7 @@
         <div class="section">
           <div class="section-title">Client</div>
           <div class="client">
-            <div id="name">---</div>
+            <div id="name" style="font-size:16px;">---</div>
             <div id="phone">---</div>
             <div id="address">---</div>
           </div>
@@ -232,7 +179,7 @@
         <div class="section">
           <div class="section-title">Paiement</div>
           <div class="client">
-            Virement ou Paiement Manuel<br>
+            Virement / Manuel<br>
             <span style="color: var(--accent); font-weight: 600;">Status : En attente</span>
           </div>
         </div>
@@ -253,7 +200,7 @@
 
         <div class="total-wrapper">
           <div class="total-box">
-            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">MONTANT TOTAL</div>
+            <div style="font-size: 10px; font-weight: 700; color: var(--text-muted);">MONTANT TOTAL</div>
             <div class="total-value" id="total">0 CDF</div>
           </div>
         </div>
@@ -268,8 +215,7 @@
       </div>
 
       <div class="note">
-        Merci pour votre confiance.<br>
-        Cette facture est un document officiel de l'établissement Become.
+        Merci pour votre confiance. Document officiel Become.
       </div>
     </div>
   </div>
@@ -289,56 +235,34 @@
   if(!orderId) location.href="index.html";
 
   const snap = await getDoc(doc(db, "orders", orderId));
-  if(!snap.exists()) {
-    location.href="index.html";
-  } else {
+  if(snap.exists()) {
     const o = snap.data();
-
     document.getElementById("orderNumber").textContent = o.orderNumber;
-    document.getElementById("date").textContent = new Date().toLocaleDateString("fr-FR", {
-      day: 'numeric', month: 'long', year: 'numeric'
-    });
-
+    document.getElementById("date").textContent = new Date().toLocaleDateString("fr-FR", {day:'numeric', month:'long', year:'numeric'});
     document.getElementById("name").textContent = o.customer.name;
     document.getElementById("phone").textContent = o.customer.phone;
     document.getElementById("address").textContent = o.customer.address || "";
 
     let total = 0;
     const itemsEl = document.getElementById("items");
-    itemsEl.innerHTML = "";
-
     o.items.forEach(p => {
       const lineTotal = p.price * p.qty;
       total += lineTotal;
-      itemsEl.innerHTML += `
-        <tr>
-          <td><span style="font-weight:600;">${p.title}</span></td>
-          <td style="text-align:center">${p.qty}</td>
-          <td>${lineTotal.toLocaleString()} CDF</td>
-        </tr>
-      `;
+      itemsEl.innerHTML += `<tr><td><span style="font-weight:600;">${p.title}</span></td><td style="text-align:center">${p.qty}</td><td>${lineTotal.toLocaleString()} CDF</td></tr>`;
     });
-
     document.getElementById("total").textContent = `${total.toLocaleString()} CDF`;
 
     document.getElementById("pdfBtn").onclick = () => {
       const element = document.getElementById("invoice");
-      // Utilisation d'options précises pour coller à l'affichage écran
       html2pdf().set({
-        margin: [0, 0, 0, 0], // Pas de marges PDF pour éviter le vide en haut
+        margin: [5, 5, 5, 5], // Petite marge de sécurité pour l'imprimante
         filename: `BECOME_FACTURE_${o.orderNumber}.pdf`,
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { 
-          scale: 2, 
-          useCORS: true, 
-          scrollY: 0, 
-          windowWidth: document.documentElement.offsetWidth 
-        },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       }).from(element).save();
     };
   }
 </script>
-
 </body>
 </html>
