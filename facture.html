@@ -247,7 +247,6 @@
     <button class="confirm-btn" id="mainActionBtn">Confirmer votre commande</button>
   </div>
 </div>
-
 <script type="module">
   import { db } from "./js/firebase.config.js";
   import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -257,10 +256,11 @@
   if(!orderId) location.href="index.html";
 
   const snap = await getDoc(doc(db, "orders", orderId));
+
   if(snap.exists()) {
     const o = snap.data();
-    const formattedTotal = Number(o.total || 0).toLocaleString();
-
+    
+    // Remplissage des infos de base
     document.getElementById("orderNumber").textContent = o.orderNumber;
     document.getElementById("date").textContent = new Date().toLocaleDateString("fr-FR", {day:'numeric', month:'long', year:'numeric'});
     document.getElementById("name").textContent = o.customer.name;
@@ -271,31 +271,17 @@
     let detailsArticles = "";
     const itemsEl = document.getElementById("items");
     
+    // Boucle sur les articles
     o.items.forEach(p => {
       const lineTotal = p.price * p.qty;
       total += lineTotal;
-      detailsArticles += `🏷️ ${p.qty}x ${p.title}\n`;
+      detailsArticles += `• ${p.qty}x ${p.title}\n`; // Format propre pour WhatsApp
       itemsEl.innerHTML += `<tr><td><span style="font-weight:600; color:var(--primary);">${p.title}</span></td><td style="text-align:center">${p.qty}</td><td>${lineTotal.toLocaleString()} CDF</td></tr>`;
     });
     
     document.getElementById("total").textContent = `${total.toLocaleString()} CDF`;
 
     // ACTION UNIQUE : PDF + WHATSAPP
-    document.getElementById("mainActionBtn").onclick = () => {
-      
-      // 1. GENERATION PDF
-      const element = document.getElementById("invoice");
-      const opt = {
-        margin: 0,
-        filename: `Facture_Become_${o.orderNumber}.pdf`,
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, useCORS: true, scrollY: 0, y: 0 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-
-      html2pdf().set(opt).from(element).save();
-
-// ACTION UNIQUE : PDF + WHATSAPP
     document.getElementById("mainActionBtn").onclick = () => {
       
       // 1. GENERATION DU PDF
@@ -310,7 +296,7 @@
 
       html2pdf().set(opt).from(element).save();
 
-      // 2. ENVOI WHATSAPP (Optimisé pour faciliter l'envoi du PDF)
+      // 2. ENVOI WHATSAPP (Après 1.5s)
       setTimeout(() => {
         const monNumero = "243904128569"; 
         
@@ -343,11 +329,6 @@ _________________________________________
         const url = `https://wa.me/${monNumero}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
       }, 1500); 
-    };
-
-        const url = `https://wa.me/${monNumero}?text=${encodeURIComponent(message)}`;
-        window.open(url, '_blank');
-      }, 1500);
     };
   }
 </script>
