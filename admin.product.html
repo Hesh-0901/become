@@ -1,195 +1,284 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Become — Ajouter un produit</title>
+  <meta charset="UTF-8" />
+  <title>Become — Ajouter un article</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#7A623F">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#141414">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    :root{
-      --bg:#E9E5DF;
-      --surface:#FFF;
-      --soft:#E6E1D9;
-      --text:#1E1E1E;
-      --muted:#6B6B6B;
-      --accent:#8B6F47;
-      --border:#D6CFC4;
+    :root {
+      --bg:#161616;--card:#1F1F1F;--soft:#262626;
+      --text:#F5F5F5;--muted:#9A9A9A;
+      --accent:#C2A16A;--border:#2E2E2E;--radius:16px;
     }
-
     *{box-sizing:border-box}
-
     body{
-      margin:0;
-      font-family:system-ui;
-      background:var(--bg);
-      color:var(--text);
-      padding-bottom:90px;
+      margin:0;font-family:system-ui;background:var(--bg);
+      color:var(--text);padding:16px;
     }
-
-    header{
-      position:sticky;
-      top:0;
-      background:var(--bg);
-      border-bottom:1px solid var(--border);
-      z-index:10;
+    .header{
+      display:flex;justify-content:space-between;align-items:center;
+      background:var(--card);border-radius:var(--radius);
+      padding:14px 16px;border:1px solid var(--border);
+      margin-bottom:20px;
     }
+    .title{font-size:14px;font-weight:600;letter-spacing:2px;color:var(--accent)}
+    .back{color:var(--accent);text-decoration:none;font-size:13px;display:flex;gap:6px}
 
-    .bar{
-      height:54px;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:0 14px;
+    .form{
+      background:var(--card);border-radius:var(--radius);
+      border:1px solid var(--border);padding:20px;
+      max-width:520px;margin:auto;
     }
-
-    .title{
-      font-weight:600;
-      letter-spacing:2px;
-      font-size:14px;
+    .group{margin-bottom:18px}
+    label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block}
+    input,textarea{
+      width:100%;background:var(--soft);border:1px solid var(--border);
+      border-radius:10px;color:var(--text);padding:10px;font-size:13px;
     }
+    textarea{min-height:80px;resize:vertical}
 
-    main{
-      padding:14px;
-      max-width:600px;
-      margin:auto;
+    .image-frame{
+      position:relative;width:100%;aspect-ratio:3/4;
+      border-radius:14px;background:var(--soft);
+      border:2px dashed var(--border);overflow:hidden;cursor:pointer;
     }
-
-    .box{
-      background:var(--surface);
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:14px;
-      margin-bottom:14px;
+    .image-frame input{position:absolute;inset:0;opacity:0;z-index:2}
+    .image-frame img{
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:cover;object-position:center 50%;display:none;
     }
-
-    label{
-      font-size:12px;
-      color:var(--muted);
-      display:block;
-      margin-bottom:4px;
+    .image-placeholder{
+      position:absolute;inset:0;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;color:var(--muted);gap:8px;
+      pointer-events:none;
     }
-
-    input, textarea{
-      width:100%;
-      padding:11px;
-      border-radius:10px;
-      border:1px solid var(--border);
-      background:var(--soft);
-      font-size:14px;
-      margin-bottom:12px;
-    }
-
-    textarea{resize:vertical}
-
-    .footer{
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      background:var(--bg);
-      border-top:1px solid var(--border);
-      padding:12px;
-    }
+    .image-placeholder i{font-size:32px;color:var(--accent)}
+    .slider{margin-top:10px;width:100%}
 
     .btn{
-      width:100%;
-      height:46px;
-      border-radius:999px;
-      border:none;
-      background:var(--accent);
-      color:#fff;
-      font-size:14px;
-      font-weight:600;
-      cursor:pointer;
+      width:100%;height:44px;border-radius:999px;border:none;
+      background:var(--accent);color:#1A1A1A;font-size:13px;
+      font-weight:600;cursor:pointer;display:flex;
+      align-items:center;justify-content:center;gap:8px;
     }
+    #statusBox {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f1f1f;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  z-index: 9999;
+  display: none;
+  max-width: 90%;
+}
+#statusBox.ok { border-color: #4caf50; color: #4caf50; }
+#statusBox.warn { border-color: #ff9800; color: #ff9800; }
+#statusBox.err { border-color: #f44336; color: #f44336; }
   </style>
 </head>
 
 <body>
+  <div id="statusBox"></div>
 
-<header>
-  <div class="bar">
-    <i class="fa-solid fa-arrow-left" onclick="history.back()"></i>
-    <div class="title">AJOUT PRODUIT</div>
-  </div>
-</header>
-
-<main>
-
-  <div class="box">
-    <label>Titre du produit</label>
-    <input id="title" placeholder="Ex : Chemise Become">
-
-    <label>Prix (CDF)</label>
-    <input id="price" type="number" placeholder="Ex : 45000">
-
-    <label>Stock</label>
-    <input id="stock" type="number" placeholder="Ex : 12">
-
-    <label>Image (URL)</label>
-    <input id="image" placeholder="https://...">
-
-    <label>Description</label>
-    <textarea id="description" rows="4"></textarea>
-  </div>
-
-</main>
-
-<div class="footer">
-  <button class="btn" id="saveBtn">Enregistrer le produit</button>
+<div class="header">
+  <div class="title">AJOUTER UN ARTICLE</div>
+  <a href="admin.html" class="back">
+    <i class="fa-solid fa-arrow-left"></i> Admin
+  </a>
 </div>
 
+<form class="form">
+
+  <div class="group">
+    <label>Photo de l’article (3:4)</label>
+    <div class="image-frame">
+      <img id="preview">
+      <div class="image-placeholder" id="placeholder">
+        <i class="fa-solid fa-image"></i>
+        <span>Ajouter une photo</span>
+      </div>
+      <input type="file" id="imageInput" accept="image/*">
+    </div>
+    <input type="range" id="positionY" min="0" max="100" value="50" class="slider">
+  </div>
+
+<div class="group"><label>Titre</label><input id="prodTitle" required></div>
+<div class="group"><label>Description</label><textarea id="prodDesc"></textarea></div>
+<div class="group"><label>Prix (CDF)</label><input type="number" id="prodPrice" min="0" required></div>
+<div class="group"><label>Stock</label><input type="number" id="prodStock" min="0" required></div>
+
+  <button class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Publier</button>
+</form>
+
 <script type="module">
-import { auth, db } from "./js/firebase.config.js";
-import { onAuthStateChanged }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  collection,
-  addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  /* ===== IMPORTS ===== */
+  import { storage, db, auth } from "./js/firebase.config.js";
 
-/* ===== AUTH ===== */
-onAuthStateChanged(auth, user=>{
-  if(!user){
-    location.href="login.html";
-  }
-});
+  import { ref, uploadBytes, getDownloadURL }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-/* ===== SAVE PRODUCT ===== */
-const saveBtn = document.getElementById("saveBtn");
+  import {
+    collection,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-saveBtn.onclick = async ()=>{
-  const title = document.getElementById("title").value.trim();
-  const price = Number(document.getElementById("price").value);
-  const stock = Number(document.getElementById("stock").value);
-  const imageUrl = document.getElementById("image").value.trim();
-  const description = document.getElementById("description").value.trim();
+  import {
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  if(!title || !price || !imageUrl){
-    alert("Champs obligatoires manquants");
-    return;
+  /* ===== UI ALERTES ===== */
+  const statusBox = document.getElementById("statusBox");
+
+  function notify(type, message) {
+    statusBox.className = type;
+    statusBox.textContent = message;
+    statusBox.style.display = "block";
+    setTimeout(() => statusBox.style.display = "none", 4000);
   }
 
-  saveBtn.textContent = "Enregistrement…";
-  saveBtn.disabled = true;
+  /* ===== AUTH ===== */
+  let currentUser = null;
 
-  await addDoc(collection(db,"products"),{
-    title,
-    price,
-    stock,
-    imageUrl,
-    description,
-    createdAt: serverTimestamp()
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      notify("err", "❌ Session expirée. Redirection…");
+      setTimeout(() => window.location.href = "login.html", 1500);
+      return;
+    }
+    currentUser = user;
   });
 
-  location.href = "admin-products.html";
-};
-</script>
+  /* ===== DOM (MODIFIÉ POUR LES IDS) ===== */
+  const input = document.getElementById("imageInput");
+  const preview = document.getElementById("preview");
+  const placeholder = document.getElementById("placeholder");
+  const slider = document.getElementById("positionY");
+  const form = document.querySelector("form");
 
+  // Sélections par ID pour éviter l'erreur "null"
+  const titleInput = document.getElementById("prodTitle");
+  const descInput = document.getElementById("prodDesc");
+  const priceInput = document.getElementById("prodPrice");
+  const stockInput = document.getElementById("prodStock");
+
+  let originalImage = null;
+
+  /* ===== IMAGE ===== */
+  input.addEventListener("change", () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    originalImage = new Image();
+    originalImage.onload = () => {
+      preview.src = originalImage.src;
+      preview.style.display = "block";
+      placeholder.style.display = "none";
+    };
+    originalImage.src = URL.createObjectURL(file);
+  });
+
+  slider.addEventListener("input", () => {
+    preview.style.objectPosition = `center ${slider.value}%`;
+  });
+
+  /* ===== SUBMIT ===== */
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!currentUser) {
+      notify("err", "❌ Non authentifié");
+      return;
+    }
+
+    if (!originalImage) {
+      notify("err", "📷 Ajoute une image");
+      return;
+    }
+
+    try {
+      const blob = await generateImage();
+      const imageUrl = await upload(blob);
+
+      await addDoc(collection(db, "products"), {
+        title: titleInput.value.trim(),
+        description: descInput.value.trim(),
+        price: Number(priceInput.value),
+        stock: Number(stockInput.value),
+        imageUrl,
+        createdAt: serverTimestamp(),
+        active: true,
+        author: currentUser.uid
+      });
+
+      notify("ok", "✅ Produit enregistré !");
+      form.reset();
+      preview.style.display = "none";
+      placeholder.style.display = "flex";
+      originalImage = null;
+
+    } catch (err) {
+      console.error(err);
+
+      if (err.code === "storage/unauthorized") {
+        notify("err", "🚫 Accès Storage refusé");
+      } else {
+        notify("err", "❌ Erreur lors de l’enregistrement");
+      }
+    }
+  });
+
+  /* ===== IMAGE PROCESS ===== */
+  function generateImage() {
+    return new Promise(resolve => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      const ratio = 3 / 4;
+      const img = originalImage;
+
+      let sw = img.width, sh = img.height;
+      let cw, ch;
+
+      if (sw / sh > ratio) {
+        ch = sh;
+        cw = sh * ratio;
+      } else {
+        cw = sw;
+        ch = sw / ratio;
+      }
+
+      const sy = (sh - ch) * (slider.value / 100);
+      const sx = (sw - cw) / 2;
+
+      canvas.width = 900;
+      canvas.height = 1200;
+
+      ctx.drawImage(img, sx, sy, cw, ch, 0, 0, 900, 1200);
+      canvas.toBlob(blob => resolve(blob), "image/jpeg", 0.9);
+    });
+  }
+
+  /* ===== STORAGE ===== */
+  async function upload(blob) {
+    const fileRef = ref(
+      storage,
+      `products/${currentUser.uid}_${Date.now()}.jpg`
+    );
+
+    await uploadBytes(fileRef, blob);
+    return await getDownloadURL(fileRef);
+  }
+</script>
 </body>
 </html>
