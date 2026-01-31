@@ -2,10 +2,10 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Admin — Produit</title>
+  <title>Become — Ajouter un produit</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#E9E5DF">
+  <meta name="theme-color" content="#7A623F">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -13,12 +13,11 @@
     :root{
       --bg:#E9E5DF;
       --surface:#FFF;
-      --soft:#F5F2EC;
+      --soft:#E6E1D9;
       --text:#1E1E1E;
       --muted:#6B6B6B;
       --accent:#8B6F47;
       --border:#D6CFC4;
-      --radius:16px;
     }
 
     *{box-sizing:border-box}
@@ -28,52 +27,75 @@
       font-family:system-ui;
       background:var(--bg);
       color:var(--text);
-      padding:16px;
+      padding-bottom:90px;
     }
 
     header{
+      position:sticky;
+      top:0;
+      background:var(--bg);
+      border-bottom:1px solid var(--border);
+      z-index:10;
+    }
+
+    .bar{
+      height:54px;
       display:flex;
       align-items:center;
       gap:12px;
-      margin-bottom:20px;
+      padding:0 14px;
     }
 
-    h1{
-      font-size:16px;
+    .title{
+      font-weight:600;
       letter-spacing:2px;
-      margin:0;
+      font-size:14px;
+    }
+
+    main{
+      padding:14px;
+      max-width:600px;
+      margin:auto;
     }
 
     .box{
       background:var(--surface);
       border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:16px;
-      max-width:600px;
-      margin:auto;
+      border-radius:14px;
+      padding:14px;
+      margin-bottom:14px;
     }
 
     label{
-      display:block;
       font-size:12px;
       color:var(--muted);
-      margin-top:14px;
+      display:block;
       margin-bottom:4px;
     }
 
     input, textarea{
       width:100%;
-      padding:10px;
+      padding:11px;
       border-radius:10px;
       border:1px solid var(--border);
       background:var(--soft);
-      font-size:13px;
+      font-size:14px;
+      margin-bottom:12px;
     }
 
     textarea{resize:vertical}
 
+    .footer{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background:var(--bg);
+      border-top:1px solid var(--border);
+      padding:12px;
+    }
+
     .btn{
-      margin-top:20px;
       width:100%;
       height:46px;
       border-radius:999px;
@@ -84,133 +106,88 @@
       font-weight:600;
       cursor:pointer;
     }
-
-    .danger{
-      background:#c0392b;
-      margin-top:10px;
-    }
-
-    .muted{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:6px;
-      text-align:center;
-    }
   </style>
 </head>
 
 <body>
 
 <header>
-  <i class="fa-solid fa-arrow-left" onclick="history.back()"></i>
-  <h1 id="pageTitle">AJOUT PRODUIT</h1>
+  <div class="bar">
+    <i class="fa-solid fa-arrow-left" onclick="history.back()"></i>
+    <div class="title">AJOUT PRODUIT</div>
+  </div>
 </header>
 
-<div class="box">
+<main>
 
-  <label>Titre</label>
-  <input id="title" placeholder="Nom du produit">
+  <div class="box">
+    <label>Titre du produit</label>
+    <input id="title" placeholder="Ex : Chemise Become">
 
-  <label>Prix (CDF)</label>
-  <input id="price" type="number" placeholder="Ex: 45000">
+    <label>Prix (CDF)</label>
+    <input id="price" type="number" placeholder="Ex : 45000">
 
-  <label>Stock</label>
-  <input id="stock" type="number" placeholder="Ex: 10">
+    <label>Stock</label>
+    <input id="stock" type="number" placeholder="Ex : 12">
 
-  <label>Image (URL)</label>
-  <input id="imageUrl" placeholder="https://...">
+    <label>Image (URL)</label>
+    <input id="image" placeholder="https://...">
 
-  <label>Description</label>
-  <textarea id="description" rows="4"></textarea>
+    <label>Description</label>
+    <textarea id="description" rows="4"></textarea>
+  </div>
 
-  <button class="btn" id="saveBtn">Enregistrer</button>
-  <button class="btn danger" id="deleteBtn" style="display:none">
-    Supprimer le produit
-  </button>
+</main>
 
-  <div class="muted" id="status"></div>
-
+<div class="footer">
+  <button class="btn" id="saveBtn">Enregistrer le produit</button>
 </div>
 
 <script type="module">
 import { auth, db } from "./js/firebase.config.js";
-import { onAuthStateChanged } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  doc, getDoc, addDoc, updateDoc, deleteDoc, collection
+  collection,
+  addDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ===== AUTH (ADMIN SIMPLE) ===== */
+/* ===== AUTH ===== */
 onAuthStateChanged(auth, user=>{
   if(!user){
     location.href="login.html";
   }
 });
 
-/* ===== MODE ===== */
-const params = new URLSearchParams(location.search);
-const productId = params.get("id");
-const isEdit = !!productId;
+/* ===== SAVE PRODUCT ===== */
+const saveBtn = document.getElementById("saveBtn");
 
-if(isEdit){
-  document.getElementById("pageTitle").textContent = "MODIFIER PRODUIT";
-  document.getElementById("deleteBtn").style.display = "block";
-}
+saveBtn.onclick = async ()=>{
+  const title = document.getElementById("title").value.trim();
+  const price = Number(document.getElementById("price").value);
+  const stock = Number(document.getElementById("stock").value);
+  const imageUrl = document.getElementById("image").value.trim();
+  const description = document.getElementById("description").value.trim();
 
-/* ===== FIELDS ===== */
-const titleEl = document.getElementById("title");
-const priceEl = document.getElementById("price");
-const stockEl = document.getElementById("stock");
-const imageEl = document.getElementById("imageUrl");
-const descEl = document.getElementById("description");
-const statusEl = document.getElementById("status");
-
-/* ===== LOAD PRODUCT ===== */
-if(isEdit){
-  const ref = doc(db,"products",productId);
-  const snap = await getDoc(ref);
-
-  if(snap.exists()){
-    const p = snap.data();
-    titleEl.value = p.title || "";
-    priceEl.value = p.price || "";
-    stockEl.value = p.stock || "";
-    imageEl.value = p.imageUrl || "";
-    descEl.value = p.description || "";
-  }
-}
-
-/* ===== SAVE ===== */
-document.getElementById("saveBtn").onclick = async ()=>{
-  const data = {
-    title: titleEl.value.trim(),
-    price: Number(priceEl.value),
-    stock: Number(stockEl.value),
-    imageUrl: imageEl.value.trim(),
-    description: descEl.value.trim()
-  };
-
-  if(!data.title || !data.price){
-    statusEl.textContent = "Titre et prix requis";
+  if(!title || !price || !imageUrl){
+    alert("Champs obligatoires manquants");
     return;
   }
 
-  if(isEdit){
-    await updateDoc(doc(db,"products",productId), data);
-    statusEl.textContent = "Produit mis à jour ✔️";
-  }else{
-    await addDoc(collection(db,"products"), data);
-    statusEl.textContent = "Produit ajouté ✔️";
-  }
+  saveBtn.textContent = "Enregistrement…";
+  saveBtn.disabled = true;
 
-  setTimeout(()=>location.href="admin-products.html", 800);
-};
+  await addDoc(collection(db,"products"),{
+    title,
+    price,
+    stock,
+    imageUrl,
+    description,
+    createdAt: serverTimestamp()
+  });
 
-/* ===== DELETE ===== */
-document.getElementById("deleteBtn").onclick = async ()=>{
-  if(!confirm("Supprimer ce produit ?")) return;
-  await deleteDoc(doc(db,"products",productId));
-  location.href="admin-products.html";
+  location.href = "admin-products.html";
 };
 </script>
 
