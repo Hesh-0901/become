@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Become — Ajouter un article</title>
+  <meta charset="UTF-8">
+  <title>Admin — Produits</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#141414">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -13,272 +13,149 @@
     :root {
       --bg:#161616;--card:#1F1F1F;--soft:#262626;
       --text:#F5F5F5;--muted:#9A9A9A;
-      --accent:#C2A16A;--border:#2E2E2E;--radius:16px;
+      --accent:#C2A16A;--border:#2E2E2E;
     }
-    *{box-sizing:border-box}
-    body{
+
+    body {
       margin:0;font-family:system-ui;background:var(--bg);
       color:var(--text);padding:16px;
     }
-    .header{
+
+    header {
       display:flex;justify-content:space-between;align-items:center;
-      background:var(--card);border-radius:var(--radius);
-      padding:14px 16px;border:1px solid var(--border);
-      margin-bottom:20px;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:14px;padding:14px 16px;margin-bottom:20px;
     }
-    .title{font-size:14px;font-weight:600;letter-spacing:2px;color:var(--accent)}
-    .back{color:var(--accent);text-decoration:none;font-size:13px;display:flex;gap:6px}
 
-    .form{
-      background:var(--card);border-radius:var(--radius);
-      border:1px solid var(--border);padding:20px;
-      max-width:520px;margin:auto;
-    }
-    .group{margin-bottom:18px}
-    label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block}
-    input,textarea{
-      width:100%;background:var(--soft);border:1px solid var(--border);
-      border-radius:10px;color:var(--text);padding:10px;font-size:13px;
-    }
-    textarea{min-height:80px;resize:vertical}
+    h1 { font-size:14px;letter-spacing:2px;color:var(--accent);margin:0; }
 
-    .image-frame{
-      position:relative;width:100%;aspect-ratio:3/4;
-      border-radius:14px;background:var(--soft);
-      border:2px dashed var(--border);overflow:hidden;cursor:pointer;
+    table {
+      width:100%;border-collapse:collapse;
+      background:var(--card);border-radius:14px;
+      overflow:hidden;border:1px solid var(--border);
     }
-    .image-frame input{position:absolute;inset:0;opacity:0;z-index:2}
-    .image-frame img{
-      position:absolute;inset:0;width:100%;height:100%;
-      object-fit:cover;object-position:center 50%;display:none;
-    }
-    .image-placeholder{
-      position:absolute;inset:0;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;color:var(--muted);gap:8px;
-      pointer-events:none;
-    }
-    .image-placeholder i{font-size:32px;color:var(--accent)}
-    .slider{margin-top:10px;width:100%}
 
-    .btn{
-      width:100%;height:44px;border-radius:999px;border:none;
-      background:var(--accent);color:#1A1A1A;font-size:13px;
-      font-weight:600;cursor:pointer;display:flex;
-      align-items:center;justify-content:center;gap:8px;
+    th, td {
+      padding:12px 10px;
+      font-size:12px;text-align:left;
+      border-bottom:1px solid var(--border);
     }
-    #statusBox {
-  position: fixed;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1f1f1f;
-  border: 1px solid #333;
-  color: #fff;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 12px;
-  z-index: 9999;
-  display: none;
-  max-width: 90%;
-}
-#statusBox.ok { border-color: #4caf50; color: #4caf50; }
-#statusBox.warn { border-color: #ff9800; color: #ff9800; }
-#statusBox.err { border-color: #f44336; color: #f44336; }
+
+    th { color:var(--muted);font-weight:500; }
+
+    tr { cursor:pointer; }
+    tr:hover { background:var(--soft); }
+
+    .off { color:#f44336;font-weight:600; }
+    .on { color:#4caf50;font-weight:600; }
+
+    .empty {
+      text-align:center;color:var(--muted);
+      margin-top:40px;font-size:13px;
+    }
   </style>
 </head>
 
 <body>
-  <div id="statusBox"></div>
 
-<div class="header">
-  <div class="title">AJOUTER UN ARTICLE</div>
-  <a href="admin.html" class="back">
-    <i class="fa-solid fa-arrow-left"></i> Admin
+<header>
+  <h1>GESTION DES PRODUITS</h1>
+  <a href="admin.html" style="color:var(--accent);font-size:12px;text-decoration:none">
+    ← Admin
   </a>
+</header>
+
+<table id="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Date</th>
+      <th>Nom</th>
+      <th>Statut</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div id="empty" class="empty" style="display:none">
+  Aucun produit enregistré
 </div>
 
-<form class="form">
-
-  <div class="group">
-    <label>Photo de l’article (3:4)</label>
-    <div class="image-frame">
-      <img id="preview">
-      <div class="image-placeholder" id="placeholder">
-        <i class="fa-solid fa-image"></i>
-        <span>Ajouter une photo</span>
-      </div>
-      <input type="file" id="imageInput" accept="image/*">
-    </div>
-    <input type="range" id="positionY" min="0" max="100" value="50" class="slider">
-  </div>
-
-<div class="group"><label>Titre</label><input id="prodTitle" required></div>
-<div class="group"><label>Description</label><textarea id="prodDesc"></textarea></div>
-<div class="group"><label>Prix (CDF)</label><input type="number" id="prodPrice" min="0" required></div>
-<div class="group"><label>Stock</label><input type="number" id="prodStock" min="0" required></div>
-
-  <button class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Publier</button>
-</form>
-
 <script type="module">
-  /* ===== IMPORTS ===== */
-  import { storage, db, auth } from "./js/firebase.config.js";
+/* ================= IMPORTS ================= */
+import { auth, db } from "./js/firebase.config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  import { ref, uploadBytes, getDownloadURL }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import {
+  collection,
+  query,
+  orderBy,
+  getDocs,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  import {
-    collection,
-    addDoc,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-  import {
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-  /* ===== UI ALERTES ===== */
-  const statusBox = document.getElementById("statusBox");
-
-  function notify(type, message) {
-    statusBox.className = type;
-    statusBox.textContent = message;
-    statusBox.style.display = "block";
-    setTimeout(() => statusBox.style.display = "none", 4000);
+/* ================= AUTH ADMIN ================= */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    location.href = "login.html";
+    return;
   }
 
-  /* ===== AUTH ===== */
-  let currentUser = null;
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if (!snap.exists() || snap.data().role !== "admin") {
+    location.href = "index.html";
+    return;
+  }
 
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      notify("err", "❌ Session expirée. Redirection…");
-      setTimeout(() => window.location.href = "login.html", 1500);
-      return;
-    }
-    currentUser = user;
-  });
+  loadProducts();
+});
 
-  /* ===== DOM (MODIFIÉ POUR LES IDS) ===== */
-  const input = document.getElementById("imageInput");
-  const preview = document.getElementById("preview");
-  const placeholder = document.getElementById("placeholder");
-  const slider = document.getElementById("positionY");
-  const form = document.querySelector("form");
+/* ================= LOAD PRODUCTS ================= */
+const tbody = document.querySelector("tbody");
+const empty = document.getElementById("empty");
 
-  // Sélections par ID pour éviter l'erreur "null"
-  const titleInput = document.getElementById("prodTitle");
-  const descInput = document.getElementById("prodDesc");
-  const priceInput = document.getElementById("prodPrice");
-  const stockInput = document.getElementById("prodStock");
+async function loadProducts() {
+  const q = query(
+    collection(db, "products"),
+    orderBy("createdAt", "desc")
+  );
 
-  let originalImage = null;
+  const snap = await getDocs(q);
 
-  /* ===== IMAGE ===== */
-  input.addEventListener("change", () => {
-    const file = input.files[0];
-    if (!file) return;
+  if (snap.empty) {
+    empty.style.display = "block";
+    return;
+  }
 
-    originalImage = new Image();
-    originalImage.onload = () => {
-      preview.src = originalImage.src;
-      preview.style.display = "block";
-      placeholder.style.display = "none";
+  let number = snap.size;
+
+  snap.forEach(docSnap => {
+    const p = docSnap.data();
+    const tr = document.createElement("tr");
+
+    const date = p.createdAt
+      ? p.createdAt.toDate().toLocaleDateString("fr-FR")
+      : "—";
+
+    tr.innerHTML = `
+      <td>${number--}</td>
+      <td>${date}</td>
+      <td>${p.title}</td>
+      <td class="${p.active ? "on" : "off"}">
+        ${p.active ? "Actif" : "Désactivé"}
+      </td>
+    `;
+
+    // CHANGEMENT ICI : Redirection vers checkout.product.html
+    tr.onclick = () => {
+      window.location.href = `checkout.product.html?id=${docSnap.id}`;
     };
-    originalImage.src = URL.createObjectURL(file);
+
+    tbody.appendChild(tr);
   });
-
-  slider.addEventListener("input", () => {
-    preview.style.objectPosition = `center ${slider.value}%`;
-  });
-
-  /* ===== SUBMIT ===== */
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    if (!currentUser) {
-      notify("err", "❌ Non authentifié");
-      return;
-    }
-
-    if (!originalImage) {
-      notify("err", "📷 Ajoute une image");
-      return;
-    }
-
-    try {
-      const blob = await generateImage();
-      const imageUrl = await upload(blob);
-
-      await addDoc(collection(db, "products"), {
-        title: titleInput.value.trim(),
-        description: descInput.value.trim(),
-        price: Number(priceInput.value),
-        stock: Number(stockInput.value),
-        imageUrl,
-        createdAt: serverTimestamp(),
-        active: true,
-        author: currentUser.uid
-      });
-
-      notify("ok", "✅ Produit enregistré !");
-      form.reset();
-      preview.style.display = "none";
-      placeholder.style.display = "flex";
-      originalImage = null;
-
-    } catch (err) {
-      console.error(err);
-
-      if (err.code === "storage/unauthorized") {
-        notify("err", "🚫 Accès Storage refusé");
-      } else {
-        notify("err", "❌ Erreur lors de l’enregistrement");
-      }
-    }
-  });
-
-  /* ===== IMAGE PROCESS ===== */
-  function generateImage() {
-    return new Promise(resolve => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-
-      const ratio = 3 / 4;
-      const img = originalImage;
-
-      let sw = img.width, sh = img.height;
-      let cw, ch;
-
-      if (sw / sh > ratio) {
-        ch = sh;
-        cw = sh * ratio;
-      } else {
-        cw = sw;
-        ch = sw / ratio;
-      }
-
-      const sy = (sh - ch) * (slider.value / 100);
-      const sx = (sw - cw) / 2;
-
-      canvas.width = 900;
-      canvas.height = 1200;
-
-      ctx.drawImage(img, sx, sy, cw, ch, 0, 0, 900, 1200);
-      canvas.toBlob(blob => resolve(blob), "image/jpeg", 0.9);
-    });
-  }
-
-  /* ===== STORAGE ===== */
-  async function upload(blob) {
-    const fileRef = ref(
-      storage,
-      `products/${currentUser.uid}_${Date.now()}.jpg`
-    );
-
-    await uploadBytes(fileRef, blob);
-    return await getDownloadURL(fileRef);
-  }
+}
 </script>
+
 </body>
 </html>
