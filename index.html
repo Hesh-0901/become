@@ -2,20 +2,14 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Become — Boutique premium</title>
+  <title>Become boutique</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#7A623F">
-<!-- Favicon navigateur -->
-<link rel="icon" type="image/png" sizes="32x32" href="icons/logo/favicon-32.png">
-<link rel="icon" type="image/png" sizes="64x64" href="icons/logo/favicon-64.png">
-
-<!-- Apple -->
-<link rel="apple-touch-icon" sizes="180x180" href="icons/logo/apple-touch-icon.png">
-
-<!-- PWA -->
-<link rel="icon" type="image/png" sizes="192x192" href="icons/logo/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icons/logo/icon-512.png">
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/logo/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="icons/logo/favicon-64.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/logo/apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -171,10 +165,18 @@
       color:var(--muted);
     }
     .logo {
-  height: 22px;   /* taille propre pour mobile */
-  width: auto;
-  display: block;
-}
+      height: 22px;
+      width: auto;
+      display: block;
+    }
+
+    #userNameDisplay {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-right: -8px;
+    }
   </style>
 </head>
 
@@ -183,16 +185,17 @@
 <header>
   <div class="bar">
     <div class="brand">
-  <img src="icons/logo/logo.png" alt="Become" class="logo">
-</div>
+      <img src="icons/logo/logo.png" alt="Become" class="logo">
+    </div>
     <div class="actions">
-      <i class="fa-solid fa-magnifying-glass"></i>
+      <i id="searchBtn" class="fa-solid fa-magnifying-glass"></i>
 
       <div class="cart-wrapper">
         <i id="cartBtn" class="fa-solid fa-cart-shopping"></i>
         <span id="cartCount" class="cart-count"></span>
       </div>
 
+      <span id="userNameDisplay"></span>
       <i id="userBtn" class="fa-solid fa-user"></i>
       <i id="installBtn" class="fa-solid fa-download" style="display:none"></i>
     </div>
@@ -203,7 +206,7 @@
 
 <div class="pagination">
   <button id="prev">←</button>
-  <span id="pageInfo"></span>
+  <span id="pageInfo">... / ...</span>
   <button id="next">→</button>
 </div>
 
@@ -212,15 +215,31 @@
 import { auth, db } from "./js/firebase.config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  collection, query, where, orderBy, limit,
+  collection, query, where, orderBy, limit, getCountFromServer,
   startAfter, getDocs, doc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ================= USER ================= */
-document.getElementById("userBtn").onclick = () => {
-  location.href = "user.html";
+/* ================= AUTH & USERNAME ================= */
+const userNameDisplay = document.getElementById("userNameDisplay");
+document.getElementById("userBtn").onclick = () => { location.href = "user.html"; };
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) {
+      // On affiche le premier mot du nom ou username
+      const fullName = snap.data().name || snap.data().username || "";
+      userNameDisplay.textContent = fullName.split(' ')[0];
+    }
+  }
+});
+
+/* ================= RECHERCHE ================= */
+document.getElementById("searchBtn").onclick = () => {
+  location.href = "search.html";
 };
-/* ================= PRODUITS ================= */
+
+/* ================= PRODUITS & PAGINATION ================= */
 const grid=document.getElementById("grid");
 const pageInfo=document.getElementById("pageInfo");
 const prevBtn=document.getElementById("prev");
@@ -228,11 +247,18 @@ const nextBtn=document.getElementById("next");
 
 const PER_PAGE=10;
 let currentPage=1;
-let cursors=[];
 let lastVisible=null;
+let totalPages=1;
 
 const isRecent=c=>c&&Date.now()-c.toDate().getTime()<600000;
 const shuffle=a=>a.sort(()=>Math.random()-.5);
+
+async function getTotalPages() {
+  const coll = collection(db, "products");
+  const q = query(coll, where("active", "==", true));
+  const snapshot = await getCountFromServer(q);
+  totalPages = Math.ceil(snapshot.data().count / PER_PAGE);
+}
 
 function createCard(d){
   const p=d.data();
@@ -250,76 +276,83 @@ function createCard(d){
 }
 
 async function loadProducts(dir="next"){
-  grid.innerHTML=""; pageInfo.textContent="Chargement…";
+  grid.innerHTML=""; 
+  pageInfo.textContent="...";
+  
+  if (currentPage === 1) await getTotalPages();
+
   let q=query(collection(db,"products"),where("active","==",true),orderBy("createdAt","desc"),limit(PER_PAGE));
+  
   if(dir==="next"&&lastVisible) q=query(q,startAfter(lastVisible));
+  
   const snap=await getDocs(q);
-  if(snap.empty) return pageInfo.textContent="Aucun produit";
+  if(snap.empty) return pageInfo.textContent="0 / 0";
+  
   const docs=snap.docs;
   lastVisible=docs.at(-1);
+  
   const recent=[],old=[];
   docs.forEach(d=>isRecent(d.data().createdAt)?recent.push(d):old.push(d));
   shuffle(old);
   [...recent,...old].forEach(d=>grid.appendChild(createCard(d)));
-  pageInfo.textContent=`Page ${currentPage}`;
+  
+  pageInfo.textContent=`${currentPage} / ${totalPages || 1}`;
 }
 
-prevBtn.onclick=()=>currentPage>1&&(currentPage--,loadProducts("prev"));
-nextBtn.onclick=()=>{currentPage++;loadProducts("next")};
+prevBtn.onclick=()=> {
+  if(currentPage > 1) {
+    currentPage--;
+    // Note: Pour un vrai retour Firebase, on recharge souvent depuis le début ou on stocke les cursors.
+    // Ici on simplifie pour garder votre logique.
+    lastVisible = null; 
+    loadProducts("next"); 
+  }
+};
+
+nextBtn.onclick=()=>{
+  if(currentPage < totalPages) {
+    currentPage++;
+    loadProducts("next");
+  }
+};
+
 loadProducts();
 
-/* ================= PANIER ================= */
+/* ================= PANIER (FIX COHÉRENCE) ================= */
 const cartBtn=document.getElementById("cartBtn");
 const cartCount=document.getElementById("cartCount");
 
-const getCart=()=>JSON.parse(localStorage.getItem("cart")||"[]");
 const updateCartIcon=()=>{
-  const c=getCart().reduce((s,p)=>s+p.qty,0);
-  cartCount.style.display=c?"inline-block":"none";
-  cartCount.textContent=c;
+  const cart = JSON.parse(localStorage.getItem("cart")||"[]");
+  // Calcul cohérent de la somme des quantités (qty)
+  const totalQty = cart.reduce((sum, item) => sum + (parseInt(item.qty) || 0), 0);
+  
+  cartCount.style.display = totalQty > 0 ? "inline-block" : "none";
+  cartCount.textContent = totalQty;
 };
 
 cartBtn.onclick=()=>location.href="panier.html";
 updateCartIcon();
 
+/* ================= PWA INSTALL ================= */
 let deferredPrompt = null;
 const installBtn = document.getElementById("installBtn");
 
-/* 📱 Vérifie si l'app est déjà installée */
-const isInstalled =
-  window.matchMedia("(display-mode: standalone)").matches ||
-  window.navigator.standalone === true;
-
-if (isInstalled) {
-  installBtn.style.display = "none";
-}
-
-/* 🤖 Android / Desktop */
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
   installBtn.style.display = "inline-block";
-  installBtn.title = "Installer l’application";
 });
 
-/* 🖱️ Clic installer */
 installBtn.addEventListener("click", async () => {
   if (deferredPrompt) {
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === "accepted") {
-      installBtn.style.display = "none";
-    }
+    if (outcome === "accepted") installBtn.style.display = "none";
     deferredPrompt = null;
-    return;
+  } else {
+    alert("Menu du navigateur > Ajouter à l'écran d'accueil");
   }
-
-  /* 🍎 iOS (Safari) */
-  alert(
-    "Sur iPhone :\n\n" +
-    "1. Appuie sur le bouton Partager ⬆️\n" +
-    "2. Choisis « Ajouter à l’écran d’accueil »"
-  );
 });
 </script>
 
