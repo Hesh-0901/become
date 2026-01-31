@@ -147,8 +147,9 @@ async function loadProducts() {
       </td>
     `;
 
+    // CHANGEMENT ICI : Redirection vers checkout.product.html
     tr.onclick = () => {
-      location.href = `check.product.html?id=${docSnap.id}`;
+      window.location.href = `checkout.product.html?id=${docSnap.id}`;
     };
 
     tbody.appendChild(tr);
