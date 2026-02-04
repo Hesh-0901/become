@@ -265,11 +265,11 @@ function createCard(d){
   const el=document.createElement("article");
   el.className="card";
   el.style.opacity=p.stock>0?"1":"0.6";
-  el.innerHTML=`
+el.innerHTML=`
     <img src="${p.imageUrl}">
     <div class="card-body">
       <h3 class="title">${p.title}</h3>
-      <div class="price">${p.price.toLocaleString()} CDF ${p.stock===0?"— Épuisé":""}</div>
+      <div class="price">${p.price.toLocaleString('en-US', {minimumFractionDigits: 2})} USD ${p.stock===0?"— Épuisé":""}</div>
     </div>`;
   el.onclick=()=>location.href=`product.html?id=${d.id}`;
   return el;
