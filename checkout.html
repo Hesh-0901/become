@@ -210,12 +210,12 @@ function renderRecap() {
     recap.innerHTML += `
       <div class="item">
         <span>${p.title} × ${p.qty}</span>
-        <span>${(p.price * p.qty).toLocaleString()} CDF</span>
+        <span>${(p.price * p.qty).toLocaleString('en-US', {minimumFractionDigits: 2})} USD</span>
       </div>
     `;
   });
 
-  totalEl.textContent = `Total : ${total.toLocaleString()} CDF`;
+  totalEl.textContent = `Total : ${total.toLocaleString('en-US', {minimumFractionDigits: 2})} USD`;
 }
 
 /* ================= NUMÉRO COMMANDE ================= */
