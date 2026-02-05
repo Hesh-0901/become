@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Become Admin — Management</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#7A623F">
+  <meta name="theme-color" content="#8B6F47">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
@@ -32,7 +32,6 @@
       min-height: 100vh;
     }
 
-    /* HEADER STYLE CLIENT */
     header {
       display: flex;
       align-items: center;
@@ -56,7 +55,6 @@
       margin: 0;
     }
 
-    /* FILTRES OU STATISTIQUES RAPIDES */
     .admin-stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -69,11 +67,11 @@
       border-radius: var(--radius);
       border: 1px solid var(--border);
       text-align: center;
+      box-shadow: var(--shadow);
     }
     .stat-val { display: block; font-size: 18px; font-weight: 800; color: var(--accent); }
     .stat-lbl { font-size: 10px; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-top: 4px; }
 
-    /* LISTE DES CARTES COMMANDES */
     #adminOrdersList { display: flex; flex-direction: column; gap: 18px; }
 
     .order-card {
@@ -96,21 +94,17 @@
     .client-name { font-size: 15px; font-weight: 700; color: var(--text); }
     .order-ref { font-size: 11px; color: var(--muted); font-family: monospace; }
 
-    /* MENU DÉROULANT RAFFINÉ */
     .status-selector {
       background: var(--soft);
       border: 1px solid var(--border);
       color: var(--accent);
-      padding: 8px 12px;
+      padding: 8px 10px;
       border-radius: 12px;
       font-size: 10px;
       font-weight: 800;
       outline: none;
-      appearance: none;
-      text-align: center;
     }
 
-    /* ACTIONS BOUTONS */
     .order-actions {
       display: grid;
       grid-template-columns: 1fr 1fr 50px;
@@ -131,121 +125,138 @@
       justify-content: center;
       gap: 8px;
       cursor: pointer;
-      transition: 0.2s;
     }
 
-    .btn-view { background: var(--soft); color: var(--accent); border: 1px solid var(--accent); }
+    .btn-view { background: var(--soft); color: var(--accent); border: 1px solid var(--border); }
     .btn-delete { background: #F8EAEA; color: var(--danger); }
-    .btn-delete:active { background: var(--danger); color: white; }
 
-    .empty-msg { text-align: center; padding: 50px; color: var(--muted); font-size: 13px; }
+    .empty-msg { text-align: center; padding: 50px; color: var(--muted); font-size: 13px; line-height: 1.6; }
   </style>
 </head>
 <body>
 
   <header>
     <div class="header-title">
-      <i class="fa-solid fa-screwdriver-wrench icon-admin"></i>
-      <h1>Gestion Commandes</h1>
+      <i class="fa-solid fa-user-shield icon-admin"></i>
+      <h1>Become Admin</h1>
     </div>
-    <a href="index.html" style="color:var(--text);"><i class="fa-solid fa-store"></i></a>
+    <a href="customer.html" style="color:var(--text);"><i class="fa-solid fa-circle-user"></i></a>
   </header>
 
   <div class="admin-stats">
     <div class="stat-card">
       <span class="stat-val" id="countOrders">0</span>
-      <span class="stat-lbl">En cours</span>
+      <span class="stat-lbl">Commandes</span>
     </div>
     <div class="stat-card">
       <span class="stat-val" id="totalVault">0$</span>
-      <span class="stat-lbl">Volume</span>
+      <span class="stat-lbl">Chiffre</span>
     </div>
   </div>
 
   <div id="adminOrdersList">
-    <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i><br><br>Accès sécurisé à la base de données...</div>
+    <div class="empty-msg">
+      <i class="fa-solid fa-spinner fa-spin"></i><br><br>
+      Connexion sécurisée au serveur...
+    </div>
   </div>
 
   <script type="module">
-    import { db } from "./js/firebase.config.js";
+    import { db, auth } from "./js/firebase.config.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { 
       collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc 
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const adminOrdersList = document.getElementById("adminOrdersList");
-    const countOrders = document.getElementById("countOrders");
-    const totalVault = document.getElementById("totalVault");
+    const listElement = document.getElementById("adminOrdersList");
 
-    // ÉCOUTE EN TEMPS RÉEL
-    const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-
-    onSnapshot(q, (snap) => {
-      adminOrdersList.innerHTML = "";
-      let totalSum = 0;
-      
-      if (snap.empty) {
-        adminOrdersList.innerHTML = `<div class="empty-msg">Aucune commande active.</div>`;
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        location.href = "login.html";
         return;
       }
 
-      snap.forEach((orderDoc) => {
-        const o = orderDoc.data();
-        const id = orderDoc.id;
-        const price = o.totalAmount || o.total || 0;
-        totalSum += price;
+      // Lancement de l'écoute temps réel
+      const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
 
-        const card = document.createElement("div");
-        card.className = "order-card";
-        card.innerHTML = `
-          <div class="order-top">
-            <div class="client-box">
-              <span class="client-name">${o.customerName || 'Client Become'}</span>
-              <span class="order-ref">REF: #${o.orderNumber || id.substring(0,6).toUpperCase()}</span>
+      onSnapshot(q, (snap) => {
+        listElement.innerHTML = "";
+        let total = 0;
+
+        if (snap.empty) {
+          listElement.innerHTML = `<div class="empty-msg">Aucune commande trouvée dans la base de données.</div>`;
+          return;
+        }
+
+        snap.forEach((orderDoc) => {
+          const o = orderDoc.data();
+          const id = orderDoc.id;
+          const price = o.totalAmount || o.total || 0;
+          total += price;
+
+          const card = document.createElement("div");
+          card.className = "order-card";
+          card.innerHTML = `
+            <div class="order-top">
+              <div class="client-box">
+                <span class="client-name">${o.customerName || 'Utilisateur Become'}</span>
+                <span class="order-ref">REF: #${o.orderNumber || id.substring(0,6).toUpperCase()}</span>
+              </div>
+              <select class="status-selector" onchange="window.updateStatus('${id}', this.value)">
+                <option value="REÇUE" ${o.status === 'REÇUE' ? 'selected' : ''}>REÇUE</option>
+                <option value="ACHETÉ" ${o.status === 'ACHETÉ' ? 'selected' : ''}>ACHETÉ</option>
+                <option value="EN ROUTE" ${o.status === 'EN ROUTE' ? 'selected' : ''}>EN ROUTE</option>
+                <option value="SUR PLACE" ${o.status === 'SUR PLACE' ? 'selected' : ''}>SUR PLACE</option>
+                <option value="LIVRÉ" ${o.status === 'LIVRÉ' ? 'selected' : ''}>LIVRÉ</option>
+              </select>
             </div>
-            <select class="status-selector" onchange="changeStatus('${id}', this.value)">
-              <option value="REÇUE" ${o.status === 'REÇUE' ? 'selected' : ''}>REÇUE</option>
-              <option value="ACHETÉ" ${o.status === 'ACHETÉ' ? 'selected' : ''}>ACHETÉ</option>
-              <option value="EN ROUTE" ${o.status === 'EN ROUTE' ? 'selected' : ''}>EN ROUTE</option>
-              <option value="SUR PLACE" ${o.status === 'SUR PLACE' ? 'selected' : ''}>SUR PLACE</option>
-              <option value="LIVRÉ" ${o.status === 'LIVRÉ' ? 'selected' : ''}>LIVRÉ</option>
-            </select>
-          </div>
 
-          <div style="font-size:12px; margin-bottom:10px; display:flex; justify-content:space-between;">
-            <span style="color:var(--muted)">Montant: <b style="color:var(--text)">${price.toLocaleString()} $</b></span>
-            <span style="color:var(--muted)">Articles: <b style="color:var(--text)">${o.items?.length || 0}</b></span>
-          </div>
+            <div style="font-size:12px; margin-bottom:10px; display:flex; justify-content:space-between;">
+              <span style="color:var(--muted)">Prix: <b style="color:var(--text)">${price.toLocaleString()} $</b></span>
+              <span style="color:var(--muted)">Panier: <b style="color:var(--text)">${o.items?.length || 0} art.</b></span>
+            </div>
 
-          <div class="order-actions">
-            <button class="btn btn-view" onclick="location.href='facture.html?orderId=${id}'">
-              <i class="fa-solid fa-file-invoice"></i> FACTURE
-            </button>
-            <button class="btn btn-view" onclick="window.open('https://wa.me/${o.customerPhone}')">
-              <i class="fa-brands fa-whatsapp"></i> CONTACT
-            </button>
-            <button class="btn btn-delete" onclick="removeOrder('${id}')">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </div>
-        `;
-        adminOrdersList.appendChild(card);
+            <div class="order-actions">
+              <button class="btn btn-view" onclick="location.href='facture.html?orderId=${id}'">
+                <i class="fa-solid fa-file-invoice"></i>
+              </button>
+              <button class="btn btn-view" onclick="window.open('https://wa.me/${o.customerPhone || ''}')">
+                <i class="fa-brands fa-whatsapp"></i> CONTACT
+              </button>
+              <button class="btn btn-delete" onclick="window.deleteOrder('${id}')">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          `;
+          listElement.appendChild(card);
+        });
+
+        document.getElementById("countOrders").textContent = snap.size;
+        document.getElementById("totalVault").textContent = total.toLocaleString() + " $";
+
+      }, (error) => {
+        console.error(error);
+        listElement.innerHTML = `
+          <div class="empty-msg" style="color:var(--danger)">
+            <i class="fa-solid fa-triangle-exclamation"></i><br><br>
+            <b>Erreur de permissions</b><br>
+            Vérifiez vos règles Firestore dans la console Firebase.
+          </div>`;
       });
-
-      // Update Stats
-      countOrders.textContent = snap.size;
-      totalVault.textContent = totalSum.toLocaleString() + " $";
     });
 
-    // ACTIONS
-    window.changeStatus = async (id, val) => {
+    // Fonctions globales pour les boutons
+    window.updateStatus = async (id, val) => {
       try {
         await updateDoc(doc(db, "orders", id), { status: val });
-      } catch (err) { alert("Erreur de mise à jour"); }
+      } catch (err) { alert("Action refusée par Firebase"); }
     };
 
-    window.removeOrder = async (id) => {
-      if(confirm("Supprimer définitivement cette commande ?")) {
-        await deleteDoc(doc(db, "orders", id));
+    window.deleteOrder = async (id) => {
+      if(confirm("Supprimer cette commande définitivement ?")) {
+        try {
+          await deleteDoc(doc(db, "orders", id));
+        } catch (err) { alert("Action refusée par Firebase"); }
       }
     };
   </script>
