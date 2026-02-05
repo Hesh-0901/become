@@ -200,7 +200,7 @@ function displayResults(results) {
       <img src="${p.imageUrl || 'icons/placeholder.png'}">
       <div class="card-body">
         <h3 class="title">${p.title}</h3>
-        <div class="price">${Number(p.price).toLocaleString()} CDF ${p.stock <= 0 ? '<span style="color:#d32f2f; font-size:10px"> (Épuisé)</span>' : ''}</div>
+       <div class="price">${Number(p.price).toLocaleString('en-US', {style: 'currency', currency: 'USD'})} ${p.stock <= 0 ? '<span style="color:#d32f2f; font-size:10px"> (Épuisé)</span>' : ''}</div>
       </div>`;
     
     el.onclick = () => location.href = `product.html?id=${p.id}`;
