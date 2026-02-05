@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Become Admin — Gestion des Commandes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg: #F8F9FA;
+      --surface: #FFFFFF;
+      --text: #1A1A1A;
+      --primary: #8B6F47;
+      --danger: #D32F2F;
+      --border: #E0E0E0;
+      --radius: 12px;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+    }
+
+    header {
+      max-width: 1000px;
+      margin: 0 auto 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 { font-size: 22px; font-weight: 800; color: var(--primary); }
+
+    /* TABLEAU DES COMMANDES */
+    .admin-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th {
+      background: #F1EEE9;
+      padding: 15px;
+      text-align: left;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 15px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .user-info { display: flex; flex-direction: column; gap: 2px; }
+    .user-name { font-weight: 700; }
+    .user-id { font-size: 11px; color: #888; }
+
+    /* STATUTS */
+    select {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+
+    select:focus { border-color: var(--primary); }
+
+    /* ACTIONS */
+    .btn-group { display: flex; gap: 8px; }
+    
+    .btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: 0.2s;
+    }
+
+    .btn-invoice { background: var(--soft); color: var(--primary); border: 1px solid var(--primary); }
+    .btn-cancel { background: #FFEBEE; color: var(--danger); }
+    .btn-cancel:hover { background: var(--danger); color: white; }
+
+    @media (max-width: 768px) {
+      .hide-mobile { display: none; }
+      td { padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Gestion Commandes</h1>
+  <a href="admin.dashboard.html" style="text-decoration:none; color:var(--primary); font-weight:700; font-size:13px;">
+    <i class="fa-solid fa-house"></i> Dashboard
+  </a>
+</header>
+
+<div class="admin-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Client / Nom Facture</th>
+        <th class="hide-mobile">Date</th>
+        <th>Montant</th>
+        <th>Statut de suivi</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="adminOrdersList">
+      </tbody>
+  </table>
+</div>
+
+<script type="module">
+  import { db } from "./js/firebase.config.js";
+  import { 
+    collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const adminOrdersList = document.getElementById("adminOrdersList");
+
+  // Chargement en temps réel des commandes
+  const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+
+  onSnapshot(q, (snap) => {
+    adminOrdersList.innerHTML = "";
+    
+    snap.forEach((orderDoc) => {
+      const o = orderDoc.data();
+      const id = orderDoc.id;
+      const date = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('fr-FR') : "---";
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>
+          <div class="user-info">
+            <span class="user-name">${o.customerName || 'Inconnu'}</span>
+            <span class="user-id">ID: ${o.userId?.substring(0,8)}...</span>
+          </div>
+        </td>
+        <td class="hide-mobile">${date}</td>
+        <td style="font-weight:700;">${(o.totalAmount || 0).toLocaleString('en-US', {style:'currency', currency:'USD'})}</td>
+        <td>
+          <select onchange="updateStatus('${id}', this.value)">
+            <option value="REÇUE" ${o.status === 'REÇUE' ? 'selected' : ''}>1. REÇUE</option>
+            <option value="ACHETÉ" ${o.status === 'ACHETÉ' ? 'selected' : ''}>2. ACHETÉ</option>
+            <option value="EN ROUTE" ${o.status === 'EN ROUTE' ? 'selected' : ''}>3. EN ROUTE</option>
+            <option value="SUR PLACE" ${o.status === 'SUR PLACE' ? 'selected' : ''}>4. SUR PLACE</option>
+            <option value="LIVRÉ" ${o.status === 'LIVRÉ' ? 'selected' : ''}>✅ LIVRÉ</option>
+          </select>
+        </td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-invoice" onclick="location.href='facture.html?orderId=${id}'">
+              <i class="fa-solid fa-file-invoice"></i>
+            </button>
+            <button class="btn btn-cancel" onclick="cancelOrder('${id}')">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      `;
+      adminOrdersList.appendChild(tr);
+    });
+  });
+
+  // FONCTION : Mettre à jour le statut
+  window.updateStatus = async (id, newStatus) => {
+    try {
+      await updateDoc(doc(db, "orders", id), {
+        status: newStatus
+      });
+      alert("Statut mis à jour !");
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la mise à jour.");
+    }
+  };
+
+  // FONCTION : Annuler/Supprimer une commande
+  window.cancelOrder = async (id) => {
+    if (confirm("Voulez-vous vraiment annuler et supprimer cette commande ?")) {
+      try {
+        await deleteDoc(doc(db, "orders", id));
+        alert("Commande supprimée.");
+      } catch (err) {
+        alert("Erreur de suppression.");
+      }
+    }
+  };
+</script>
+
+</body>
+</html>
