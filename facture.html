@@ -223,7 +223,7 @@
         <div class="total-wrapper">
           <div class="total-box">
             <div class="total-label">NET À PAYER</div>
-            <div class="total-value" id="total">0 CDF</div>
+            <div class="total-value" id="total">$0.00</div>
           </div>
         </div>
       </div>
@@ -278,8 +278,7 @@
       detailsArticles += `• ${p.qty}x ${p.title}\n`;
       itemsEl.innerHTML += `<tr><td><span style="font-weight:600; color:var(--primary);">${p.title}</span></td><td style="text-align:center">${p.qty}</td><td>${lineTotal.toLocaleString()} CDF</td></tr>`;
     });
-    
-    document.getElementById("total").textContent = `${total.toLocaleString()} CDF`;
+    document.getElementById("total").textContent = total.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
 
     // ACTION UNIQUE : PDF + WHATSAPP (Optimisé Mobile)
     document.getElementById("mainActionBtn").onclick = () => {
@@ -302,7 +301,7 @@ Je viens de finaliser ma sélection. Voici les détails de ma commande :
 ${detailsArticles}
 _________________________________________
 
-💰 *MONTANT TOTAL : ${total.toLocaleString()} CDF*
+💰 *MONTANT TOTAL : ${total.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}*
 
 ✅ _Ma facture PDF a été générée._
 📎 _Je vous la joins à ce message pour confirmation._
