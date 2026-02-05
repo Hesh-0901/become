@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Become — Mes commandes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg:#E9E5DF; --surface:#FFFFFF; --soft:#F5F2EC;
+      --text:#1E1E1E; --muted:#6B6B6B; --accent:#8B6F47;
+      --border:#D6CFC4; --radius:18px;
+    }
+
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 20px; padding-bottom: 40px;
+    }
+
+    /* Header identique à l'espace client */
+    header {
+      display: flex; align-items: center; gap: 15px; margin-bottom: 25px;
+    }
+
+    .back-btn {
+      width: 40px; height: 40px; border-radius: 50%; background: var(--surface);
+      border: 1px solid var(--border); display: flex; align-items: center;
+      justify-content: center; color: var(--accent); text-decoration: none;
+    }
+
+    h1 { font-size: 18px; font-weight: 700; margin: 0; }
+
+    /* Liste des commandes */
+    #ordersList { display: flex; flex-direction: column; gap: 12px; }
+
+    .order-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px;
+    }
+
+    .order-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 12px; border-bottom: 1px solid var(--soft); padding-bottom: 10px;
+    }
+
+    .order-num { font-size: 13px; font-weight: 700; color: var(--text); }
+    .order-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    
+    .status-badge {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 99px; background: var(--soft); color: var(--accent);
+    }
+
+    .order-details { font-size: 13px; line-height: 1.5; color: var(--muted); }
+    .order-total {
+      margin-top: 10px; font-weight: 700; color: var(--accent);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .empty-state {
+      text-align: center; margin-top: 60px; color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="client.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+    <h1>Commandes en cours</h1>
+  </header>
+
+  <div id="ordersList">
+    <div class="empty-state">Chargement de vos commandes...</div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from "./js/firebase.config.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const ordersList = document.getElementById("ordersList");
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) { location.href = "login.html"; return; }
+
+      // Récupérer les commandes dont le statut n'est PAS "livré"
+      const q = query(
+        collection(db, "orders"),
+        where("userId", "==", user.uid),
+        where("status", "!=", "LIVRÉ")
+      );
+
+      const snap = await getDocs(q);
+      ordersList.innerHTML = "";
+
+      if (snap.empty) {
+        ordersList.innerHTML = `<div class="empty-state"><i class="fa-solid fa-box-open" style="font-size:30px; opacity:0.2"></i><br><br>Aucune commande en cours.</div>`;
+        return;
+      }
+
+      snap.forEach(doc => {
+        const o = doc.data();
+        const date = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('fr-FR') : "Date inconnue";
+        
+        ordersList.innerHTML += `
+          <div class="order-card" onclick="location.href='facture.html?orderId=${doc.id}'">
+            <div class="order-header">
+              <div>
+                <div class="order-num">#${o.orderNumber}</div>
+                <div class="order-date">${date}</div>
+              </div>
+              <div class="status-badge">${o.status || 'EN ATTENTE'}</div>
+            </div>
+            <div class="order-details">
+              ${o.items.length} article(s) sélectionné(s)
+            </div>
+            <div class="order-total">
+              <span>Total</span>
+              <span>${o.totalAmount.toLocaleString('en-US', {style:'currency', currency:'USD'})}</span>
+            </div>
+          </div>
+        `;
+      });
+    });
+  </script>
+</body>
+</html>
