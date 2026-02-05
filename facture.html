@@ -237,7 +237,7 @@
       </div>
 
       <div class="note">
-        <strong>Note :</strong> Merci pour votre achat. Les articles ne sont ni repris ni échangés après livraison. Cette facture fait office de preuve d'achat officielle.
+        <strong>Note :</strong> Become cherche à satisfaire ses clients et a hâte de refaire affaire avec vous. Merci pour votre confiance !
       </div>
     </div>
   </div>
@@ -276,7 +276,7 @@
       const lineTotal = p.price * p.qty;
       total += lineTotal;
       detailsArticles += `• ${p.qty}x ${p.title}\n`;
-      itemsEl.innerHTML += `<tr><td><span style="font-weight:600; color:var(--primary);">${p.title}</span></td><td style="text-align:center">${p.qty}</td><td>${lineTotal.toLocaleString()} CDF</td></tr>`;
+itemsEl.innerHTML += `<tr><td><span style="font-weight:600; color:var(--primary);">${p.title}</span></td><td style="text-align:center">${p.qty}</td><td>${lineTotal.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}</td></tr>`;
     });
     document.getElementById("total").textContent = total.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
 
