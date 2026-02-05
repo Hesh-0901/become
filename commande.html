@@ -10,87 +10,214 @@
 
   <style>
     :root {
-      --bg:#E9E5DF; --surface:#FFFFFF; --soft:#F5F2EC;
-      --text:#1E1E1E; --muted:#6B6B6B; --accent:#8B6F47;
-      --border:#D6CFC4; --radius:18px;
+      --bg: #F4F1EC;
+      --surface: #FFFFFF;
+      --soft: #FAF9F6;
+      --text: #2D2D2D;
+      --muted: #8E8E93;
+      --accent: #8B6F47;
+      --border: #E2DDD5;
+      --radius: 22px;
+      --shadow: 0 8px 30px rgba(0,0,0,0.04);
     }
-    * { box-sizing: border-box; }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
     body {
-      margin: 0; background: var(--bg); color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      padding: 20px; min-height: 100vh;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Helvetica, sans-serif;
+      padding: 20px;
+      min-height: 100vh;
+      letter-spacing: -0.2px;
     }
 
+    /* HEADER RAFFINÉ */
     header {
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--surface); border-radius: var(--radius);
-      padding: 12px 16px; border: 1px solid var(--border); margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      border: 1px solid var(--surface);
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
     }
-    .header-left { display: flex; align-items: center; gap: 15px; }
+
+    .header-left { display: flex; align-items: center; gap: 12px; }
+
     .back-btn {
-      width: 36px; height: 36px; border-radius: 50%; background: var(--soft);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--accent); text-decoration: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      text-decoration: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      font-size: 14px;
     }
 
-    h1 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
+    h1 { 
+      font-size: 13px; 
+      font-weight: 700; 
+      text-transform: uppercase; 
+      letter-spacing: 1.5px; 
+      margin: 0;
+      color: var(--text);
+    }
 
-    #ordersList { display: flex; flex-direction: column; gap: 16px; }
+    /* LISTE DES CARTES */
+    #ordersList { display: flex; flex-direction: column; gap: 20px; }
 
     .order-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 18px; text-decoration: none;
-      color: inherit; transition: 0.15s;
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+      position: relative;
+      overflow: hidden;
     }
+
+    .order-card:active { transform: scale(0.98); }
 
     .order-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: 15px; border-bottom: 1px solid var(--soft); padding-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 18px;
     }
-    .order-num { font-size: 13px; font-weight: 700; }
-    .order-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .order-info { display: flex; flex-direction: column; gap: 4px; }
+    .order-num { font-size: 14px; font-weight: 700; color: var(--text); }
+    .order-date { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+
     .status-badge {
-      font-size: 9px; font-weight: 800; padding: 4px 10px;
-      border-radius: 99px; background: var(--soft); color: var(--accent);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: var(--soft);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      height: fit-content;
     }
 
-    /* TIMELINE */
-    .timeline { display: flex; justify-content: space-between; margin: 20px 0; position: relative; }
+    /* TIMELINE RAFFINÉE */
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      margin: 25px 0;
+      position: relative;
+    }
+
     .timeline::before {
-      content: ""; position: absolute; top: 10px; left: 15%; right: 15%;
-      height: 2px; background: var(--border); z-index: 1;
+      content: "";
+      position: absolute;
+      top: 11px;
+      left: 10%;
+      right: 10%;
+      height: 1.5px;
+      background: #EEEAE5;
+      z-index: 1;
     }
-    .step { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 7px; width: 25%; }
+
+    .step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 25%;
+    }
+
     .step-dot {
-      width: 20px; height: 20px; border-radius: 50%; background: var(--surface);
-      border: 2px solid var(--border); display: flex; align-items: center;
-      justify-content: center; font-size: 9px; color: var(--muted); transition: 0.3s;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      color: var(--muted);
+      transition: all 0.4s ease;
     }
-    .step.active .step-dot { background: var(--accent); border-color: var(--accent); color: white; }
-    .step.active .step-label { color: var(--text); font-weight: 700; }
-    .step-label { font-size: 8px; text-align: center; color: var(--muted); text-transform: uppercase; }
 
+    .step.active .step-dot {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+      box-shadow: 0 4px 10px rgba(139, 111, 71, 0.3);
+    }
+
+    .step-label {
+      font-size: 8px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .step.active .step-label { color: var(--accent); }
+
+    /* FOOTER DE LA CARTE */
     .order-footer {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-top: 15px; padding-top: 12px; border-top: 1px dashed var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      padding-top: 15px;
+      border-top: 1px solid var(--soft);
     }
-    .total-amount { font-size: 15px; font-weight: 800; color: var(--accent); }
 
-    .empty-state { text-align: center; margin-top: 80px; color: var(--muted); }
+    .total-container { display: flex; flex-direction: column; }
+    .total-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+    .total-amount { font-size: 16px; font-weight: 800; color: var(--text); }
+
+    .view-btn {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .empty-state { text-align: center; margin-top: 100px; color: var(--muted); }
+    .empty-state i { font-size: 32px; margin-bottom: 20px; display: block; opacity: 0.3; }
   </style>
 </head>
 <body>
 
   <header>
     <div class="header-left">
-      <a href="customer.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
-      <h1>Mes Commandes</h1>
+      <a href="customer.html" class="back-btn">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <h1>Suivi Commandes</h1>
     </div>
-    <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent); opacity: 0.5;"></i>
+    <div style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; color: var(--accent); opacity: 0.6;">
+        <i class="fa-solid fa-bell-concierge"></i>
+    </div>
   </header>
 
   <div id="ordersList">
-    <div class="empty-state"><i class="fa-solid fa-circle-notch fa-spin"></i><br><br>Chargement...</div>
+    <div class="empty-state">
+      <i class="fa-solid fa-circle-notch fa-spin"></i>
+      <p>Chargement de votre univers...</p>
+    </div>
   </div>
 
   <script type="module">
@@ -116,7 +243,11 @@
         ordersList.innerHTML = "";
 
         if (snap.empty) {
-          ordersList.innerHTML = `<div class="empty-state"><i class="fa-solid fa-box-open" style="font-size:30px;opacity:0.2"></i><br><br>Aucune commande en cours.</div>`;
+          ordersList.innerHTML = `
+            <div class="empty-state">
+              <i class="fa-solid fa-box-open"></i>
+              <p>Aucun trésor en route pour le moment.</p>
+            </div>`;
           return;
         }
 
@@ -125,28 +256,36 @@
           const status = (o.status || "REÇUE").toUpperCase();
           const levels = { "REÇUE": 1, "ACHETÉ": 2, "EN ROUTE": 3, "SUR PLACE": 4 };
           const currentLevel = levels[status] || 1;
-          const date = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('fr-FR', {day:'numeric', month:'short'}) : "Récemment";
+          
+          const date = o.createdAt?.toDate 
+            ? o.createdAt.toDate().toLocaleDateString('fr-FR', {day:'numeric', month:'short'}) 
+            : "Récent";
 
           ordersList.innerHTML += `
             <div class="order-card" onclick="location.href='facture.html?orderId=${doc.id}'">
               <div class="order-header">
-                <div>
-                  <div class="order-num">Commande #${o.orderNumber || doc.id.substring(0,6)}</div>
-                  <div class="order-date">Le ${date}</div>
+                <div class="order-info">
+                  <div class="order-num">N° ${o.orderNumber || doc.id.substring(0,6)}</div>
+                  <div class="order-date"><i class="fa-regular fa-calendar" style="font-size:10px"></i> Commandé le ${date}</div>
                 </div>
                 <div class="status-badge">${status}</div>
               </div>
 
               <div class="timeline">
-                ${renderStep(1, currentLevel, "Reçue")}
-                ${renderStep(2, currentLevel, "Acheté")}
-                ${renderStep(3, currentLevel, "En route")}
-                ${renderStep(4, currentLevel, "Sur place")}
+                ${renderStep(1, currentLevel, "Reçue", "fa-solid fa-check")}
+                ${renderStep(2, currentLevel, "Acheté", "fa-solid fa-bag-shopping")}
+                ${renderStep(3, currentLevel, "En route", "fa-solid fa-plane-up")}
+                ${renderStep(4, currentLevel, "Sur place", "fa-solid fa-location-dot")}
               </div>
 
               <div class="order-footer">
-                <span style="font-size:11px; color:var(--muted)">${o.items?.length || 0} article(s)</span>
-                <span class="total-amount">${(o.totalAmount || o.total || 0).toLocaleString('en-US', {style:'currency', currency:'USD'})}</span>
+                <div class="total-container">
+                    <span class="total-label">Investissement</span>
+                    <span class="total-amount">${(o.totalAmount || o.total || 0).toLocaleString('en-US', {style:'currency', currency:'USD'})}</span>
+                </div>
+                <div class="view-btn">
+                    Détails <i class="fa-solid fa-arrow-right-long"></i>
+                </div>
               </div>
             </div>
           `;
@@ -154,10 +293,14 @@
       } catch (e) { console.error(e); }
     });
 
-    function renderStep(level, current, label) {
+    function renderStep(level, current, label, iconClass) {
+      const isActive = current >= level;
+      const isDone = current > level;
       return `
-        <div class="step ${current >= level ? 'active' : ''}">
-          <div class="step-dot">${current > level ? '✓' : level}</div>
+        <div class="step ${isActive ? 'active' : ''}">
+          <div class="step-dot">
+            <i class="${isDone ? 'fa-solid fa-check' : iconClass}"></i>
+          </div>
           <div class="step-label">${label}</div>
         </div>`;
     }
