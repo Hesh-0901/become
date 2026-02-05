@@ -216,7 +216,7 @@ function render() {
         <img src="${p.image}">
         <div class="info">
           <div class="name">${p.title}</div>
-          <div class="price">${p.price.toLocaleString()} CDF</div>
+          <div class="price">${p.price.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}</div>
 
           <div class="qty">
             <button onclick="changeQty(${i}, -1)">−</button>
@@ -232,7 +232,7 @@ function render() {
     `;
   });
 
-  totalEl.textContent = `Total : ${total.toLocaleString()} CDF`;
+  totalEl.textContent = `Total : ${total.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}`;
 }
 
 /* ================= ACTIONS ================= */
