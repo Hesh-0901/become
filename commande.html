@@ -154,6 +154,67 @@
       margin-bottom: 15px;
       opacity: 0.2;
     }
+    /* Design de la Ligne du Temps */
+.timeline {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  position: relative;
+  padding: 0 10px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 30px;
+  right: 30px;
+  height: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+.step {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 25%;
+}
+
+.step-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.step.active .step-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.step.active .step-label {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.step-label {
+  font-size: 9px;
+  text-align: center;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
   </style>
 </head>
 <body>
@@ -210,8 +271,54 @@
           return;
         }
 
-        snap.forEach(doc => {
-          const o = doc.data();
+snap.forEach(doc => {
+  const o = doc.data();
+  const status = o.status ? o.status.toUpperCase() : "REÇUE";
+  
+  // Définition des niveaux pour la barre de progression
+  const levels = { "REÇUE": 1, "ACHETÉ": 2, "EN ROUTE": 3, "SUR PLACE": 4 };
+  const currentLevel = levels[status] || 1;
+
+  const date = o.createdAt?.toDate 
+    ? o.createdAt.toDate().toLocaleDateString('fr-FR', {day:'numeric', month:'short'}) 
+    : "Récemment";
+
+  ordersList.innerHTML += `
+    <div class="order-card" onclick="location.href='facture.html?orderId=${doc.id}'">
+      <div class="order-header">
+        <div>
+          <div class="order-num">Commande #${o.orderNumber || doc.id.substring(0,6)}</div>
+          <div class="order-date">Passée le ${date}</div>
+        </div>
+        <div class="status-badge">${status}</div>
+      </div>
+      
+      <div class="timeline">
+        <div class="step ${currentLevel >= 1 ? 'active' : ''}">
+          <div class="step-dot">${currentLevel > 1 ? '✓' : '1'}</div>
+          <div class="step-label">Reçue</div>
+        </div>
+        <div class="step ${currentLevel >= 2 ? 'active' : ''}">
+          <div class="step-dot">${currentLevel > 2 ? '✓' : '2'}</div>
+          <div class="step-label">Acheté</div>
+        </div>
+        <div class="step ${currentLevel >= 3 ? 'active' : ''}">
+          <div class="step-dot">${currentLevel > 3 ? '✓' : '3'}</div>
+          <div class="step-label">En route</div>
+        </div>
+        <div class="step ${currentLevel >= 4 ? 'active' : ''}">
+          <div class="step-dot">${currentLevel >= 4 ? '✓' : '4'}</div>
+          <div class="step-label">Sur place</div>
+        </div>
+      </div>
+
+      <div class="order-total" style="margin-top:20px; border-top: 1px dashed var(--border); padding-top:15px;">
+        <span class="total-label">Total réglé</span>
+        <span class="total-amount">${(o.totalAmount || 0).toLocaleString('en-US', {style:'currency', currency:'USD'})}</span>
+      </div>
+    </div>
+  `;
+});
           
           // Formater la date proprement
           const date = o.createdAt?.toDate 
