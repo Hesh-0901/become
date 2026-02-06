@@ -220,7 +220,7 @@
     </div>
   </div>
 
-  <script type="module">
+ <script type="module">
     import { auth, db } from "./js/firebase.config.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -261,8 +261,9 @@
             ? o.createdAt.toDate().toLocaleDateString('fr-FR', {day:'numeric', month:'short'}) 
             : "Récent";
 
+          // MODIFICATION ICI : view.invoice.html au lieu de facture.html
           ordersList.innerHTML += `
-            <div class="order-card" onclick="location.href='facture.html?orderId=${doc.id}'">
+            <div class="order-card" onclick="location.href='view.invoice.html?orderId=${doc.id}'">
               <div class="order-header">
                 <div class="order-info">
                   <div class="order-num">N° ${o.orderNumber || doc.id.substring(0,6)}</div>
