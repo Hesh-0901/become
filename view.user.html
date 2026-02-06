@@ -7,205 +7,194 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   :root {
-    --bg: #E9E5DF;       /* Fond beige sable exact */
-    --surface: #FFFFFF;  /* Blanc des cartes */
-    --text: #1E1E1E;     /* Texte principal */
-    --muted: #9E9E9E;    /* Gris des labels */
-    --accent: #8B6F47;   /* Doré Become pour le rôle */
-    --border: #F0F0F0;
-    --radius: 25px;
+    --bg: #F4F1EC;        /* Sable Become - Fond de page */
+    --surface: #FFFFFF;   /* Blanc pur */
+    --text: #252525;      /* Anthracite (plus doux que le noir) */
+    --muted: #9A9A9A;     /* Gris neutre pour labels */
+    --accent: #8B6F47;    /* Doré Become */
+    --border: #E2DDD5;    /* Ligne fine sable foncé */
   }
 
   body {
     margin: 0;
     background: var(--bg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    padding: 20px;
     color: var(--text);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: 0;
   }
 
-  /* HEADER & NAVIGATION */
+  /* HEADER MINIMALISTE */
   .sticky-header {
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: 30px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(244, 241, 236, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 30px 20px 15px;
+    border-bottom: 0.5px solid var(--border);
   }
 
   header {
+    max-width: 600px;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
   }
 
   header h1 {
-    font-size: 22px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
     font-weight: 800;
     margin: 0;
-    letter-spacing: -0.5px;
   }
 
-  header a {
-    background: var(--surface);
-    padding: 10px 15px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    transition: transform 0.2s;
-  }
-
-  /* BARRES DE RECHERCHE ET COMPTEUR (STYLE IMAGE) */
+  /* BARRE DE RECHERCHE INVISIBLE (Ligne simple) */
   .search-bar {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 15px 25px;
-    margin-bottom: 15px;
+    max-width: 600px;
+    margin: 20px auto 10px;
     display: flex;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    border-bottom: 0.5px solid var(--text); /* Simple trait au lieu d'un bloc */
+    padding: 8px 0;
   }
 
-  .search-bar i { color: var(--muted); margin-right: 15px; font-size: 18px; }
   .search-bar input {
     border: none;
     outline: none;
     width: 100%;
-    font-size: 16px;
-    color: var(--muted);
+    font-size: 14px;
     background: transparent;
+    color: var(--text);
+    padding-left: 10px;
   }
 
-  #userCount { font-weight: 700; color: var(--text); margin-left: auto; }
-
-  /* LISTE ET CARTES */
-  #usersList { width: 100%; max-width: 600px; }
+  /* LISTE ÉPURÉE */
+  #usersList {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 20px 100px;
+  }
 
   .contact-item {
-    background: var(--surface);
-    border-radius: 20px;
-    margin-bottom: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+    background: transparent;
+    border-bottom: 0.5px solid var(--border);
     transition: all 0.3s ease;
   }
 
   .contact-header {
-    padding: 20px 25px;
+    padding: 20px 0;
     display: flex;
     align-items: center;
     cursor: pointer;
     position: relative;
   }
 
+  /* Avatar discret */
   .avatar {
-    width: 50px;
-    height: 50px;
-    background: #EBEBEB;
+    width: 35px;
+    height: 35px;
+    background: transparent;
+    border: 0.5px solid var(--accent);
+    color: var(--accent);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 11px;
     font-weight: 700;
-    color: #555;
-    margin-right: 20px;
-    text-transform: uppercase;
+    margin-right: 15px;
   }
 
-  .contact-info { display: flex; flex-direction: column; }
-  .contact-name { font-size: 17px; font-weight: 800; color: var(--text); }
+  .contact-info { flex: 1; }
+  .contact-name { font-size: 14px; font-weight: 600; letter-spacing: -0.2px; }
   .contact-sub { 
-    font-size: 10px; 
-    font-weight: 900; 
-    text-transform: uppercase; 
+    font-size: 9px; 
     color: var(--accent); 
-    letter-spacing: 1px;
-    margin-top: 2px;
+    text-transform: uppercase; 
+    letter-spacing: 1.5px;
+    display: block;
+    margin-top: 3px;
   }
 
   .contact-header i.fa-chevron-down {
-    position: absolute;
-    right: 25px;
+    font-size: 9px;
     color: var(--muted);
-    transition: transform 0.3s;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* DETAILS DÉROULANTS */
+  /* DÉTAILS SANS BLOCS */
   .contact-details {
-    display: none; /* Inchangé, géré par ton toggle JS */
-    border-top: 1px solid #F5F5F5;
-    padding: 10px 25px 25px 25px;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 0;
   }
 
-  .contact-item.active .contact-details { display: block; }
-  .contact-item.active i.fa-chevron-down { transform: rotate(180deg); }
+  .contact-item.active .contact-details {
+    max-height: 350px;
+    opacity: 1;
+    padding-bottom: 25px;
+  }
+
+  .contact-item.active i.fa-chevron-down { transform: rotate(180deg); color: var(--text); }
 
   .data-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #FAFAFA;
+    padding: 10px 0 10px 50px; /* Alignement sous le texte */
+    font-size: 13px;
   }
 
   .data-row span:first-child {
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 9px;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    font-weight: 700;
   }
 
   .data-row span:last-child {
-    font-size: 14px;
-    font-weight: 600;
-    color: #444;
-    cursor: pointer; /* Pour le clic sur téléphone */
-  }
-
-  /* ACTIONS & BOUTONS */
-  .contact-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-    padding-top: 15px;
-  }
-
-  .role-select {
-    background: #F0F0F0;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 13px;
-    outline: none;
+    font-weight: 500;
     color: var(--text);
   }
 
+  /* ACTIONS MINIMALISTES */
+  .contact-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    padding-left: 50px;
+  }
+
+  .role-select {
+    background: transparent;
+    border: none;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--accent);
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 5px 0;
+  }
+
   .btn-orders {
-    background: #1A1A1A;
+    background: var(--text); /* Anthracite profond */
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 12px;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 9px;
     font-weight: 700;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     cursor: pointer;
-    transition: opacity 0.2s;
   }
 
-  .btn-orders:hover { opacity: 0.9; }
-
-  /* FEEDBACK COPIER */
-  .data-row span:last-child:active {
-    color: var(--accent);
-  }
+  .empty-msg { text-align: center; padding: 50px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
 </style>
 </head>
 <body>
