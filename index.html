@@ -253,7 +253,7 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     CURRENT_USER = user;
     CART_KEY = `cart_${user.uid}`;
-    greeting.onclick = () => location.href = 'settings.html';
+    greeting.onclick = () => location.href = 'user.html';
     const snap = await getDoc(doc(db, "users", user.uid));
     const name = snap.exists() ? (snap.data().firstName || "User") : "User";
     greeting.textContent = `Hello, ${name.split(' ')[0]}`;
