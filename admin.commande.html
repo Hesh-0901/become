@@ -8,178 +8,154 @@
 
     <style>
         :root {
-            --bg: #F8F9FB;
-            --card-bg: #FFFFFF;
-            --text-main: #2D3436;
-            --text-muted: #A0A5AB;
+            --bg: #F9F9F9;
+            --surface: #FFFFFF;
+            --text: #1A1A1A;
+            --muted: #8E8E93;
             --accent: #8B6F47;
-            --soft-shadow: 0 20px 40px rgba(0,0,0,0.04);
-            --inner-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-            --radius-xl: 30px;
-            --radius-m: 18px;
+            --border: #EFEFEF;
+            --radius: 12px;
         }
 
         body {
             margin: 0;
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
-            padding: 20px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 15px;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ===== HEADER FLOTTANT ===== */
         header {
-            max-width: 700px;
-            margin: 20px auto 40px;
+            max-width: 600px;
+            margin: 10px auto 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .brand h1 { font-size: 24px; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
-        .brand p { font-size: 14px; color: var(--text-muted); margin: 5px 0 0; }
+        h1 { font-size: 16px; font-weight: 700; margin: 0; letter-spacing: -0.3px; }
+        .header-info { font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
 
-        .user-pill {
-            background: var(--card-bg);
-            padding: 8px 15px;
-            border-radius: 50px;
-            box-shadow: var(--soft-shadow);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--text-main);
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        /* ===== STATS EN BULLES ===== */
-        .stats-container {
+        /* STATS COMPACTES */
+        .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 700px;
-            margin: 0 auto 30px;
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto 20px;
         }
 
-        .stat-bubble {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: var(--radius-xl);
-            box-shadow: var(--soft-shadow);
-            text-align: center;
+        .stat-mini {
+            background: var(--surface);
+            padding: 12px 15px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .stat-bubble span { display: block; }
-        .stat-bubble .val { font-size: 26px; font-weight: 800; color: var(--accent); }
-        .stat-bubble .lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-top: 8px; letter-spacing: 0.5px; }
+        .stat-mini .val { font-size: 15px; font-weight: 700; color: var(--accent); }
+        .stat-mini .lbl { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; }
 
-        /* ===== CARTES SOFT ===== */
-        #adminOrdersList { max-width: 700px; margin: 0 auto; }
+        /* CARTES ÉPURÉES */
+        #adminOrdersList { max-width: 600px; margin: 0 auto; }
 
-        .order-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-xl);
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: var(--soft-shadow);
-            transition: transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
+        .order-row {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .order-card:hover { transform: translateY(-5px); }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
 
-        .client-info h2 { font-size: 18px; margin: 0; font-weight: 700; }
-        .client-info span { font-size: 12px; color: var(--text-muted); font-family: monospace; }
+        .client-name { font-size: 14px; font-weight: 600; display: block; }
+        .order-ref { font-size: 10px; color: var(--muted); font-family: monospace; }
 
         .status-select {
-            appearance: none;
-            background: #F1F2F6;
+            background: #F4F4F4;
             border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-main);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 800;
+            color: var(--text);
             cursor: pointer;
-            text-align: center;
             outline: none;
         }
 
-        .details-row {
+        .order-body {
             display: flex;
-            gap: 30px;
-            margin: 25px 0;
-            padding: 20px;
-            background: #FDFDFD;
-            border-radius: var(--radius-m);
-            box-shadow: var(--inner-shadow);
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid #F9F9F9;
         }
 
-        .detail-item label { display: block; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-        .detail-item b { font-size: 15px; color: var(--text-main); }
+        .order-data { font-size: 12px; font-weight: 500; }
+        .order-data span { color: var(--muted); font-size: 10px; margin-right: 5px; }
 
-        /* ===== BOUTONS ACTIONS ===== */
-        .actions-bar {
+        .actions-group {
             display: flex;
-            gap: 12px;
-            justify-content: flex-end;
+            gap: 8px;
         }
 
-        .btn-soft {
-            width: 45px;
-            height: 45px;
-            border-radius: 15px;
-            border: none;
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
+            text-decoration: none;
         }
 
-        .btn-invoice { background: #F1F2F6; color: var(--text-main); }
-        .btn-wa { background: #E8F9EF; color: #27AE60; }
-        .btn-del { background: #FFF0F0; color: #EB5757; }
+        .btn-icon:hover { background: #F9F9F9; border-color: var(--muted); }
+        .btn-del:hover { color: #D9534F; border-color: #F2DEDE; }
 
-        .btn-soft:hover { transform: scale(1.1); }
-
-        .loader { text-align: center; padding: 50px; color: var(--text-muted); font-weight: 600; font-size: 14px; }
+        .loader { text-align: center; padding: 40px; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
 
     </style>
 </head>
 <body>
 
 <header>
-    <div class="brand">
+    <div>
+        <span class="header-info">Management</span>
         <h1>Commandes</h1>
-        <p>Gestion du flux Become</p>
     </div>
-    <a href="customer.html" class="user-pill">
-        <i class="fa-solid fa-circle-user" style="color:var(--accent); font-size: 18px;"></i>
-        Admin
-    </a>
+    <a href="customer.html" style="color:var(--text);"><i class="fa-solid fa-user-circle fa-lg"></i></a>
 </header>
 
-<div class="stats-container">
-    <div class="stat-bubble">
+<div class="stats-grid">
+    <div class="stat-mini">
+        <span class="lbl">Flux</span>
         <span class="val" id="countOrders">0</span>
-        <span class="lbl">Commandes</span>
     </div>
-    <div class="stat-bubble">
+    <div class="stat-mini">
+        <span class="lbl">Chiffre</span>
         <span class="val" id="totalVault">0$</span>
-        <span class="lbl">Chiffre d'affaires</span>
     </div>
 </div>
 
 <div id="adminOrdersList">
-    <div class="loader">
-        <i class="fa-solid fa-spinner fa-spin"></i><br><br>
-        Synchronisation...
-    </div>
+    <div class="loader">CHARGEMENT...</div>
 </div>
 
 <script type="module">
@@ -190,11 +166,11 @@
     const listElement = document.getElementById("adminOrdersList");
 
     async function getCustomerData(uid) {
-        if(!uid) return "Client Inconnu";
+        if(!uid) return "Client";
         try {
             const userSnap = await getDoc(doc(db, "users", uid));
-            return userSnap.exists() ? (userSnap.data().fullName || userSnap.data().name) : "Client Inconnu";
-        } catch (e) { return "Client Inconnu"; }
+            return userSnap.exists() ? (userSnap.data().fullName || userSnap.data().name) : "Client";
+        } catch (e) { return "Client"; }
     }
 
     onAuthStateChanged(auth, (user) => {
@@ -207,7 +183,7 @@
             let total = 0;
 
             if (snap.empty) {
-                listElement.innerHTML = `<div class="loader">Aucune commande trouvée.</div>`;
+                listElement.innerHTML = `<div class="loader">VIDE</div>`;
                 return;
             }
 
@@ -220,12 +196,12 @@
                 const clientName = o.customerName || await getCustomerData(o.userId || o.uid);
 
                 const card = document.createElement("div");
-                card.className = "order-card";
+                card.className = "order-row";
                 card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div class="client-info">
-                            <h2>${clientName}</h2>
-                            <span>ID: #${id.substring(0,8).toUpperCase()}</span>
+                    <div class="order-header">
+                        <div>
+                            <span class="client-name">${clientName}</span>
+                            <span class="order-ref">#${id.substring(0,6).toUpperCase()}</span>
                         </div>
                         <select class="status-select" onchange="window.updateStatus('${id}', this.value)">
                             <option value="REÇUE" ${o.status === 'REÇUE' ? 'selected' : ''}>REÇUE</option>
@@ -235,21 +211,15 @@
                         </select>
                     </div>
 
-                    <div class="details-row">
-                        <div class="detail-item"><label>Montant</label><b>${price.toLocaleString()} $</b></div>
-                        <div class="detail-item"><label>Articles</label><b>${o.items?.length || 0} pces</b></div>
-                    </div>
-
-                    <div class="actions-bar">
-                        <button class="btn-soft btn-invoice" onclick="location.href='view.invoice.html?orderId=${id}'">
-                            <i class="fa-solid fa-receipt"></i>
-                        </button>
-                        <button class="btn-soft btn-wa" onclick="window.open('https://wa.me/${o.customerPhone || ''}')">
-                            <i class="fa-brands fa-whatsapp"></i>
-                        </button>
-                        <button class="btn-soft btn-del" onclick="window.deleteOrder('${id}')">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
+                    <div class="order-body">
+                        <div class="order-data">
+                            <span>Total</span>${price.toLocaleString()} $
+                        </div>
+                        <div class="actions-group">
+                            <a href="view.invoice.html?orderId=${id}" class="btn-icon"><i class="fa-solid fa-file-lines"></i></a>
+                            <button class="btn-icon" onclick="window.open('https://wa.me/${o.customerPhone || ''}')"><i class="fa-brands fa-whatsapp"></i></button>
+                            <button class="btn-icon btn-del" onclick="window.deleteOrder('${id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
                     </div>
                 `;
                 listElement.appendChild(card);
@@ -264,7 +234,7 @@
     };
 
     window.deleteOrder = async (id) => {
-        if(confirm("Supprimer définitivement ?")) {
+        if(confirm("Supprimer ?")) {
             try { await deleteDoc(doc(db, "orders", id)); } catch (err) { alert("Refusé"); }
         }
     };
