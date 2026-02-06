@@ -15,113 +15,82 @@
             --accent: #8B6F47;
             --border: #E8E2D9;
             --radius: 20px;
+            --error: #A64444;
         }
 
         body {
             margin: 0;
             background: var(--bg);
             color: var(--text);
-            font-family: -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             padding: 20px;
             -webkit-font-smoothing: antialiased;
         }
 
         .container { max-width: 500px; margin: 0 auto; padding-bottom: 50px; }
 
-        header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
+        header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
 
         .back-btn {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: var(--surface);
-            border: 1px solid var(--border);
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--surface); border: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center;
             color: var(--text); text-decoration: none;
         }
 
         h1 { font-size: 18px; font-weight: 700; margin: 0; }
 
-        /* SECTIONS */
         .section-label {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--muted);
-            margin: 30px 0 12px 10px;
+            font-size: 10px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--muted); margin: 30px 0 12px 10px;
         }
 
         .settings-card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            padding: 5px 20px;
+            background: var(--surface); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 5px 20px;
         }
 
         .row {
-            padding: 18px 0;
-            border-bottom: 1px solid #F9F7F4;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 18px 0; border-bottom: 1px solid #F9F7F4;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         .row:last-child { border-bottom: none; }
-
         .row-left { display: flex; flex-direction: column; gap: 4px; flex: 1; }
         
         label { font-size: 9px; font-weight: 800; color: var(--muted); text-transform: uppercase; }
         
         input {
-            border: none;
-            outline: none;
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--text);
-            padding: 0;
-            background: transparent;
-            width: 100%;
+            border: none; outline: none; font-size: 15px; font-weight: 500;
+            color: var(--text); padding: 0; background: transparent; width: 100%;
         }
 
-        /* STATS STYLE */
-        .stat-box { text-align: right; }
         .stat-val { font-size: 16px; font-weight: 700; color: var(--accent); }
-        .stat-desc { font-size: 10px; color: var(--muted); }
+        .stat-desc { font-size: 11px; color: var(--muted); }
 
-        /* BOUTONS ACTIONS */
         .btn-action {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 10px 15px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text); padding: 8px 12px; border-radius: 10px;
+            font-size: 11px; font-weight: 700; cursor: pointer;
         }
-
-        .btn-action:hover { background: var(--bg); border-color: var(--accent); }
 
         .save-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 700;
-            width: 100%;
-            margin-top: 40px;
-            cursor: pointer;
+            background: var(--accent); color: white; border: none;
+            padding: 18px; border-radius: 50px; font-size: 14px;
+            font-weight: 700; width: 100%; margin-top: 30px;
+            cursor: pointer; transition: all 0.3s ease;
             box-shadow: 0 10px 20px rgba(139, 111, 71, 0.15);
         }
 
+        .save-btn:disabled {
+            background: var(--border); color: var(--muted);
+            cursor: not-allowed; box-shadow: none;
+        }
+
+        .limit-notice {
+            text-align: center; font-size: 11px; color: var(--error);
+            margin-top: 15px; font-weight: 600; display: none;
+        }
     </style>
 </head>
 <body>
@@ -129,7 +98,7 @@
 <div class="container">
     <header>
         <a href="customer.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
-        <h1>Mon Compte</h1>
+        <h1>Paramètres</h1>
     </header>
 
     <form id="settingsForm">
@@ -138,19 +107,19 @@
             <div class="row">
                 <div class="row-left">
                     <label>Prénom</label>
-                    <input type="text" id="firstName" placeholder="Votre prénom">
+                    <input type="text" id="firstName" required>
                 </div>
             </div>
             <div class="row">
                 <div class="row-left">
                     <label>Nom</label>
-                    <input type="text" id="lastName" placeholder="Votre nom">
+                    <input type="text" id="lastName" required>
                 </div>
             </div>
             <div class="row">
                 <div class="row-left">
                     <label>Téléphone WhatsApp</label>
-                    <input type="tel" id="phone" placeholder="+243 ...">
+                    <input type="tel" id="phone" placeholder="+243...">
                 </div>
             </div>
         </div>
@@ -160,20 +129,16 @@
             <div class="row">
                 <div class="row-left">
                     <label>Articles en attente</label>
-                    <div id="cartCount" class="stat-desc">Calcul en cours...</div>
+                    <div class="stat-desc">Dans votre panier actuel</div>
                 </div>
-                <div class="stat-box">
-                    <span class="stat-val" id="cartVal">0</span>
-                </div>
+                <div class="stat-box"><span class="stat-val" id="cartVal">0</span></div>
             </div>
             <div class="row">
                 <div class="row-left">
                     <label>Total commandes</label>
-                    <div id="orderTotal" class="stat-desc">Historique complet</div>
+                    <div class="stat-desc" id="orderStatusText">Chargement de l'historique...</div>
                 </div>
-                <div class="stat-box">
-                    <span class="stat-val" id="orderVal">0</span>
-                </div>
+                <div class="stat-box"><span class="stat-val" id="orderVal">0</span></div>
             </div>
         </div>
 
@@ -182,26 +147,27 @@
             <div class="row">
                 <div class="row-left">
                     <label>Adresse Email</label>
-                    <input type="email" id="displayEmail" disabled style="opacity: 0.6;">
+                    <input type="email" id="displayEmail" disabled>
                 </div>
             </div>
             <div class="row">
                 <div class="row-left">
-                    <label>Mot de passe</label>
-                    <div class="stat-desc">Dernière modification : Inconnue</div>
+                    <label>Authentification</label>
+                    <div class="stat-desc">Modifier mon mot de passe</div>
                 </div>
                 <button type="button" id="resetPwdBtn" class="btn-action">Réinitialiser</button>
             </div>
         </div>
 
-        <button type="submit" class="save-btn">Enregistrer les modifications</button>
+        <button type="submit" id="saveBtn" class="save-btn">Enregistrer les modifications</button>
+        <div id="limitNotice" class="limit-notice"></div>
     </form>
 </div>
 
 <script type="module">
     import { auth, db } from "./js/firebase.config.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, getDoc, updateDoc, serverTimestamp, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     let userUID = null;
     let lastUpdateDate = null;
@@ -210,6 +176,7 @@
         if (!user) { location.href = "login.html"; return; }
         userUID = user.uid;
 
+        // 1. Charger Profil & Vérifier Limite 7 jours
         const snap = await getDoc(doc(db, "users", user.uid));
         if (snap.exists()) {
             const d = snap.data();
@@ -218,43 +185,68 @@
             document.getElementById("phone").value = d.phone || "";
             document.getElementById("displayEmail").value = user.email;
             
-            // On récupère la date de dernière modif
             if (d.lastUpdate) {
                 lastUpdateDate = d.lastUpdate.toDate();
+                checkUpdateLimit();
             }
         }
+
+        // 2. Charger Commandes (Vrai Compteur)
+        const qOrders = query(collection(db, "orders"), where("userId", "==", userUID));
+        const orderSnap = await getDocs(qOrders);
+        document.getElementById("orderVal").textContent = orderSnap.size;
+        document.getElementById("orderStatusText").textContent = orderSnap.size > 0 ? "Client fidèle" : "Aucune commande";
+
+        // 3. Charger Panier (Vrai Compteur si collection 'cart' existe)
+        // Note: Adapte le nom de la collection si c'est 'panier' ou 'carts'
+        const qCart = query(collection(db, "cart"), where("userId", "==", userUID));
+        const cartSnap = await getDocs(qCart);
+        document.getElementById("cartVal").textContent = cartSnap.size;
     });
 
+    function checkUpdateLimit() {
+        if (!lastUpdateDate) return;
+        
+        const now = new Date();
+        const diffInDays = (now - lastUpdateDate) / (1000 * 3600 * 24);
+
+        if (diffInDays < 7) {
+            const remaining = Math.ceil(7 - diffInDays);
+            const saveBtn = document.getElementById("saveBtn");
+            const notice = document.getElementById("limitNotice");
+            
+            saveBtn.disabled = true;
+            saveBtn.textContent = "Modifications verrouillées";
+            notice.style.display = "block";
+            notice.innerHTML = `<i class="fa-solid fa-lock"></i> Prochaine modification possible dans ${remaining} jour(s).`;
+        }
+    }
+
+    // Réinitialisation MDP
+    document.getElementById("resetPwdBtn").onclick = async () => {
+        if(confirm("Envoyer un lien de réinitialisation à " + auth.currentUser.email + " ?")) {
+            try {
+                await sendPasswordResetEmail(auth, auth.currentUser.email);
+                alert("Lien envoyé ! Vérifiez vos courriers indésirables.");
+            } catch (e) { alert("Erreur : " + e.message); }
+        }
+    };
+
+    // Sauvegarde
     document.getElementById("settingsForm").onsubmit = async (e) => {
         e.preventDefault();
-
-        // LOGIQUE DE VÉRIFICATION (7 jours)
-        if (lastUpdateDate) {
-            const now = new Date();
-            const diffInTime = now.getTime() - lastUpdateDate.getTime();
-            const diffInDays = diffInTime / (1000 * 3600 * 24);
-
-            if (diffInDays < 7) {
-                const remaining = Math.ceil(7 - diffInDays);
-                alert(`⏳ Limite atteinte : Vous pourrez modifier vos informations dans ${remaining} jour(s).`);
-                return; // On arrête tout ici
-            }
-        }
-
-        // SI OK : SAUVEGARDE
         try {
             await updateDoc(doc(db, "users", userUID), {
                 firstName: document.getElementById("firstName").value,
                 lastName: document.getElementById("lastName").value,
                 phone: document.getElementById("phone").value,
-                lastUpdate: serverTimestamp() // On enregistre la date du jour
+                lastUpdate: serverTimestamp()
             });
-            alert("✅ Profil mis à jour avec succès !");
-            location.reload(); // Recharger pour actualiser la date de blocage
-        } catch (err) { 
-            alert("Erreur lors de la sauvegarde."); 
-        }
+            alert("Profil mis à jour !");
+            location.reload();
+        } catch (err) { alert("Erreur lors de la sauvegarde."); }
     };
 </script>
+
 </body>
 </html>
