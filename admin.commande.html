@@ -8,154 +8,160 @@
 
     <style>
         :root {
-            --bg: #F9F9F9;
+            --bg: #F9F7F4;        /* Crème très clair */
             --surface: #FFFFFF;
-            --text: #1A1A1A;
-            --muted: #8E8E93;
-            --accent: #8B6F47;
-            --border: #EFEFEF;
-            --radius: 12px;
+            --text: #5D5447;      /* Beige foncé / Brun doux */
+            --muted: #A39B8F;     /* Beige moyen */
+            --accent: #8B6F47;    /* Beige doré (ta signature) */
+            --border: #E8E2D9;    /* Ligne beige clair */
+            --radius: 14px;
         }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0;
             background: var(--bg);
             color: var(--text);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            padding: 15px;
+            padding: 20px;
             -webkit-font-smoothing: antialiased;
         }
 
         header {
-            max-width: 600px;
-            margin: 10px auto 25px;
+            max-width: 550px;
+            margin: 10px auto 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        h1 { font-size: 16px; font-weight: 700; margin: 0; letter-spacing: -0.3px; }
-        .header-info { font-size: 11px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+        .brand h1 { font-size: 18px; font-weight: 700; margin: 0; letter-spacing: -0.2px; color: var(--text); }
+        .brand p { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin: 4px 0 0; color: var(--muted); }
 
         /* STATS COMPACTES */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            max-width: 600px;
-            margin: 0 auto 20px;
+            gap: 12px;
+            max-width: 550px;
+            margin: 0 auto 25px;
         }
 
         .stat-mini {
             background: var(--surface);
-            padding: 12px 15px;
+            padding: 15px;
             border-radius: var(--radius);
             border: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
         }
 
-        .stat-mini .val { font-size: 15px; font-weight: 700; color: var(--accent); }
-        .stat-mini .lbl { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+        .stat-mini .val { display: block; font-size: 18px; font-weight: 700; color: var(--accent); }
+        .stat-mini .lbl { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
 
-        /* CARTES ÉPURÉES */
-        #adminOrdersList { max-width: 600px; margin: 0 auto; }
+        /* LISTE ÉPURÉE */
+        #adminOrdersList { max-width: 550px; margin: 0 auto; }
 
         .order-row {
             background: var(--surface);
             border-radius: var(--radius);
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
             border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            transition: all 0.2s ease;
         }
 
         .order-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
+            margin-bottom: 14px;
         }
 
-        .client-name { font-size: 14px; font-weight: 600; display: block; }
-        .order-ref { font-size: 10px; color: var(--muted); font-family: monospace; }
+        .client-name { font-size: 14px; font-weight: 600; color: var(--text); }
+        .order-ref { font-size: 10px; color: var(--muted); font-family: monospace; display: block; margin-top: 2px; }
 
         .status-select {
-            background: #F4F4F4;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 6px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 8px;
             font-size: 9px;
-            font-weight: 800;
+            font-weight: 700;
             color: var(--text);
-            cursor: pointer;
             outline: none;
+            cursor: pointer;
         }
 
-        .order-body {
+        .order-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 10px;
-            border-top: 1px solid #F9F9F9;
+            padding-top: 14px;
+            border-top: 1px solid var(--bg);
         }
 
-        .order-data { font-size: 12px; font-weight: 500; }
-        .order-data span { color: var(--muted); font-size: 10px; margin-right: 5px; }
+        .price-tag { font-size: 14px; font-weight: 700; color: var(--text); }
+        .price-tag span { font-size: 10px; color: var(--muted); margin-right: 4px; font-weight: 400; }
 
-        .actions-group {
+        .actions {
             display: flex;
             gap: 8px;
         }
 
         .btn-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
             border: 1px solid var(--border);
             background: transparent;
-            color: var(--text);
+            color: var(--muted);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
             text-decoration: none;
         }
 
-        .btn-icon:hover { background: #F9F9F9; border-color: var(--muted); }
-        .btn-del:hover { color: #D9534F; border-color: #F2DEDE; }
+        .btn-icon:hover { 
+            border-color: var(--accent); 
+            color: var(--accent);
+            background: var(--bg);
+        }
 
-        .loader { text-align: center; padding: 40px; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+        .btn-del:hover { 
+            border-color: #D6BCBC; 
+            color: #A64444; 
+        }
 
+        .loader { text-align: center; padding: 50px; font-size: 10px; letter-spacing: 2px; color: var(--muted); }
     </style>
 </head>
 <body>
 
 <header>
-    <div>
-        <span class="header-info">Management</span>
+    <div class="brand">
         <h1>Commandes</h1>
+        <p>Administration</p>
     </div>
-    <a href="customer.html" style="color:var(--text);"><i class="fa-solid fa-user-circle fa-lg"></i></a>
+    <a href="customer.html" style="color:var(--muted);"><i class="fa-solid fa-circle-user fa-xl"></i></a>
 </header>
 
 <div class="stats-grid">
     <div class="stat-mini">
-        <span class="lbl">Flux</span>
         <span class="val" id="countOrders">0</span>
+        <span class="lbl">Flux</span>
     </div>
     <div class="stat-mini">
-        <span class="lbl">Chiffre</span>
         <span class="val" id="totalVault">0$</span>
+        <span class="lbl">Recette</span>
     </div>
 </div>
 
 <div id="adminOrdersList">
-    <div class="loader">CHARGEMENT...</div>
+    <div class="loader">SYNCHRONISATION...</div>
 </div>
 
 <script type="module">
@@ -183,7 +189,7 @@
             let total = 0;
 
             if (snap.empty) {
-                listElement.innerHTML = `<div class="loader">VIDE</div>`;
+                listElement.innerHTML = `<div class="loader">AUCUNE DONNÉE</div>`;
                 return;
             }
 
@@ -201,7 +207,7 @@
                     <div class="order-header">
                         <div>
                             <span class="client-name">${clientName}</span>
-                            <span class="order-ref">#${id.substring(0,6).toUpperCase()}</span>
+                            <span class="order-ref">REF-${id.substring(0,6).toUpperCase()}</span>
                         </div>
                         <select class="status-select" onchange="window.updateStatus('${id}', this.value)">
                             <option value="REÇUE" ${o.status === 'REÇUE' ? 'selected' : ''}>REÇUE</option>
@@ -211,14 +217,14 @@
                         </select>
                     </div>
 
-                    <div class="order-body">
-                        <div class="order-data">
-                            <span>Total</span>${price.toLocaleString()} $
+                    <div class="order-footer">
+                        <div class="price-tag">
+                            <span>TOTAL</span>${price.toLocaleString()} $
                         </div>
-                        <div class="actions-group">
-                            <a href="view.invoice.html?orderId=${id}" class="btn-icon"><i class="fa-solid fa-file-lines"></i></a>
+                        <div class="actions">
+                            <a href="view.invoice.html?orderId=${id}" class="btn-icon"><i class="fa-solid fa-receipt"></i></a>
                             <button class="btn-icon" onclick="window.open('https://wa.me/${o.customerPhone || ''}')"><i class="fa-brands fa-whatsapp"></i></button>
-                            <button class="btn-icon btn-del" onclick="window.deleteOrder('${id}')"><i class="fa-solid fa-trash"></i></button>
+                            <button class="btn-icon btn-del" onclick="window.deleteOrder('${id}')"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                 `;
@@ -230,12 +236,12 @@
     });
 
     window.updateStatus = async (id, val) => {
-        try { await updateDoc(doc(db, "orders", id), { status: val }); } catch (err) { alert("Refusé"); }
+        try { await updateDoc(doc(db, "orders", id), { status: val }); } catch (err) { alert("Erreur serveur"); }
     };
 
     window.deleteOrder = async (id) => {
-        if(confirm("Supprimer ?")) {
-            try { await deleteDoc(doc(db, "orders", id)); } catch (err) { alert("Refusé"); }
+        if(confirm("Supprimer cette fiche ?")) {
+            try { await deleteDoc(doc(db, "orders", id)); } catch (err) { alert("Action refusée"); }
         }
     };
 </script>
