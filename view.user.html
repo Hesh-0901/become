@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Become Admin — Contacts</title>
+  <title>Become Admin — Répertoire Clients</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -18,21 +18,66 @@
     }
 
     body {
-      margin: 0; background: var(--bg); color: var(--text);
-      font-family: -apple-system, sans-serif; padding: 15px;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      padding: 15px;
+      min-height: 100vh;
     }
 
-    /* Style Répertoire */
+    /* HEADER FIXE */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      padding-bottom: 15px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 12px 18px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    h1 { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 0; }
+
+    .search-bar {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 12px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .search-bar input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+      background: transparent;
+    }
+
+    /* LISTE STYLE RÉPERTOIRE */
+    #usersList { display: flex; flex-direction: column; gap: 8px; }
+
     .contact-item {
       background: var(--surface);
-      margin-bottom: 8px;
       border-radius: 12px;
       border: 1px solid var(--border);
       overflow: hidden;
-      transition: 0.3s;
+      transition: all 0.3s ease;
     }
 
-    /* En-tête du contact (Compact) */
+    /* En-tête compact */
     .contact-header {
       padding: 12px 15px;
       display: flex;
@@ -41,152 +86,179 @@
       cursor: pointer;
     }
 
-    .avatar-small {
-      width: 40px; height: 40px; background: var(--bg);
-      border-radius: 50%; display: flex; align-items: center;
-      justify-content: center; color: var(--accent); font-weight: bold;
+    .avatar {
+      width: 38px;
+      height: 38px;
+      background: #F4F1EC;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 14px;
+      text-transform: uppercase;
     }
 
-    .contact-main { flex: 1; }
-    .contact-name { font-weight: 700; font-size: 14px; display: block; }
-    .contact-role-badge { 
-      font-size: 9px; text-transform: uppercase; 
-      font-weight: 800; color: var(--accent); letter-spacing: 0.5px;
-    }
+    .contact-info { flex: 1; }
+    .contact-name { font-size: 14px; font-weight: 700; display: block; color: var(--text); }
+    .contact-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
 
-    /* Contenu déroulant (Masqué par défaut) */
+    /* Zone détails (déroulante) */
     .contact-details {
-      max-height: 0; overflow: hidden;
-      transition: max-height 0.4s ease-out;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
       background: #FAF9F6;
-      border-top: 1px solid transparent;
     }
 
     .contact-item.active .contact-details {
-      max-height: 500px;
-      border-top: 1px solid var(--border);
+      max-height: 400px;
+      border-top: 1px dashed var(--border);
     }
 
-    .detail-inner { padding: 15px; display: flex; flex-direction: column; gap: 12px; }
+    .contact-item.active { border-color: var(--accent); }
 
-    .info-row { display: flex; justify-content: space-between; font-size: 13px; }
-    .info-row b { color: var(--muted); font-weight: 500; font-size: 11px; text-transform: uppercase; }
+    .details-content { padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+
+    .data-row { display: flex; justify-content: space-between; font-size: 12px; }
+    .data-row span:first-child { color: var(--muted); font-weight: 600; font-size: 10px; text-transform: uppercase; }
+    .data-row span:last-child { color: var(--text); font-weight: 500; }
 
     /* Actions */
-    .action-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;
+    .contact-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #EEE;
     }
 
     .btn {
-      height: 40px; border-radius: 10px; border: none; font-size: 11px;
-      font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      height: 38px;
+      border-radius: 10px;
+      border: none;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     .btn-orders { background: var(--text); color: white; }
+    
     .role-select {
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 8px; font-size: 11px; font-weight: 700; padding: 5px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 0 10px;
+      outline: none;
     }
 
-    /* Barre de recherche fixe */
-    .sticky-header {
-      position: sticky; top: 0; z-index: 100; background: var(--bg);
-      padding-bottom: 15px;
-    }
-    
-    .search-bar {
-      background: var(--surface); border-radius: 12px; padding: 12px;
-      display: flex; align-items: center; gap: 10px; border: 1px solid var(--border);
-    }
-    .search-bar input { border: none; outline: none; width: 100%; background: transparent; }
+    .empty-msg { text-align: center; padding: 40px; color: var(--muted); font-size: 12px; }
   </style>
 </head>
 <body>
 
   <div class="sticky-header">
-    <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h1 style="font-size: 14px; text-transform: uppercase; letter-spacing: 2px;">Contacts <span id="count">0</span></h1>
-        <a href="admin.commande.html" style="color:var(--text)"><i class="fa-solid fa-house"></i></a>
+    <header>
+      <h1>Répertoire Clients (<span id="userCount">0</span>)</h1>
+      <a href="admin.commande.html" style="color:var(--text);"><i class="fa-solid fa-house"></i></a>
     </header>
+
     <div class="search-bar">
       <i class="fa-solid fa-magnifying-glass" style="color:var(--muted)"></i>
-      <input type="text" id="searchInput" placeholder="Nom, email ou téléphone...">
+      <input type="text" id="searchInput" placeholder="Rechercher par nom ou email...">
     </div>
   </div>
 
-  <div id="usersList"></div>
+  <div id="usersList">
+    <div class="empty-msg"><i class="fa-solid fa-spinner fa-spin"></i> Chargement...</div>
+  </div>
 
   <script type="module">
     import { db, auth } from "./js/firebase.config.js";
-    import { collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { collection, query, orderBy, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const usersList = document.getElementById("usersList");
-    let allUsers = [];
+    const listElement = document.getElementById("usersList");
+    const countElement = document.getElementById("userCount");
+    const searchInput = document.getElementById("searchInput");
 
-    // Chargement temps réel
-    onSnapshot(query(collection(db, "users"), orderBy("lastName", "asc")), (snap) => {
-      allUsers = [];
-      usersList.innerHTML = "";
-      document.getElementById("count").textContent = snap.size;
+    // Ecoute temps réel de la collection Users
+    const q = query(collection(db, "users"), orderBy("lastName", "asc"));
 
-      snap.forEach(userDoc => {
+    onSnapshot(q, (snap) => {
+      listElement.innerHTML = "";
+      countElement.textContent = snap.size;
+
+      if (snap.empty) {
+        listElement.innerHTML = `<div class="empty-msg">Aucun utilisateur enregistré.</div>`;
+        return;
+      }
+
+      snap.forEach((userDoc) => {
         const u = userDoc.data();
         const id = userDoc.id;
-        allUsers.push({id, ...u});
+        const fullName = `${u.firstName || ''} ${u.lastName || ''}`.trim() || "Utilisateur sans nom";
 
-        const card = document.createElement("div");
-        card.className = "contact-item";
-        card.innerHTML = `
+        const item = document.createElement("div");
+        item.className = "contact-item";
+        item.innerHTML = `
           <div class="contact-header" onclick="this.parentElement.classList.toggle('active')">
-            <div class="avatar-small">${(u.firstName || "U").charAt(0)}</div>
-            <div class="contact-main">
-              <span class="contact-name">${u.firstName || ""} ${u.lastName || ""}</span>
-              <span class="contact-role-badge">${u.role || 'customer'}</span>
+            <div class="avatar">${(u.firstName || 'U').charAt(0)}</div>
+            <div class="contact-info">
+              <span class="contact-name">${fullName}</span>
+              <span class="contact-sub">${u.role || 'customer'}</span>
             </div>
             <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--muted)"></i>
           </div>
 
           <div class="contact-details">
-            <div class="detail-inner">
-              <div class="info-row"><b>Email</b> <span>${u.email}</span></div>
-              <div class="info-row"><b>WhatsApp</b> <span>${u.phone || 'Non lié'}</span></div>
-              <div class="info-row"><b>Ville / Quartier</b> <span>${u.city || '-'}, ${u.district || '-'}</span></div>
-              <div class="info-row"><b>Genre</b> <span>${u.gender || '-'}</span></div>
+            <div class="details-content">
+              <div class="data-row"><span>Email</span> <span>${u.email || '-'}</span></div>
+              <div class="data-row"><span>Téléphone</span> <span>${u.phone || '-'}</span></div>
+              <div class="data-row"><span>Ville / Quartier</span> <span>${u.city || '-'} / ${u.district || '-'}</span></div>
+              <div class="data-row"><span>Inscrit le</span> <span>${u.createdAt?.toDate().toLocaleDateString('fr-FR') || 'Ancien'}</span></div>
               
-              <div style="border-top: 1px solid #eee; padding-top: 10px; margin-top: 5px;">
-                <b style="font-size: 9px; color: var(--muted); text-transform: uppercase;">Modifier le Rôle</b>
-                <div style="display: flex; gap: 10px; align-items: center; margin-top: 5px;">
-                  <select class="role-select" onchange="window.changeRole('${id}', this.value)">
-                    <option value="customer" ${u.role === 'customer' ? 'selected' : ''}>Customer</option>
-                    <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
-                  </select>
-                  <button class="btn btn-orders" onclick="location.href='admin.user.orders.html?uid=${id}&name=${encodeURIComponent(u.firstName)}'">
-                    <i class="fa-solid fa-receipt"></i> Commandes
-                  </button>
-                </div>
+              <div class="contact-actions">
+                <select class="role-select" onchange="window.updateUserRole('${id}', this.value)">
+                  <option value="customer" ${u.role === 'customer' ? 'selected' : ''}>CUSTOMER</option>
+                  <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>ADMIN</option>
+                </select>
+                
+                <button class="btn btn-orders" onclick="location.href='admin.user.orders.html?uid=${id}&name=${encodeURIComponent(fullName)}'">
+                  <i class="fa-solid fa-receipt"></i> Historique
+                </button>
               </div>
             </div>
           </div>
         `;
-        usersList.appendChild(card);
+        listElement.appendChild(item);
       });
     });
 
-    // Changer de rôle
-    window.changeRole = async (uid, newRole) => {
-      if(confirm("Changer le rôle de cet utilisateur ?")) {
+    // Fonction de mise à jour du rôle
+    window.updateUserRole = async (uid, newRole) => {
+      if(confirm("Confirmer le changement de rôle ?")) {
         try {
           await updateDoc(doc(db, "users", uid), { role: newRole });
-        } catch (e) { alert("Erreur de permission"); }
+        } catch (e) { alert("Erreur : Action refusée."); }
       }
     };
 
-    // Recherche
-    document.getElementById("searchInput").oninput = (e) => {
-      const val = e.target.value.toLowerCase();
-      document.querySelectorAll('.contact-item').forEach(el => {
-        const text = el.innerText.toLowerCase();
-        el.style.display = text.includes(val) ? "block" : "none";
+    // Recherche dynamique
+    searchInput.oninput = (e) => {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('.contact-item').forEach(card => {
+        const content = card.innerText.toLowerCase();
+        card.style.display = content.includes(term) ? "block" : "none";
       });
     };
   </script>
