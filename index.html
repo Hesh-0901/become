@@ -3,180 +3,181 @@
 <head>
   <meta charset="UTF-8" />
   <title>Become boutique</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#7A623F">
   
-  <link rel="icon" type="image/png" sizes="32x32" href="icons/logo/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="icons/logo/favicon-64.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/logo/apple-touch-icon.png">
-  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     :root {
-      --bg:#E9E5DF;
+      --bg:#F4F1EC; /* Version plus épurée du beige */
       --surface:#FFFFFF;
-      --surface-soft:#E6E1D9;
-      --text:#1E1E1E;
-      --muted:#6B6B6B;
+      --surface-soft:#EBE7E0;
+      --text:#252525; /* Anthracite au lieu du noir */
+      --muted:#8E8E8E;
       --accent:#8B6F47;
-      --border:#D6CFC4;
-      --radius:10px;
+      --border:#E2DDD5;
+      --radius:12px;
     }
 
-    *{box-sizing:border-box}
+    *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
 
     body{
       margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
+      font-family:'Inter', -apple-system, system-ui, sans-serif;
       background:var(--bg);
       color:var(--text);
-      padding-bottom:72px;
+      padding-bottom:80px;
     }
 
-    header{
-      position:sticky;
-      top:0;
-      background:var(--bg);
-      border-bottom:1px solid var(--border);
-      z-index:10;
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(244, 241, 236, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 0.5px solid var(--border);
+      z-index: 100;
     }
 
-    .bar{
-      height:54px;
-      padding:0 14px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+    .bar {
+      height: 60px;
+      padding: 0 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .brand{
-      font-weight:600;
-      letter-spacing:3px;
-      font-size:15px;
+    .brand img { height: 20px; width: auto; }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
     }
 
-    .actions{
-      display:flex;
-      align-items:center;
-      gap:16px;
+    .actions i {
+      color: var(--text);
+      cursor: pointer;
+      font-size: 16px;
+      transition: opacity 0.2s;
     }
 
-    .actions i{
-      color:var(--muted);
-      cursor:pointer;
-      font-size:15px;
+    /* SALUTATION HEADER */
+    #userGreeting {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--accent);
+      cursor: pointer;
     }
 
-    .cart-wrapper{position:relative}
-
-    .cart-count{
-      position:absolute;
-      top:-6px;
-      right:-8px;
-      background:var(--accent);
-      color:#fff;
-      font-size:10px;
-      font-weight:600;
-      padding:2px 6px;
-      border-radius:999px;
-      display:none;
-      min-width:18px;
-      text-align:center;
+    .cart-wrapper { position: relative; }
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -10px;
+      background: var(--text);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 6px;
+      min-width: 16px;
+      text-align: center;
     }
 
-    .grid{
-      padding:14px;
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:14px;
+    /* GRID & CARDS */
+    .grid {
+      padding: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
     }
 
-    @media(min-width:768px){
-      .grid{
-        grid-template-columns:repeat(4,1fr);
-        max-width:1200px;
-        margin:auto;
-      }
+    @media(min-width:768px){ .grid { grid-template-columns: repeat(4, 1fr); margin: auto; } }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 0.5px solid var(--border);
+      transition: transform 0.2s ease;
     }
 
-    .card{
-      background:var(--surface);
-      border-radius:var(--radius);
-      overflow:hidden;
-      border:1px solid var(--border);
-      cursor:pointer;
-    }
-
-    .card img{
-      width:100%;
-      aspect-ratio:3/4;
-      object-fit:cover;
-      display:block;
-    }
-
-    .card-body{
-      padding:8px 10px;
-      background:var(--surface-soft);
-    }
-
-    .title{
-      font-size:11.5px;
-      font-weight:500;
-      margin:0;
-      line-height:1.3;
-    }
-
-    .price{
-      margin-top:3px;
-      font-size:12px;
-      font-weight:600;
-      color:var(--accent);
-    }
-
-    .pagination{
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      height:56px;
-      background:var(--bg);
-      border-top:1px solid var(--border);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:16px;
-      z-index:20;
-    }
-
-    .pagination button{
-      border:1px solid var(--border);
-      background:var(--surface);
-      padding:6px 16px;
-      border-radius:999px;
-      font-size:12px;
-      cursor:pointer;
-      font-weight:600;
-    }
-
-    .pagination span{
-      font-size:12px;
-      color:var(--muted);
-    }
-    .logo {
-      height: 22px;
-      width: auto;
+    .card img {
+      width: 100%;
+      aspect-ratio: 1/1.2;
+      object-fit: cover;
       display: block;
+      background: #eee;
     }
 
-    #userNameDisplay {
-      font-size: 10px;
+    .card-body { padding: 12px; }
+
+    .title {
+      font-size: 12px;
+      font-weight: 500;
+      margin: 0;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .price {
+      margin-top: 5px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--accent);
-      text-transform: uppercase;
-      margin-right: -8px;
     }
+
+    /* TOAST MESSAGE DISCRET */
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    /* PAGINATION */
+    .pagination {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 65px;
+      background: rgba(244, 241, 236, 0.9);
+      backdrop-filter: blur(10px);
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+      z-index: 90;
+    }
+
+    .pagination button {
+      border: 0.5px solid var(--border);
+      background: var(--surface);
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .pagination span { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
   </style>
 </head>
 
@@ -185,19 +186,16 @@
 <header>
   <div class="bar">
     <div class="brand">
-      <img src="icons/logo/logo.png" alt="Become" class="logo">
+      <img src="icons/logo/logo.png" alt="Become" onclick="location.reload()" style="cursor:pointer">
     </div>
     <div class="actions">
       <i id="searchBtn" class="fa-solid fa-magnifying-glass"></i>
-
       <div class="cart-wrapper">
-        <i id="cartBtn" class="fa-solid fa-cart-shopping"></i>
-        <span id="cartCount" class="cart-count"></span>
+        <i id="cartBtn" class="fa-solid fa-bag-shopping"></i>
+        <span id="cartCount" class="cart-count" style="display:none">0</span>
       </div>
-
-      <span id="userNameDisplay"></span>
-      <i id="userBtn" class="fa-solid fa-user"></i>
-      <i id="installBtn" class="fa-solid fa-download" style="display:none"></i>
+      <span id="userGreeting" onclick="location.href='user.html'">Log in</span>
+      <i id="installBtn" class="fa-solid fa-arrow-down-short-wide" style="display:none"></i>
     </div>
   </div>
 </header>
@@ -205,155 +203,122 @@
 <main class="grid" id="grid"></main>
 
 <div class="pagination">
-  <button id="prev">←</button>
-  <span id="pageInfo">... / ...</span>
-  <button id="next">→</button>
+  <button id="prev"><i class="fa-solid fa-chevron-left"></i></button>
+  <span id="pageInfo">01 / 01</span>
+  <button id="next"><i class="fa-solid fa-chevron-right"></i></button>
 </div>
 
+<div id="toast" class="toast">Produit ajouté</div>
+
 <script type="module">
-/* ================= IMPORTS ================= */
 import { auth, db } from "./js/firebase.config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  collection, query, where, orderBy, limit, getCountFromServer,
-  startAfter, getDocs, doc, getDoc
+import { 
+  collection, query, where, orderBy, limit, getCountFromServer, 
+  startAfter, getDocs, doc, getDoc 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ================= AUTH & USERNAME ================= */
-const userNameDisplay = document.getElementById("userNameDisplay");
-document.getElementById("userBtn").onclick = () => { location.href = "user.html"; };
+/* ================= ÉTAT GLOBAL ================= */
+let CURRENT_USER = null;
+let CART_KEY = "cart_guest";
 
+const showToast = (msg) => {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.style.opacity = "1";
+  setTimeout(() => t.style.opacity = "0", 2000);
+};
+
+/* ================= AUTH & SALUTATION ================= */
 onAuthStateChanged(auth, async (user) => {
+  const greeting = document.getElementById("userGreeting");
   if (user) {
+    CURRENT_USER = user;
+    CART_KEY = `cart_${user.uid}`;
     const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) {
-      // On affiche le premier mot du nom ou username
-      const fullName = snap.data().name || snap.data().username || "";
-      userNameDisplay.textContent = fullName.split(' ')[0];
-    }
+    const name = snap.exists() ? (snap.data().firstName || snap.data().username || "User") : "User";
+    greeting.textContent = `Hello, ${name.split(' ')[0]}`;
+  } else {
+    greeting.textContent = "Log in";
   }
+  updateCartIcon();
 });
 
-/* ================= RECHERCHE ================= */
-document.getElementById("searchBtn").onclick = () => {
-  location.href = "search.html";
-};
+/* ================= PRODUITS ================= */
+const grid = document.getElementById("grid");
+const pageInfo = document.getElementById("pageInfo");
+const PER_PAGE = 10;
+let currentPage = 1;
+let lastVisible = null;
+let totalPages = 1;
 
-/* ================= PRODUITS & PAGINATION ================= */
-const grid=document.getElementById("grid");
-const pageInfo=document.getElementById("pageInfo");
-const prevBtn=document.getElementById("prev");
-const nextBtn=document.getElementById("next");
-
-const PER_PAGE=10;
-let currentPage=1;
-let lastVisible=null;
-let totalPages=1;
-
-const isRecent=c=>c&&Date.now()-c.toDate().getTime()<600000;
-const shuffle=a=>a.sort(()=>Math.random()-.5);
-
-async function getTotalPages() {
-  const coll = collection(db, "products");
-  const q = query(coll, where("active", "==", true));
-  const snapshot = await getCountFromServer(q);
-  totalPages = Math.ceil(snapshot.data().count / PER_PAGE);
-}
-
-function createCard(d){
-  const p=d.data();
-  const el=document.createElement("article");
-  el.className="card";
-  el.style.opacity=p.stock>0?"1":"0.6";
-el.innerHTML=`
-    <img src="${p.imageUrl}">
-    <div class="card-body">
-      <h3 class="title">${p.title}</h3>
-      <div class="price">${p.price.toLocaleString('en-US', {minimumFractionDigits: 2})} USD ${p.stock===0?"— Épuisé":""}</div>
-    </div>`;
-  el.onclick=()=>location.href=`product.html?id=${d.id}`;
-  return el;
-}
-
-async function loadProducts(dir="next"){
-  grid.innerHTML=""; 
-  pageInfo.textContent="...";
+async function loadProducts(dir = "next") {
+  grid.innerHTML = "";
   
-  if (currentPage === 1) await getTotalPages();
-
-  let q=query(collection(db,"products"),where("active","==",true),orderBy("createdAt","desc"),limit(PER_PAGE));
-  
-  if(dir==="next"&&lastVisible) q=query(q,startAfter(lastVisible));
-  
-  const snap=await getDocs(q);
-  if(snap.empty) return pageInfo.textContent="0 / 0";
-  
-  const docs=snap.docs;
-  lastVisible=docs.at(-1);
-  
-  const recent=[],old=[];
-  docs.forEach(d=>isRecent(d.data().createdAt)?recent.push(d):old.push(d));
-  shuffle(old);
-  [...recent,...old].forEach(d=>grid.appendChild(createCard(d)));
-  
-  pageInfo.textContent=`${currentPage} / ${totalPages || 1}`;
-}
-
-prevBtn.onclick=()=> {
-  if(currentPage > 1) {
-    currentPage--;
-    // Note: Pour un vrai retour Firebase, on recharge souvent depuis le début ou on stocke les cursors.
-    // Ici on simplifie pour garder votre logique.
-    lastVisible = null; 
-    loadProducts("next"); 
+  if (currentPage === 1) {
+    const coll = collection(db, "products");
+    const snapshot = await getCountFromServer(query(coll, where("active", "==", true)));
+    totalPages = Math.ceil(snapshot.data().count / PER_PAGE);
   }
-};
 
-nextBtn.onclick=()=>{
-  if(currentPage < totalPages) {
-    currentPage++;
-    loadProducts("next");
-  }
-};
+  let q = query(collection(db, "products"), where("active", "==", true), orderBy("createdAt", "desc"), limit(PER_PAGE));
+  if (dir === "next" && lastVisible) q = query(q, startAfter(lastVisible));
+
+  const snap = await getDocs(q);
+  if (snap.empty) return;
+
+  lastVisible = snap.docs[snap.docs.length - 1];
+  
+  snap.forEach(d => {
+    const p = d.data();
+    const card = document.createElement("article");
+    card.className = "card";
+    card.style.opacity = p.stock > 0 ? "1" : "0.5";
+    card.innerHTML = `
+      <img src="${p.imageUrl}" loading="lazy">
+      <div class="card-body">
+        <h3 class="title">${p.title}</h3>
+        <div class="price">${p.price.toLocaleString('en-US')} USD</div>
+      </div>`;
+    card.onclick = () => location.href = `product.html?id=${d.id}`;
+    grid.appendChild(card);
+  });
+
+  pageInfo.textContent = `${String(currentPage).padStart(2, '0')} / ${String(totalPages || 1).padStart(2, '0')}`;
+}
+
+document.getElementById("next").onclick = () => { if(currentPage < totalPages) { currentPage++; loadProducts("next"); } };
+document.getElementById("prev").onclick = () => { if(currentPage > 1) { currentPage = 1; lastVisible = null; loadProducts(); } };
 
 loadProducts();
 
-/* ================= PANIER (FIX COHÉRENCE) ================= */
-const cartBtn=document.getElementById("cartBtn");
-const cartCount=document.getElementById("cartCount");
-
-const updateCartIcon=()=>{
-  const cart = JSON.parse(localStorage.getItem("cart")||"[]");
-  // Calcul cohérent de la somme des quantités (qty)
-  const totalQty = cart.reduce((sum, item) => sum + (parseInt(item.qty) || 0), 0);
-  
-  cartCount.style.display = totalQty > 0 ? "inline-block" : "none";
-  cartCount.textContent = totalQty;
+/* ================= PANIER LOGIQUE ================= */
+const updateCartIcon = () => {
+  const cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+  const count = cart.reduce((s, i) => s + (parseInt(i.qty) || 0), 0);
+  const badge = document.getElementById("cartCount");
+  badge.style.display = count > 0 ? "block" : "none";
+  badge.textContent = count;
 };
 
-cartBtn.onclick=()=>location.href="panier.html";
-updateCartIcon();
+document.getElementById("cartBtn").onclick = () => location.href = "panier.html";
+document.getElementById("searchBtn").onclick = () => location.href = "search.html";
 
-/* ================= PWA INSTALL ================= */
-let deferredPrompt = null;
-const installBtn = document.getElementById("installBtn");
-
+/* ================= INSTALL PWA ================= */
+let deferredPrompt;
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  installBtn.style.display = "inline-block";
+  document.getElementById("installBtn").style.display = "block";
 });
 
-installBtn.addEventListener("click", async () => {
+document.getElementById("installBtn").onclick = async () => {
   if (deferredPrompt) {
     deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === "accepted") installBtn.style.display = "none";
     deferredPrompt = null;
-  } else {
-    alert("Menu du navigateur > Ajouter à l'écran d'accueil");
+    document.getElementById("installBtn").style.display = "none";
   }
-});
+};
 </script>
 
 </body>
