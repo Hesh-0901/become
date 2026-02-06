@@ -171,13 +171,24 @@
 
     const listElement = document.getElementById("adminOrdersList");
 
-    async function getCustomerData(uid) {
-        if(!uid) return "Client";
-        try {
-            const userSnap = await getDoc(doc(db, "users", uid));
-            return userSnap.exists() ? (userSnap.data().fullName || userSnap.data().name) : "Client";
-        } catch (e) { return "Client"; }
+async function getCustomerData(uid) {
+    if(!uid) return "Client";
+    try {
+        const userSnap = await getDoc(doc(db, "users", uid));
+        if (userSnap.exists()) {
+            const data = userSnap.data();
+            // On combine le prénom et le nom pour un affichage propre
+            if (data.firstName && data.lastName) {
+                return `${data.firstName} ${data.lastName}`;
+            } 
+            // Sécurité au cas où un seul des deux existe
+            return data.firstName || data.lastName || "Client Become";
+        }
+    } catch (e) { 
+        console.error("Erreur Firestore:", e); 
     }
+    return "Client";
+}
 
     onAuthStateChanged(auth, (user) => {
         if (!user) { location.href = "login.html"; return; }
