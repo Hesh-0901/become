@@ -232,7 +232,7 @@
 import { auth, db } from "./js/firebase.config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
-  collection, query, where, orderBy, limit, getCountFromServer, 
+  collection, query, where, limit, getCountFromServer, 
   getDocs, doc, getDoc 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -264,13 +264,15 @@ onAuthStateChanged(auth, async (user) => {
   updateCartIcon();
 });
 
-/* ================= PRODUITS (AVEC MÉLANGE ALÉATOIRE) ================= */
+/* ================= PRODUITS (ALÉATOIRE + PAGINATION) ================= */
 const grid = document.getElementById("grid");
 const pageInfo = document.getElementById("pageInfo");
-const PER_PAGE = 20; // Augmenté légèrement pour un meilleur effet de mélange
+const PER_PAGE = 10;
 let currentPage = 1;
+let totalPages = 1;
+let allProducts = []; // Stockage temporaire pour permettre le mélange
 
-// Fonction de mélange aléatoire (Fisher-Yates)
+// Algorithme de mélange Fisher-Yates
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -281,28 +283,29 @@ function shuffleArray(array) {
 
 async function loadProducts() {
   grid.innerHTML = "";
-  
-  // 1. Récupération des produits actifs
-  let q = query(
-    collection(db, "products"), 
-    where("active", "==", true), 
-    limit(40) // On en prend un peu plus pour pouvoir bien les mélanger
-  );
-  
-  const snap = await getDocs(q);
-  if (snap.empty) return;
 
-  // 2. Conversion du snapshot en tableau pour le mélanger
-  let productsList = [];
-  snap.forEach(doc => {
-    productsList.push({ id: doc.id, ...doc.data() });
-  });
+  // 1. Si c'est le premier chargement, on récupère tout et on mélange
+  if (allProducts.length === 0) {
+    const coll = collection(db, "products");
+    const qAll = query(coll, where("active", "==", true));
+    const snap = await getDocs(qAll);
+    
+    snap.forEach(d => {
+      allProducts.push({ id: d.id, ...d.data() });
+    });
 
-  // 3. Mélange de l'ordre
-  shuffleArray(productsList);
+    // On mélange la liste complète une seule fois par session
+    shuffleArray(allProducts);
+    totalPages = Math.ceil(allProducts.length / PER_PAGE);
+  }
 
-  // 4. Affichage
-  productsList.forEach(p => {
+  // 2. Calcul des index pour la pagination (groupe de 10)
+  const start = (currentPage - 1) * PER_PAGE;
+  const end = start + PER_PAGE;
+  const pageItems = allProducts.slice(start, end);
+
+  // 3. Affichage des produits de la page actuelle
+  pageItems.forEach(p => {
     const card = document.createElement("article");
     card.className = "card";
     card.style.opacity = p.stock > 0 ? "1" : "0.5";
@@ -315,13 +318,26 @@ async function loadProducts() {
     card.onclick = () => location.href = `product.html?id=${p.id}`;
     grid.appendChild(card);
   });
-  
-  pageInfo.textContent = `MODE ALÉATOIRE`;
+
+  pageInfo.textContent = `${String(currentPage).padStart(2, '0')} / ${String(totalPages || 1).padStart(2, '0')}`;
 }
 
-// On simplifie la pagination car le mélange aléatoire rend le "Suivant/Précédent" classique illogique
-document.getElementById("next").onclick = () => loadProducts();
-document.getElementById("prev").onclick = () => loadProducts();
+/* ================= BOUTONS DE NAVIGATION ================= */
+document.getElementById("next").onclick = () => {
+  if (currentPage < totalPages) {
+    currentPage++;
+    loadProducts();
+    window.scrollTo(0, 0);
+  }
+};
+
+document.getElementById("prev").onclick = () => {
+  if (currentPage > 1) {
+    currentPage--;
+    loadProducts();
+    window.scrollTo(0, 0);
+  }
+};
 
 loadProducts();
 
