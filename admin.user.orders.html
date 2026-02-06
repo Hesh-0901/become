@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Become Admin — Historique Client</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #E9E5DF;
+      --surface: #FFFFFF;
+      --text: #1E1E1E;
+      --muted: #9E9E9E;
+      --accent: #8B6F47;
+      --radius: 25px;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      font-family: -apple-system, sans-serif;
+      padding: 20px;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container { width: 100%; max-width: 600px; }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 { font-size: 20px; font-weight: 800; margin: 0; }
+    .client-name { color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-top: 5px; }
+
+    .back-btn {
+      background: var(--surface);
+      padding: 10px 15px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    /* STATS RAPIDES */
+    .user-stats-bar {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 15px 25px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+
+    .stat-item { text-align: center; }
+    .stat-label { font-size: 9px; font-weight: 800; color: var(--muted); text-transform: uppercase; display: block; }
+    .stat-val { font-size: 16px; font-weight: 800; color: var(--text); }
+
+    /* LISTE DES COMMANDES */
+    .order-card {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 20px 25px;
+      margin-bottom: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+      border: 1px solid transparent;
+      transition: 0.3s;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #F5F5F5;
+      padding-bottom: 10px;
+    }
+
+    .order-id { font-size: 13px; font-weight: 700; color: var(--text); }
+    .order-date { font-size: 11px; color: var(--muted); display: block; }
+    
+    .order-status {
+      font-size: 9px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 50px;
+      text-transform: uppercase;
+    }
+
+    .status-pending { background: #FFF9E6; color: #D4A017; }
+    .status-completed { background: #E6F9EE; color: #27AE60; }
+
+    .order-body { display: flex; flex-direction: column; gap: 8px; }
+    .item-row { display: flex; justify-content: space-between; font-size: 13px; }
+    .item-name { color: #555; }
+    .item-price { font-weight: 700; }
+
+    .order-total {
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px dashed #EEE;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .total-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    .total-amount { font-size: 18px; font-weight: 900; color: var(--text); }
+
+    .empty-msg { text-align: center; padding: 50px; color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div>
+        <h1>Historique Achats</h1>
+        <span class="client-name" id="userNameDisplay">Chargement...</span>
+      </div>
+      <a href="view.user.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+    </header>
+
+    <div class="user-stats-bar">
+      <div class="stat-item">
+        <span class="stat-label">Commandes</span>
+        <span class="stat-val" id="orderCount">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Total Dépensé</span>
+        <span class="stat-val" id="totalSpent">0 FCFA</span>
+      </div>
+    </div>
+
+    <div id="ordersList">
+      </div>
+  </div>
+
+  <script type="module">
+    import { db } from "./js/firebase.config.js";
+    import { collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // 1. Récupérer l'ID et le Nom dans l'URL
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get("uid");
+    const userName = params.get("name");
+
+    if (!userId) {
+      window.location.href = "view.user.html";
+    }
+
+    document.getElementById("userNameDisplay").textContent = decodeURIComponent(userName || "Client");
+
+    // 2. Charger les commandes de cet utilisateur
+    const ordersRef = collection(db, "orders");
+    const q = query(ordersRef, where("userId", "==", userId), orderBy("createdAt", "desc"));
+
+    onSnapshot(q, (snap) => {
+      const list = document.getElementById("ordersList");
+      const countEl = document.getElementById("orderCount");
+      const spentEl = document.getElementById("totalSpent");
+      
+      list.innerHTML = "";
+      let total = 0;
+      countEl.textContent = snap.size;
+
+      if (snap.empty) {
+        list.innerHTML = '<div class="empty-msg">Aucune commande pour le moment.</div>';
+        spentEl.textContent = "0 FCFA";
+        return;
+      }
+
+      snap.forEach(doc => {
+        const o = doc.data();
+        total += o.totalAmount || 0;
+
+        const date = o.createdAt?.toDate().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+        
+        const card = document.createElement("div");
+        card.className = "order-card";
+        card.innerHTML = `
+          <div class="order-header">
+            <div>
+              <span class="order-id">#${doc.id.substring(0, 8).toUpperCase()}</span>
+              <span class="order-date">${date}</span>
+            </div>
+            <span class="order-status ${o.status === 'Livré' ? 'status-completed' : 'status-pending'}">
+              ${o.status || 'En attente'}
+            </span>
+          </div>
+          <div class="order-body">
+            ${(o.items || []).map(item => `
+              <div class="item-row">
+                <span class="item-name">${item.quantity}x ${item.name}</span>
+                <span class="item-price">${(item.price * item.quantity).toLocaleString()} FCFA</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="order-total">
+            <span class="total-label">Total</span>
+            <span class="total-amount">${(o.totalAmount || 0).toLocaleString()} FCFA</span>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+
+      spentEl.textContent = total.toLocaleString() + " FCFA";
+    });
+  </script>
+</body>
+</html>
