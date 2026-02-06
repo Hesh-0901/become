@@ -233,7 +233,7 @@ import { auth, db } from "./js/firebase.config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
   collection, query, where, orderBy, limit, getCountFromServer, 
-  startAfter, getDocs, doc, getDoc 
+  getDocs, doc, getDoc 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ================= ÉTAT GLOBAL ================= */
@@ -264,28 +264,45 @@ onAuthStateChanged(auth, async (user) => {
   updateCartIcon();
 });
 
-/* ================= PRODUITS ================= */
+/* ================= PRODUITS (AVEC MÉLANGE ALÉATOIRE) ================= */
 const grid = document.getElementById("grid");
 const pageInfo = document.getElementById("pageInfo");
-const PER_PAGE = 10;
+const PER_PAGE = 20; // Augmenté légèrement pour un meilleur effet de mélange
 let currentPage = 1;
-let lastVisible = null;
-let totalPages = 1;
 
-async function loadProducts(dir = "next") {
-  grid.innerHTML = "";
-  if (currentPage === 1) {
-    const coll = collection(db, "products");
-    const snapshot = await getCountFromServer(query(coll, where("active", "==", true)));
-    totalPages = Math.ceil(snapshot.data().count / PER_PAGE);
+// Fonction de mélange aléatoire (Fisher-Yates)
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-  let q = query(collection(db, "products"), where("active", "==", true), orderBy("createdAt", "desc"), limit(PER_PAGE));
-  if (dir === "next" && lastVisible) q = query(q, startAfter(lastVisible));
+  return array;
+}
+
+async function loadProducts() {
+  grid.innerHTML = "";
+  
+  // 1. Récupération des produits actifs
+  let q = query(
+    collection(db, "products"), 
+    where("active", "==", true), 
+    limit(40) // On en prend un peu plus pour pouvoir bien les mélanger
+  );
+  
   const snap = await getDocs(q);
   if (snap.empty) return;
-  lastVisible = snap.docs[snap.docs.length - 1];
-  snap.forEach(d => {
-    const p = d.data();
+
+  // 2. Conversion du snapshot en tableau pour le mélanger
+  let productsList = [];
+  snap.forEach(doc => {
+    productsList.push({ id: doc.id, ...doc.data() });
+  });
+
+  // 3. Mélange de l'ordre
+  shuffleArray(productsList);
+
+  // 4. Affichage
+  productsList.forEach(p => {
     const card = document.createElement("article");
     card.className = "card";
     card.style.opacity = p.stock > 0 ? "1" : "0.5";
@@ -295,14 +312,17 @@ async function loadProducts(dir = "next") {
         <h3 class="title">${p.title}</h3>
         <div class="price">${p.price.toLocaleString('en-US')} USD</div>
       </div>`;
-    card.onclick = () => location.href = `product.html?id=${d.id}`;
+    card.onclick = () => location.href = `product.html?id=${p.id}`;
     grid.appendChild(card);
   });
-  pageInfo.textContent = `${String(currentPage).padStart(2, '0')} / ${String(totalPages || 1).padStart(2, '0')}`;
+  
+  pageInfo.textContent = `MODE ALÉATOIRE`;
 }
 
-document.getElementById("next").onclick = () => { if(currentPage < totalPages) { currentPage++; loadProducts("next"); } };
-document.getElementById("prev").onclick = () => { if(currentPage > 1) { currentPage = 1; lastVisible = null; loadProducts(); } };
+// On simplifie la pagination car le mélange aléatoire rend le "Suivant/Précédent" classique illogique
+document.getElementById("next").onclick = () => loadProducts();
+document.getElementById("prev").onclick = () => loadProducts();
+
 loadProducts();
 
 /* ================= PANIER LOGIQUE ================= */
@@ -345,6 +365,5 @@ if (isIOS && !isStandalone) {
     window.addEventListener('scroll', () => { prompt.style.display = "none"; }, { once: true });
 }
 </script>
-
 </body>
 </html>
