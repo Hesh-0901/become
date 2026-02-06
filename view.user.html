@@ -7,133 +7,204 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   :root {
-    --bg: #E9E5DF;       /* Fond beige sable de l'image */
+    --bg: #E9E5DF;       /* Fond beige sable exact */
     --surface: #FFFFFF;  /* Blanc des cartes */
     --text: #1E1E1E;     /* Texte principal */
     --muted: #9E9E9E;    /* Gris des labels */
     --accent: #8B6F47;   /* Doré Become pour le rôle */
-    --border: #E0E0E0;
-    --radius: 25px;      /* Arrondi des barres de recherche */
+    --border: #F0F0F0;
+    --radius: 25px;
   }
 
   body {
     margin: 0;
     background: var(--bg);
-    font-family: -apple-system, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     padding: 20px;
     color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  /* HEADER */
-  .header-area { max-width: 600px; margin: 0 auto 30px; }
-  
-  .title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-  .title-row h1 { font-size: 24px; font-weight: 800; margin: 0; }
-  .home-link { background: #FFF; padding: 10px 15px; border-radius: 12px; text-decoration: none; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-
-  /* INPUTS STYLE IMAGE */
-  .input-group { 
-    background: var(--surface); 
-    border-radius: var(--radius); 
-    padding: 15px 25px; 
-    margin-bottom: 15px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
-  }
-  .input-group i { color: var(--muted); margin-right: 15px; }
-  .input-group input { border: none; outline: none; width: 100%; font-size: 16px; color: var(--muted); }
-  .count-val { font-weight: 600; color: var(--text); }
-
-  /* CARTE UTILISATEUR (DESIGN EXACT) */
-  .user-card {
-    background: var(--surface);
-    border-radius: 20px;
+  /* HEADER & NAVIGATION */
+  .sticky-header {
+    width: 100%;
     max-width: 600px;
-    margin: 30px auto;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
   }
 
-  .card-header {
-    padding: 25px;
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+  }
+
+  header h1 {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+
+  header a {
+    background: var(--surface);
+    padding: 10px 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+  }
+
+  /* BARRES DE RECHERCHE ET COMPTEUR (STYLE IMAGE) */
+  .search-bar {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 15px 25px;
+    margin-bottom: 15px;
     display: flex;
     align-items: center;
-    position: relative;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  }
+
+  .search-bar i { color: var(--muted); margin-right: 15px; font-size: 18px; }
+  .search-bar input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 16px;
+    color: var(--muted);
+    background: transparent;
+  }
+
+  #userCount { font-weight: 700; color: var(--text); margin-left: auto; }
+
+  /* LISTE ET CARTES */
+  #usersList { width: 100%; max-width: 600px; }
+
+  .contact-item {
+    background: var(--surface);
+    border-radius: 20px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+  }
+
+  .contact-header {
+    padding: 20px 25px;
+    display: flex;
+    align-items: center;
     cursor: pointer;
+    position: relative;
   }
 
   .avatar {
-    width: 55px; height: 55px;
+    width: 50px;
+    height: 50px;
     background: #EBEBEB;
     border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; font-weight: 700; color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #555;
     margin-right: 20px;
+    text-transform: uppercase;
   }
 
-  .name-area h2 { margin: 0; font-size: 18px; font-weight: 800; }
-  .role-tag { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
-
-  .chevron { position: absolute; right: 25px; color: var(--muted); font-size: 12px; }
-
-  /* DETAILS (DÉROULEMENT) */
-  .card-details {
-    padding: 0 25px 25px 25px;
-    border-top: 1px solid #F0F0F0;
-    display: none; /* Géré par JS */
+  .contact-info { display: flex; flex-direction: column; }
+  .contact-name { font-size: 17px; font-weight: 800; color: var(--text); }
+  .contact-sub { 
+    font-size: 10px; 
+    font-weight: 900; 
+    text-transform: uppercase; 
+    color: var(--accent); 
+    letter-spacing: 1px;
+    margin-top: 2px;
   }
 
-  .detail-row {
+  .contact-header i.fa-chevron-down {
+    position: absolute;
+    right: 25px;
+    color: var(--muted);
+    transition: transform 0.3s;
+  }
+
+  /* DETAILS DÉROULANTS */
+  .contact-details {
+    display: none; /* Inchangé, géré par ton toggle JS */
+    border-top: 1px solid #F5F5F5;
+    padding: 10px 25px 25px 25px;
+  }
+
+  .contact-item.active .contact-details { display: block; }
+  .contact-item.active i.fa-chevron-down { transform: rotate(180deg); }
+
+  .data-row {
     display: flex;
     justify-content: space-between;
-    padding: 15px 0;
-    border-bottom: 1px solid #F9F9F9;
-    font-size: 13px;
     align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #FAFAFA;
   }
 
-  .label { color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; }
-  .value { font-weight: 600; color: #444; }
+  .data-row span:first-child {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-  /* COPIER LE NUMÉRO */
-  .copyable { cursor: pointer; transition: 0.2s; }
-  .copyable:active { color: var(--accent); transform: scale(0.98); }
+  .data-row span:last-child {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    cursor: pointer; /* Pour le clic sur téléphone */
+  }
 
-  /* ACTIONS BAS DE CARTE */
-  .card-footer {
-    padding: 20px 25px;
-    background: #FCFCFC;
+  /* ACTIONS & BOUTONS */
+  .contact-actions {
     display: flex;
-    gap: 15px;
+    justify-content: space-between;
     align-items: center;
+    margin-top: 20px;
+    padding-top: 15px;
   }
-
-  .footer-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 8px; }
 
   .role-select {
-    background: #EBEBEB;
+    background: #F0F0F0;
     border: none;
     padding: 10px 15px;
     border-radius: 10px;
     font-weight: 700;
     font-size: 13px;
     outline: none;
+    color: var(--text);
   }
 
-  .btn-commandes {
+  .btn-orders {
     background: #1A1A1A;
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 12px;
     font-weight: 700;
+    font-size: 13px;
     display: flex;
     align-items: center;
     gap: 10px;
     cursor: pointer;
-    font-size: 13px;
+    transition: opacity 0.2s;
+  }
+
+  .btn-orders:hover { opacity: 0.9; }
+
+  /* FEEDBACK COPIER */
+  .data-row span:last-child:active {
+    color: var(--accent);
   }
 </style>
 </head>
