@@ -2,190 +2,190 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Become — Bienvenue</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#7A623F">
-
-  <link rel="icon" href="icons/logo/favicon-32.png">
+  <title>Become — Profil</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="theme-color" content="#F4F1EC">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    :root{
-      --bg:#E9E5DF;
-      --surface:#FFFFFF;
-      --soft:#F5F2EC;
-      --text:#1E1E1E;
-      --muted:#6B6B6B;
-      --accent:#8B6F47;
-      --border:#D6CFC4;
-      --radius:18px;
+    :root {
+      --bg: #F4F1EC;
+      --surface: #FFFFFF;
+      --text: #252525;
+      --muted: #8E8E8E;
+      --accent: #8B6F47;
+      --border: #E2DDD5;
     }
 
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
-      background:var(--bg);
-      color:var(--text);
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    header{
-      position:sticky;
-      top:0;
-      background:var(--bg);
-      border-bottom:1px solid var(--border);
-      z-index:10;
+    /* HEADER MINIMALISTE AVEC RETOUR */
+    header {
+      padding: 30px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .header-bar{
-      height:56px;
-      padding:0 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+    .back-btn {
+      font-size: 20px;
+      color: var(--text);
+      text-decoration: none;
+      cursor: pointer;
     }
 
-    .header-logo{
-      height:22px;
+    .brand-mini {
+      font-size: 10px;
+      letter-spacing: 4px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-left: 20px;
     }
 
-    main{
-      padding:26px 20px 40px;
-      display:flex;
-      justify-content:center;
+    /* CONTENU */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
 
-    .container{
-      width:100%;
-      max-width:420px;
+    .welcome-box {
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
     }
 
-    .card{
-      background:var(--surface);
-      border-radius:var(--radius);
-      border:1px solid var(--border);
-      padding:34px 26px;
-      text-align:center;
+    .logo-large {
+      height: 35px;
+      margin-bottom: 40px;
+      filter: grayscale(1);
     }
 
-    .logo{
-      height:44px;
-      margin-bottom:18px;
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
     }
 
-    h1{
-      font-size:26px;
-      letter-spacing:3px;
-      margin-bottom:14px;
+    .description {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 40px;
     }
 
-    .intro{
-      font-size:14px;
-      color:var(--muted);
-      line-height:1.7;
-      margin-bottom:30px;
+    /* BOUTONS */
+    .btn {
+      display: block;
+      width: 100%;
+      height: 52px;
+      line-height: 52px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
     }
 
-    .btn{
-      width:100%;
-      height:48px;
-      border-radius:999px;
-      border:none;
-      font-weight:600;
-      font-size:14px;
-      cursor:pointer;
-      margin-bottom:12px;
+    .btn-primary {
+      background: var(--text);
+      color: #FFF;
+      margin-bottom: 15px;
     }
 
-    .primary{
-      background:var(--accent);
-      color:#fff;
+    .btn-outline {
+      background: transparent;
+      border: 0.5px solid var(--border);
+      color: var(--text);
     }
 
-    .logout{
-      margin-top:14px;
-      font-size:12px;
-      color:#b00020;
-      cursor:pointer;
+    /* LOADING OVERLAY (Pour la redirection invisible) */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
     }
   </style>
 </head>
-
 <body>
 
+<div id="loader">
+  <i class="fa-solid fa-circle-notch fa-spin" style="color: var(--accent)"></i>
+</div>
+
 <header>
-  <div class="header-bar">
-    <img src="icons/logo/logo.png" alt="Become" class="header-logo">
+  <div style="display: flex; align-items: center;">
+    <a href="index.html" class="back-btn"><i class="fa-solid fa-xmark"></i></a>
+    <span class="brand-mini">Become</span>
   </div>
 </header>
 
 <main>
-  <div class="container">
-    <div class="card">
+  <div class="welcome-box">
+    <img src="icons/logo/logo.png" alt="Logo" class="logo-large">
+    <h1>VOTRE ESPACE PRIVÉ</h1>
+    <p class="description">
+      Connectez-vous pour suivre vos commandes, gérer vos informations et accéder à votre sélection exclusive.
+    </p>
 
-      <img src="icons/logo/logo.png" alt="Become" class="logo">
-
-      <h1>Bienvenue chez BECOME</h1>
-
-      <p class="intro">
-        Accède à ton espace client et profite d’une expérience
-        simple, sécurisée et premium.
-      </p>
-
-      <!-- 🔘 Bouton dynamique -->
-      <button id="dashboardBtn" class="btn primary" style="display:none"></button>
-
-      <div id="logoutBtn" class="logout">
-        Se déconnecter
-      </div>
-
-    </div>
+    <a href="login.html" class="btn btn-primary">Se connecter</a>
+    <a href="register.html" class="btn btn-outline">Créer un compte</a>
   </div>
 </main>
 
 <script type="module">
 import { auth, db } from "./js/firebase.config.js";
-import { onAuthStateChanged, signOut }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { doc, getDoc }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const dashboardBtn = document.getElementById("dashboardBtn");
-const logoutBtn = document.getElementById("logoutBtn");
+const loader = document.getElementById("loader");
 
-onAuthStateChanged(auth, async user => {
-  if (!user) {
-    location.href = "login.html";
-    return;
-  }
-
-  const snap = await getDoc(doc(db, "users", user.uid));
-  if (!snap.exists()) {
-    await signOut(auth);
-    location.href = "login.html";
-    return;
-  }
-
-  const role = snap.data().role;
-
-  if (role === "admin") {
-    dashboardBtn.textContent = "Accéder au panneau admin";
-    dashboardBtn.onclick = () => location.href = "admin.html";
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    // Si connecté, on cherche le rôle pour rediriger
+    try {
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if (snap.exists()) {
+        const role = snap.data().role;
+        // Redirection selon le rôle
+        if (role === "admin") {
+          location.href = "admin.html";
+        } else {
+          location.href = "customer.html";
+        }
+      } else {
+        // Pas de profil Firestore trouvé ? On traite comme déconnecté
+        loader.style.display = "none";
+      }
+    } catch (e) {
+      console.error(e);
+      loader.style.display = "none";
+    }
   } else {
-    dashboardBtn.textContent = "Accéder à ma boutique";
-    dashboardBtn.onclick = () => location.href = "customer.html";
+    // Pas connecté : on enlève le loader pour montrer les boutons login/register
+    loader.style.display = "none";
   }
-
-  dashboardBtn.style.display = "block";
 });
-
-logoutBtn.onclick = async () => {
-  await signOut(auth);
-  location.href = "login.html";
-};
 </script>
 
 </body>
