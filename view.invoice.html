@@ -20,16 +20,14 @@
 
   * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
 
-  body {
-    margin: 0;
-    background: var(--bg);
-    font-family: 'Inter', -apple-system, sans-serif;
-    color: var(--text-main);
-    padding: 20px 15px;
-  }
-
-  .page { max-width: 800px; margin: 0 auto; }
-
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--text-main);
+  padding: 0 15px 20px 15px; /* 0 en haut */
+}
+  .page { max-width: 800px; margin: 0 auto; padding-top: 10px; }
   .card {
     background: var(--card);
     border-radius: 2px;
@@ -297,13 +295,18 @@
     // ACTION : TÉLÉCHARGEMENT PDF
     document.getElementById("downloadBtn").onclick = () => {
       const element = document.getElementById("invoice");
-      const opt = {
-        margin: 0,
-        filename: `Facture_Become_${o.orderNumber || 'Document'}.pdf`,
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
+const opt = {
+  margin: 0,
+  filename: `Facture_Become_${o.orderNumber || 'Document'}.pdf`,
+  image: { type: 'jpeg', quality: 1 },
+  html2canvas: { 
+    scale: 2, 
+    useCORS: true, 
+    scrollY: 0, // Force le scroll à 0 pour éviter le vide en haut
+    windowHeight: document.getElementById("invoice").scrollHeight 
+  },
+  jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+};
       html2pdf().set(opt).from(element).save();
     };
   }
