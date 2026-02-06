@@ -200,16 +200,16 @@
 
 <script type="module">
     import { auth, db } from "./js/firebase.config.js";
-    import { onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, getDoc, updateDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     let userUID = null;
+    let lastUpdateDate = null;
 
     onAuthStateChanged(auth, async user => {
         if (!user) { location.href = "login.html"; return; }
         userUID = user.uid;
 
-        // Charger Profil
         const snap = await getDoc(doc(db, "users", user.uid));
         if (snap.exists()) {
             const d = snap.data();
@@ -217,40 +217,44 @@
             document.getElementById("lastName").value = d.lastName || "";
             document.getElementById("phone").value = d.phone || "";
             document.getElementById("displayEmail").value = user.email;
+            
+            // On récupère la date de dernière modif
+            if (d.lastUpdate) {
+                lastUpdateDate = d.lastUpdate.toDate();
+            }
         }
-
-        // Charger Stats (Exemple simple : nombre de commandes)
-        const q = query(collection(db, "orders"), where("userId", "==", user.uid));
-        const orderSnap = await getDocs(q);
-        document.getElementById("orderVal").textContent = orderSnap.size;
-        document.getElementById("orderTotal").textContent = `${orderSnap.size} commande(s) passée(s)`;
-
-        // Stats Panier (Simulé ou via collection cart)
-        document.getElementById("cartCount").textContent = "Articles dans le panier";
-        // document.getElementById("cartVal").textContent = ... logic panier
     });
 
-    // Reset Password
-    document.getElementById("resetPwdBtn").onclick = async () => {
-        if(confirm("Envoyer un lien de réinitialisation par email ?")) {
-            await sendPasswordResetEmail(auth, auth.currentUser.email);
-            alert("Email envoyé à " + auth.currentUser.email);
-        }
-    };
-
-    // Save Profile
     document.getElementById("settingsForm").onsubmit = async (e) => {
         e.preventDefault();
+
+        // LOGIQUE DE VÉRIFICATION (7 jours)
+        if (lastUpdateDate) {
+            const now = new Date();
+            const diffInTime = now.getTime() - lastUpdateDate.getTime();
+            const diffInDays = diffInTime / (1000 * 3600 * 24);
+
+            if (diffInDays < 7) {
+                const remaining = Math.ceil(7 - diffInDays);
+                alert(`⏳ Limite atteinte : Vous pourrez modifier vos informations dans ${remaining} jour(s).`);
+                return; // On arrête tout ici
+            }
+        }
+
+        // SI OK : SAUVEGARDE
         try {
             await updateDoc(doc(db, "users", userUID), {
                 firstName: document.getElementById("firstName").value,
                 lastName: document.getElementById("lastName").value,
-                phone: document.getElementById("phone").value
+                phone: document.getElementById("phone").value,
+                lastUpdate: serverTimestamp() // On enregistre la date du jour
             });
-            alert("Profil mis à jour avec succès");
-        } catch (err) { alert("Erreur lors de la sauvegarde"); }
+            alert("✅ Profil mis à jour avec succès !");
+            location.reload(); // Recharger pour actualiser la date de blocage
+        } catch (err) { 
+            alert("Erreur lors de la sauvegarde."); 
+        }
     };
 </script>
-
 </body>
 </html>
