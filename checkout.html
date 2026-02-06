@@ -166,20 +166,21 @@
 
 <script type="module">
 import { auth, db } from "./js/firebase.config.js";
-import { onAuthStateChanged } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  collection,
-  addDoc,
-  serverTimestamp
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { 
+  collection, 
+  addDoc, 
+  getDoc, 
+  doc, 
+  serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ================= AUTH ================= */
+/* ================= AUTH & DATA LOADING ================= */
 let USER = null;
 let CART_KEY = null;
 let cart = [];
 
-onAuthStateChanged(auth, user => {
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     location.href = "login.html";
     return;
@@ -193,6 +194,24 @@ onAuthStateChanged(auth, user => {
     location.href = "panier.html";
     return;
   }
+
+  // --- NOUVEAU : Remplissage automatique ---
+  try {
+    const userSnap = await getDoc(doc(db, "users", user.uid));
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      // On combine prénom et nom s'ils existent
+      const fullName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim();
+      
+      if (fullName) document.getElementById("name").value = fullName;
+      if (userData.phone) document.getElementById("phone").value = userData.phone;
+      if (userData.district) document.getElementById("address").value = userData.district; 
+      // Note: Tu peux ajuster selon tes champs (city, address, etc.)
+    }
+  } catch (error) {
+    console.error("Erreur lors de la récupération du profil:", error);
+  }
+  // -----------------------------------------
 
   renderRecap();
 });
@@ -231,30 +250,41 @@ function generateOrderNumber(){
 
 /* ================= CONFIRM ================= */
 document.getElementById("confirmBtn").onclick = async () => {
+  const btn = document.getElementById("confirmBtn");
   const name = document.getElementById("name").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const address = document.getElementById("address").value.trim();
 
   if (!name || !phone) {
-    alert("Veuillez remplir les informations");
+    alert("Veuillez remplir les informations de livraison");
     return;
   }
 
-  const orderNumber = generateOrderNumber();
-  const total = cart.reduce((s,p)=>s+p.price*p.qty,0);
+  // Désactiver le bouton pour éviter les doubles clics
+  btn.disabled = true;
+  btn.textContent = "Traitement...";
 
-  const ref = await addDoc(collection(db,"orders"),{
-    orderNumber,
-    userId: USER.uid,
-    items: cart,
-    total,
-    customer: { name, phone, address },
-    status: "pending",
-    createdAt: serverTimestamp()
-  });
+  try {
+    const orderNumber = generateOrderNumber();
+    const total = cart.reduce((s,p) => s + (p.price * p.qty), 0);
 
-  localStorage.removeItem(CART_KEY);
-  location.href = `facture.html?orderId=${ref.id}`;
+    const ref = await addDoc(collection(db, "orders"), {
+      orderNumber,
+      userId: USER.uid,
+      items: cart,
+      totalAmount: total, // Nom du champ harmonisé avec ton admin
+      customer: { name, phone, address },
+      status: "pending",
+      createdAt: serverTimestamp()
+    });
+
+    localStorage.removeItem(CART_KEY);
+    location.href = `facture.html?orderId=${ref.id}`;
+  } catch (e) {
+    alert("Erreur lors de la commande");
+    btn.disabled = false;
+    btn.textContent = "Valider la commande";
+  }
 };
 </script>
 
