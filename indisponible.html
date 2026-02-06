@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Become — Indisponibles</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #F4F1EC;
+            --surface: #FFFFFF;
+            --text: #5D5447;
+            --muted: #A39B8F;
+            --accent: #8B6F47;
+            --border: #E8E2D9;
+            --radius: 18px;
+            --alert: #A67B5B; /* Un brun terre cuite pour l'indisponibilité */
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, sans-serif;
+            padding: 20px;
+        }
+
+        .container { max-width: 500px; margin: 0 auto; }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--surface); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text); text-decoration: none;
+        }
+
+        h1 { font-size: 18px; font-weight: 700; margin: 0; }
+
+        /* LISTE */
+        .unavailable-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 18px;
+            border: 1px solid var(--border);
+            margin-bottom: 12px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .item-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: var(--bg);
+        }
+
+        .order-content { flex: 1; }
+        
+        .item-title { font-size: 13px; font-weight: 700; display: block; margin-bottom: 2px; }
+        .order-ref { font-size: 10px; color: var(--muted); font-family: monospace; }
+        
+        .status-tag {
+            font-size: 9px;
+            font-weight: 800;
+            color: var(--alert);
+            text-transform: uppercase;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            margin-top: 100px;
+            color: var(--muted);
+        }
+
+        .empty-state i { font-size: 40px; margin-bottom: 20px; opacity: 0.3; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <a href="customer.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <h1>Indisponibles</h1>
+    </header>
+
+    <div id="unavailableList">
+        </div>
+</div>
+
+<script type="module">
+    import { auth, db } from "./js/firebase.config.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const listContainer = document.getElementById("unavailableList");
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) return;
+
+        // On filtre par userId et par statut "INDISPONIBLE"
+        const q = query(
+            collection(db, "orders"), 
+            where("userId", "==", user.uid),
+            where("status", "==", "INDISPONIBLE")
+        );
+
+        onSnapshot(q, (snap) => {
+            listContainer.innerHTML = "";
+
+            if (snap.empty) {
+                listContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-face-smile"></i>
+                        <p>Tout est disponible ou en cours !</p>
+                    </div>`;
+                return;
+            }
+
+            snap.forEach(doc => {
+                const o = doc.data();
+                const item = (o.items && o.items[0]) ? o.items[0] : { title: "Article inconnu", image: "" };
+
+                const card = document.createElement("div");
+                card.className = "unavailable-card";
+                card.innerHTML = `
+                    <img src="${item.image}" class="item-img" alt="Produit">
+                    <div class="order-content">
+                        <span class="item-title">${item.title}</span>
+                        <span class="order-ref">${o.orderNumber || doc.id.substring(0,8).toUpperCase()}</span>
+                        <div class="status-tag">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Momentanément indisponible
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
