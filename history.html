@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Become — Historique</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #F4F1EC;
+            --surface: #FFFFFF;
+            --text: #5D5447;
+            --muted: #A39B8F;
+            --accent: #8B6F47;
+            --border: #E8E2D9;
+            --radius: 18px;
+            --success: #8BA888; /* Un vert doux et organique */
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, sans-serif;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 500px; margin: 0 auto; }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--surface); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text); text-decoration: none;
+        }
+
+        h1 { font-size: 18px; font-weight: 700; margin: 0; }
+
+        /* LISTE DES COMMANDES */
+        #historyList { display: flex; flex-direction: column; gap: 12px; }
+
+        .order-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-info { display: flex; flex-direction: column; gap: 4px; }
+        
+        .order-date { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+        .order-id { font-size: 13px; font-weight: 600; }
+        .order-total { font-size: 12px; color: var(--accent); font-weight: 700; }
+
+        .status-badge {
+            background: #F0F4F0;
+            color: var(--success);
+            font-size: 9px;
+            font-weight: 800;
+            padding: 6px 10px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+
+        .empty-state i { font-size: 30px; margin-bottom: 15px; opacity: 0.5; }
+        .empty-state p { font-size: 13px; font-weight: 500; }
+
+        .loader { text-align: center; padding: 40px; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <a href="customer.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <h1>Commandes reçues</h1>
+    </header>
+
+    <div id="historyList">
+        <div class="loader">SYNCHRONISATION...</div>
+    </div>
+</div>
+
+<script type="module">
+    import { auth, db } from "./js/firebase.config.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const listElement = document.getElementById("historyList");
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) { location.href = "login.html"; return; }
+
+        // On filtre par userId ET par statut 'LIVRÉ'
+        const q = query(
+            collection(db, "orders"), 
+            where("userId", "==", user.uid),
+            where("status", "==", "LIVRÉ"),
+            orderBy("createdAt", "desc")
+        );
+
+        onSnapshot(q, (snap) => {
+            listElement.innerHTML = "";
+
+            if (snap.empty) {
+                listElement.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-box-open"></i>
+                        <p>Aucune commande terminée pour le moment.</p>
+                    </div>`;
+                return;
+            }
+
+            snap.forEach(doc => {
+                const o = doc.data();
+                const date = o.createdAt ? o.createdAt.toDate().toLocaleDateString('fr-FR', {day: 'numeric', month: 'short'}) : 'Récemment';
+                
+                const card = document.createElement("div");
+                card.className = "order-card";
+                card.innerHTML = `
+                    <div class="order-info">
+                        <span class="order-date">${date}</span>
+                        <span class="order-id">Commande #${doc.id.substring(0,6).toUpperCase()}</span>
+                        <span class="order-total">${o.totalAmount || 0} $</span>
+                    </div>
+                    <div class="status-badge">
+                        <i class="fa-solid fa-check-circle"></i> Reçue
+                    </div>
+                `;
+                listElement.appendChild(card);
+            });
+        }, (error) => {
+            console.error(error);
+            listElement.innerHTML = "<p style='text-align:center; font-size:12px;'>Erreur de chargement. Vérifiez vos permissions.</p>";
+        });
+    });
+</script>
+
+</body>
+</html>
