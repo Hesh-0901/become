@@ -8,251 +8,292 @@
 
     <style>
         :root {
-            --bg: #F2F2F7;
-            --surface: rgba(255, 255, 255, 0.85);
-            --soft: #FAF9F6;
-            --text: #1C1C1E;
-            --muted: #8E8E93;
+            --bg: #F4F1EC;
+            --surface: #FFFFFF;
+            --text: #252525;
+            --muted: #9A9A9A;
             --accent: #8B6F47;
-            --danger: #FF3B30;
-            --success: #34C759;
-            --border: rgba(214, 207, 196, 0.5);
-            --radius: 24px;
-            --shadow: 0 10px 30px rgba(0,0,0,0.06);
+            --border: #E2DDD5;
+            --danger: #A64444;
+            --success: #5B8C5A;
         }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0;
             background: var(--bg);
             color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-            padding: 20px;
+            font-family: 'Inter', -apple-system, sans-serif;
+            padding: 0;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* ===== HEADER ÉPURÉ ===== */
         header {
+            padding: 40px 20px 20px;
+            max-width: 800px;
+            margin: 0 auto;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            background: var(--surface);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 15px 20px;
-            border: 1px solid var(--border);
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
+            align-items: flex-end;
+            border-bottom: 0.5px solid var(--border);
         }
 
-        h1 { 
-            font-size: 14px; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
+        .brand-section h1 {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            color: var(--muted);
+        }
+
+        .brand-section .subtitle {
+            font-size: 22px;
+            font-weight: 400;
             margin: 0;
         }
 
+        /* ===== STATS MINIMALISTES ===== */
         .admin-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            max-width: 800px;
+            margin: 25px auto;
+            padding: 0 20px;
             gap: 15px;
-            margin-bottom: 30px;
         }
 
         .stat-card {
             background: var(--surface);
-            padding: 20px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
+            padding: 25px;
+            border: 0.5px solid var(--border);
             text-align: left;
-            box-shadow: var(--shadow);
         }
 
-        .stat-val { display: block; font-size: 22px; font-weight: 900; color: var(--text); }
-        .stat-lbl { font-size: 10px; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-top: 5px; }
+        .stat-val { display: block; font-size: 20px; font-weight: 600; letter-spacing: -0.5px; }
+        .stat-lbl { font-size: 9px; text-transform: uppercase; color: var(--muted); font-weight: 800; letter-spacing: 1px; margin-top: 4px; }
+
+        /* ===== LISTE DE COMMANDES ===== */
+        #adminOrdersList {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px 100px;
+        }
 
         .order-card {
             background: var(--surface);
-            border-radius: var(--radius);
-            padding: 20px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
+            border: 0.5px solid var(--border);
+            padding: 25px;
             margin-bottom: 15px;
-            transition: transform 0.2s ease;
         }
 
-        .order-card:active { transform: scale(0.98); }
+        .client-name { 
+            font-size: 15px; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            display: block; 
+            margin-bottom: 4px;
+        }
 
-        .client-name { font-size: 17px; font-weight: 700; color: var(--text); display: block; }
-        .order-ref { font-size: 11px; color: var(--muted); font-family: 'Monaco', monospace; background: #EEE; padding: 2px 6px; border-radius: 6px; }
+        .order-ref { 
+            font-size: 10px; 
+            color: var(--muted); 
+            font-family: 'Monaco', monospace; 
+            letter-spacing: 1px;
+        }
 
         .status-badge {
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: 900;
-            border: none;
+            background: transparent;
+            border: 0.5px solid var(--border);
+            padding: 8px 12px;
+            font-size: 9px;
+            font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            outline: none;
+            cursor: pointer;
         }
 
-        /* Couleurs dynamiques pour les statuts */
-        .status-REÇUE { background: #E5E5EA; color: #3A3A3C; }
-        .status-ACHETÉ { background: #D1E7DD; color: #0F5132; }
-        .status-EN_ROUTE { background: #FFF3CD; color: #856404; }
-        .status-LIVRÉ { background: #D1E9FF; color: #004085; }
+        .order-info-grid {
+            display: flex;
+            gap: 40px;
+            margin: 20px 0;
+            padding: 15px 0;
+            border-top: 0.5px solid var(--border);
+            border-bottom: 0.5px solid var(--border);
+        }
 
+        .info-item { display: flex; flex-direction: column; gap: 4px; }
+        .info-label { font-size: 8px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+        .info-value { font-size: 14px; font-weight: 500; }
+
+        /* ===== ACTIONS ===== */
         .order-actions {
-            display: grid;
-            grid-template-columns: 1fr 2fr 50px;
-            gap: 10px;
-            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
         }
 
-        .btn {
-            height: 45px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            font-size: 11px;
-            font-weight: 700;
+        .btn-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 0.5px solid var(--border);
+            background: var(--surface);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            color: var(--text);
             cursor: pointer;
             transition: all 0.2s;
+            text-decoration: none;
         }
 
-        .btn-view { background: #FFF; color: var(--text); }
-        .btn-wa { background: #25D366; color: white; border: none; }
-        .btn-delete { background: #FF3B3015; color: var(--danger); border: none; }
+        .btn-circle:hover { border-color: var(--text); background: var(--bg); }
+        .btn-delete:hover { color: var(--danger); border-color: var(--danger); }
+        .btn-wa { color: #25D366; }
+
+        .empty-msg { text-align: center; padding: 100px 0; color: var(--muted); font-size: 12px; letter-spacing: 1px; }
 
     </style>
 </head>
 <body>
 
-    <header>
-        <div style="display:flex; align-items:center; gap:12px;">
-            <i class="fa-solid fa-shield-halved" style="color:var(--accent)"></i>
-            <h1>Master Panel</h1>
-        </div>
-        <a href="customer.html" style="color:var(--text); font-size: 20px;"><i class="fa-solid fa-circle-user"></i></a>
-    </header>
-
-    <div class="admin-stats">
-        <div class="stat-card">
-            <span class="stat-val" id="countOrders">0</span>
-            <span class="stat-lbl">Commandes</span>
-        </div>
-        <div class="stat-card">
-            <span class="stat-val" id="totalVault">0$</span>
-            <span class="stat-lbl">Recettes</span>
-        </div>
+<header>
+    <div class="brand-section">
+        <h1>Commandes</h1>
+        <p class="subtitle">Gestion des flux</p>
     </div>
-
-    <div id="adminOrdersList">
-        <div class="empty-msg" style="text-align:center; padding-top:100px; color:var(--muted)">
-            <i class="fa-solid fa-circle-notch fa-spin"></i>
-        </div>
+    <div class="header-actions">
+        <a href="customer.html" class="btn-circle"><i class="fa-solid fa-user-gear"></i></a>
     </div>
+</header>
 
-    <script type="module">
-        import { db, auth } from "./js/firebase.config.js";
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { 
-            collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, getDoc 
-        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<div class="admin-stats">
+    <div class="stat-card">
+        <span class="stat-val" id="countOrders">0</span>
+        <span class="stat-lbl">Total commandes</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-val" id="totalVault">0$</span>
+        <span class="stat-lbl">Chiffre d'affaires</span>
+    </div>
+</div>
 
-        const listElement = document.getElementById("adminOrdersList");
+<div id="adminOrdersList">
+    <div class="empty-msg">
+        <i class="fa-solid fa-circle-notch fa-spin"></i><br><br>
+        CHARGEMENT DU SERVEUR
+    </div>
+</div>
 
-        // Fonction pour récupérer le nom depuis la collection USERS
-        async function getCustomerData(uid) {
-            if(!uid) return "Client Inconnu";
-            try {
-                const userSnap = await getDoc(doc(db, "users", uid));
-                if (userSnap.exists()) {
-                    return userSnap.data().fullName || userSnap.data().name || "Client Become";
-                }
-            } catch (e) { console.error(e); }
-            return "Client Inconnu";
-        }
+<script type="module">
+    import { db, auth } from "./js/firebase.config.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { 
+        collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, getDoc 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        onAuthStateChanged(auth, (user) => {
-            if (!user) { location.href = "login.html"; return; }
+    const listElement = document.getElementById("adminOrdersList");
 
-            const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-
-            onSnapshot(q, async (snap) => {
-                listElement.innerHTML = "";
-                let total = 0;
-
-                if (snap.empty) {
-                    listElement.innerHTML = `<div style="text-align:center; color:var(--muted)">Aucun flux trouvé.</div>`;
-                    return;
-                }
-
-                // Utilisation de for...of pour gérer l'asynchrone du nom client
-                for (const orderDoc of snap.docs) {
-                    const o = orderDoc.data();
-                    const id = orderDoc.id;
-                    const price = o.totalAmount || o.total || 0;
-                    total += price;
-
-                    // On cherche le nom : 1. Dans la commande | 2. Dans la collection Users via l'UID
-                    const clientDisplayName = o.customerName || await getCustomerData(o.userId || o.uid);
-
-                    const card = document.createElement("div");
-                    card.className = "order-card";
-                    card.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:15px;">
-                            <div>
-                                <span class="client-name">${clientDisplayName}</span>
-                                <span class="order-ref">#${id.substring(0,8).toUpperCase()}</span>
-                            </div>
-                            <select class="status-badge status-${o.status?.replace(' ', '_')}" onchange="window.updateStatus('${id}', this.value)">
-                                <option value="REÇUE" ${o.status === 'REÇUE' ? 'selected' : ''}>REÇUE</option>
-                                <option value="ACHETÉ" ${o.status === 'ACHETÉ' ? 'selected' : ''}>ACHETÉ</option>
-                                <option value="EN ROUTE" ${o.status === 'EN ROUTE' ? 'selected' : ''}>EN ROUTE</option>
-                                <option value="LIVRÉ" ${o.status === 'LIVRÉ' ? 'selected' : ''}>LIVRÉ</option>
-                            </select>
-                        </div>
-
-                        <div style="display:flex; gap:20px; margin-bottom:15px;">
-                            <div style="font-size:11px; color:var(--muted)">MONTANT<br><b style="color:var(--text); font-size:14px;">${price.toLocaleString()} $</b></div>
-                            <div style="font-size:11px; color:var(--muted)">ARTICLES<br><b style="color:var(--text); font-size:14px;">${o.items?.length || 0}</b></div>
-                        </div>
-
-                        <div class="order-actions">
-                            <button class="btn btn-view" onclick="location.href='view.invoice.html?orderId=${id}'">
-                                <i class="fa-solid fa-file-invoice"></i>
-                            </button>
-                            <button class="btn btn-wa" onclick="window.open('https://wa.me/${o.customerPhone || ''}')">
-                                <i class="fa-brands fa-whatsapp"></i> CONTACTER
-                            </button>
-                            <button class="btn btn-delete" onclick="window.deleteOrder('${id}')">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </div>
-                    `;
-                    listElement.appendChild(card);
-                }
-
-                document.getElementById("countOrders").textContent = snap.size;
-                document.getElementById("totalVault").textContent = total.toLocaleString() + " $";
-            });
-        });
-
-        window.updateStatus = async (id, val) => {
-            try {
-                await updateDoc(doc(db, "orders", id), { status: val });
-            } catch (err) { alert("Accès refusé"); }
-        };
-
-        window.deleteOrder = async (id) => {
-            if(confirm("Supprimer définitivement ?")) {
-                try {
-                    await deleteDoc(doc(db, "orders", id));
-                } catch (err) { alert("Accès refusé"); }
+    async function getCustomerData(uid) {
+        if(!uid) return "Inconnu";
+        try {
+            const userSnap = await getDoc(doc(db, "users", uid));
+            if (userSnap.exists()) {
+                return userSnap.data().fullName || userSnap.data().name || "Client Become";
             }
-        };
-    </script>
+        } catch (e) { console.error(e); }
+        return "Inconnu";
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) { location.href = "login.html"; return; }
+
+        const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+
+        onSnapshot(q, async (snap) => {
+            listElement.innerHTML = "";
+            let total = 0;
+
+            if (snap.empty) {
+                listElement.innerHTML = `<div class="empty-msg">AUCUNE COMMANDE ENREGISTRÉE</div>`;
+                return;
+            }
+
+            for (const orderDoc of snap.docs) {
+                const o = orderDoc.data();
+                const id = orderDoc.id;
+                const price = o.totalAmount || o.total || 0;
+                total += price;
+
+                const clientName = o.customerName || await getCustomerData(o.userId || o.uid);
+
+                const card = document.createElement("div");
+                card.className = "order-card";
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div>
+                            <span class="client-name">${clientName}</span>
+                            <span class="order-ref">ID: #${id.substring(0,10).toUpperCase()}</span>
+                        </div>
+                        <select class="status-badge" onchange="window.updateStatus('${id}', this.value)">
+                            <option value="REÇUE" ${o.status === 'REÇUE' ? 'selected' : ''}>REÇUE</option>
+                            <option value="ACHETÉ" ${o.status === 'ACHETÉ' ? 'selected' : ''}>ACHETÉ</option>
+                            <option value="EN ROUTE" ${o.status === 'EN ROUTE' ? 'selected' : ''}>EN ROUTE</option>
+                            <option value="LIVRÉ" ${o.status === 'LIVRÉ' ? 'selected' : ''}>LIVRÉ</option>
+                        </select>
+                    </div>
+
+                    <div class="order-info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Montant</span>
+                            <span class="info-value">${price.toLocaleString()} $</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Volume</span>
+                            <span class="info-value">${o.items?.length || 0} Article(s)</span>
+                        </div>
+                    </div>
+
+                    <div class="order-actions">
+                        <a href="view.invoice.html?orderId=${id}" class="btn-circle" title="Facture">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                        <button class="btn-circle btn-wa" onclick="window.open('https://wa.me/${o.customerPhone || ''}')">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </button>
+                        <button class="btn-circle btn-delete" onclick="window.deleteOrder('${id}')">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `;
+                listElement.appendChild(card);
+            }
+
+            document.getElementById("countOrders").textContent = snap.size;
+            document.getElementById("totalVault").textContent = total.toLocaleString() + " $";
+        });
+    });
+
+    window.updateStatus = async (id, val) => {
+        try {
+            await updateDoc(doc(db, "orders", id), { status: val });
+        } catch (err) { alert("Refusé"); }
+    };
+
+    window.deleteOrder = async (id) => {
+        if(confirm("Confirmer la suppression ?")) {
+            try {
+                await deleteDoc(doc(db, "orders", id));
+            } catch (err) { alert("Refusé"); }
+        }
+    };
+</script>
+
 </body>
 </html>
