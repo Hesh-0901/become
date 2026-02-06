@@ -26,9 +26,8 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .container { max-width: 500px; margin: 0 auto; }
+        .container { max-width: 500px; margin: 0 auto; padding-bottom: 50px; }
 
-        /* HEADER */
         header {
             display: flex;
             align-items: center;
@@ -47,36 +46,36 @@
 
         h1 { font-size: 18px; font-weight: 700; margin: 0; }
 
-        /* FORMULAIRE */
+        /* SECTIONS */
         .section-label {
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 10px;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             color: var(--muted);
-            margin: 25px 0 10px 10px;
+            margin: 30px 0 12px 10px;
         }
 
         .settings-card {
             background: var(--surface);
             border-radius: var(--radius);
             border: 1px solid var(--border);
-            padding: 10px 20px;
-            display: flex;
-            flex-direction: column;
+            padding: 5px 20px;
         }
 
-        .input-group {
-            padding: 15px 0;
+        .row {
+            padding: 18px 0;
             border-bottom: 1px solid #F9F7F4;
             display: flex;
-            flex-direction: column;
-            gap: 5px;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .input-group:last-child { border-bottom: none; }
+        .row:last-child { border-bottom: none; }
 
-        label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+        .row-left { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        
+        label { font-size: 9px; font-weight: 800; color: var(--muted); text-transform: uppercase; }
         
         input {
             border: none;
@@ -84,32 +83,44 @@
             font-size: 15px;
             font-weight: 500;
             color: var(--text);
-            padding: 5px 0;
+            padding: 0;
             background: transparent;
+            width: 100%;
         }
 
-        input::placeholder { color: #DDD; }
+        /* STATS STYLE */
+        .stat-box { text-align: right; }
+        .stat-val { font-size: 16px; font-weight: 700; color: var(--accent); }
+        .stat-desc { font-size: 10px; color: var(--muted); }
 
-        /* BOUTON SAUVEGARDER */
-        .save-footer {
-            margin-top: 40px;
-            text-align: center;
+        /* BOUTONS ACTIONS */
+        .btn-action {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .btn-save {
+        .btn-action:hover { background: var(--bg); border-color: var(--accent); }
+
+        .save-btn {
             background: var(--accent);
             color: white;
             border: none;
-            padding: 16px 40px;
+            padding: 16px;
             border-radius: 50px;
             font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
+            font-weight: 700;
             width: 100%;
-            transition: opacity 0.2s;
+            margin-top: 40px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(139, 111, 71, 0.15);
         }
-
-        .btn-save:active { opacity: 0.8; }
 
     </style>
 </head>
@@ -117,88 +128,127 @@
 
 <div class="container">
     <header>
-        <a href="customer.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
-        <h1>Paramètres</h1>
+        <a href="customer.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <h1>Mon Compte</h1>
     </header>
 
     <form id="settingsForm">
-        <div class="section-label">Identité</div>
+        <div class="section-label">Identité & Contact</div>
         <div class="settings-card">
-            <div class="input-group">
-                <label>Prénom</label>
-                <input type="text" id="firstName" placeholder="Prénom" required>
+            <div class="row">
+                <div class="row-left">
+                    <label>Prénom</label>
+                    <input type="text" id="firstName" placeholder="Votre prénom">
+                </div>
             </div>
-            <div class="input-group">
-                <label>Nom</label>
-                <input type="text" id="lastName" placeholder="Nom" required>
+            <div class="row">
+                <div class="row-left">
+                    <label>Nom</label>
+                    <input type="text" id="lastName" placeholder="Votre nom">
+                </div>
             </div>
-            <div class="input-group">
-                <label>Téléphone</label>
-                <input type="tel" id="phone" placeholder="Numéro de contact">
+            <div class="row">
+                <div class="row-left">
+                    <label>Téléphone WhatsApp</label>
+                    <input type="tel" id="phone" placeholder="+243 ...">
+                </div>
             </div>
         </div>
 
-        <div class="section-label">Adresse de livraison</div>
+        <div class="section-label">Activité d'achat</div>
         <div class="settings-card">
-            <div class="input-group">
-                <label>Ville</label>
-                <input type="text" id="city" placeholder="Ex: Lubumbashi">
+            <div class="row">
+                <div class="row-left">
+                    <label>Articles en attente</label>
+                    <div id="cartCount" class="stat-desc">Calcul en cours...</div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-val" id="cartVal">0</span>
+                </div>
             </div>
-            <div class="input-group">
-                <label>Quartier / District</label>
-                <input type="text" id="district" placeholder="Ex: Kabulameshi">
+            <div class="row">
+                <div class="row-left">
+                    <label>Total commandes</label>
+                    <div id="orderTotal" class="stat-desc">Historique complet</div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-val" id="orderVal">0</span>
+                </div>
             </div>
         </div>
 
-        <div class="save-footer">
-            <button type="submit" class="btn-save">Enregistrer les modifications</button>
+        <div class="section-label">Sécurité</div>
+        <div class="settings-card">
+            <div class="row">
+                <div class="row-left">
+                    <label>Adresse Email</label>
+                    <input type="email" id="displayEmail" disabled style="opacity: 0.6;">
+                </div>
+            </div>
+            <div class="row">
+                <div class="row-left">
+                    <label>Mot de passe</label>
+                    <div class="stat-desc">Dernière modification : Inconnue</div>
+                </div>
+                <button type="button" id="resetPwdBtn" class="btn-action">Réinitialiser</button>
+            </div>
         </div>
+
+        <button type="submit" class="save-btn">Enregistrer les modifications</button>
     </form>
 </div>
 
 <script type="module">
     import { auth, db } from "./js/firebase.config.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, getDoc, updateDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    let currentUser = null;
+    let userUID = null;
 
-    // 1. Charger les données actuelles
     onAuthStateChanged(auth, async user => {
         if (!user) { location.href = "login.html"; return; }
-        currentUser = user;
+        userUID = user.uid;
 
+        // Charger Profil
         const snap = await getDoc(doc(db, "users", user.uid));
         if (snap.exists()) {
-            const data = snap.data();
-            document.getElementById("firstName").value = data.firstName || "";
-            document.getElementById("lastName").value = data.lastName || "";
-            document.getElementById("phone").value = data.phone || "";
-            document.getElementById("city").value = data.city || "";
-            document.getElementById("district").value = data.district || "";
+            const d = snap.data();
+            document.getElementById("firstName").value = d.firstName || "";
+            document.getElementById("lastName").value = d.lastName || "";
+            document.getElementById("phone").value = d.phone || "";
+            document.getElementById("displayEmail").value = user.email;
         }
+
+        // Charger Stats (Exemple simple : nombre de commandes)
+        const q = query(collection(db, "orders"), where("userId", "==", user.uid));
+        const orderSnap = await getDocs(q);
+        document.getElementById("orderVal").textContent = orderSnap.size;
+        document.getElementById("orderTotal").textContent = `${orderSnap.size} commande(s) passée(s)`;
+
+        // Stats Panier (Simulé ou via collection cart)
+        document.getElementById("cartCount").textContent = "Articles dans le panier";
+        // document.getElementById("cartVal").textContent = ... logic panier
     });
 
-    // 2. Sauvegarder les modifications
+    // Reset Password
+    document.getElementById("resetPwdBtn").onclick = async () => {
+        if(confirm("Envoyer un lien de réinitialisation par email ?")) {
+            await sendPasswordResetEmail(auth, auth.currentUser.email);
+            alert("Email envoyé à " + auth.currentUser.email);
+        }
+    };
+
+    // Save Profile
     document.getElementById("settingsForm").onsubmit = async (e) => {
         e.preventDefault();
-        if (!currentUser) return;
-
-        const updatedData = {
-            firstName: document.getElementById("firstName").value,
-            lastName: document.getElementById("lastName").value,
-            phone: document.getElementById("phone").value,
-            city: document.getElementById("city").value,
-            district: document.getElementById("district").value
-        };
-
         try {
-            await updateDoc(doc(db, "users", currentUser.uid), updatedData);
-            alert("Profil mis à jour !");
-            location.href = "customer.html";
-        } catch (err) {
-            alert("Erreur lors de la mise à jour.");
-        }
+            await updateDoc(doc(db, "users", userUID), {
+                firstName: document.getElementById("firstName").value,
+                lastName: document.getElementById("lastName").value,
+                phone: document.getElementById("phone").value
+            });
+            alert("Profil mis à jour avec succès");
+        } catch (err) { alert("Erreur lors de la sauvegarde"); }
     };
 </script>
 
