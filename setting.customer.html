@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Become — Paramètres</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #F4F1EC;
+            --surface: #FFFFFF;
+            --text: #5D5447;
+            --muted: #A39B8F;
+            --accent: #8B6F47;
+            --border: #E8E2D9;
+            --radius: 20px;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, sans-serif;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 500px; margin: 0 auto; }
+
+        /* HEADER */
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text); text-decoration: none;
+        }
+
+        h1 { font-size: 18px; font-weight: 700; margin: 0; }
+
+        /* FORMULAIRE */
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin: 25px 0 10px 10px;
+        }
+
+        .settings-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            padding: 15px 0;
+            border-bottom: 1px solid #F9F7F4;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group:last-child { border-bottom: none; }
+
+        label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+        
+        input {
+            border: none;
+            outline: none;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text);
+            padding: 5px 0;
+            background: transparent;
+        }
+
+        input::placeholder { color: #DDD; }
+
+        /* BOUTON SAUVEGARDER */
+        .save-footer {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .btn-save {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+
+        .btn-save:active { opacity: 0.8; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <a href="customer.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <h1>Paramètres</h1>
+    </header>
+
+    <form id="settingsForm">
+        <div class="section-label">Identité</div>
+        <div class="settings-card">
+            <div class="input-group">
+                <label>Prénom</label>
+                <input type="text" id="firstName" placeholder="Prénom" required>
+            </div>
+            <div class="input-group">
+                <label>Nom</label>
+                <input type="text" id="lastName" placeholder="Nom" required>
+            </div>
+            <div class="input-group">
+                <label>Téléphone</label>
+                <input type="tel" id="phone" placeholder="Numéro de contact">
+            </div>
+        </div>
+
+        <div class="section-label">Adresse de livraison</div>
+        <div class="settings-card">
+            <div class="input-group">
+                <label>Ville</label>
+                <input type="text" id="city" placeholder="Ex: Lubumbashi">
+            </div>
+            <div class="input-group">
+                <label>Quartier / District</label>
+                <input type="text" id="district" placeholder="Ex: Kabulameshi">
+            </div>
+        </div>
+
+        <div class="save-footer">
+            <button type="submit" class="btn-save">Enregistrer les modifications</button>
+        </div>
+    </form>
+</div>
+
+<script type="module">
+    import { auth, db } from "./js/firebase.config.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    let currentUser = null;
+
+    // 1. Charger les données actuelles
+    onAuthStateChanged(auth, async user => {
+        if (!user) { location.href = "login.html"; return; }
+        currentUser = user;
+
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+            const data = snap.data();
+            document.getElementById("firstName").value = data.firstName || "";
+            document.getElementById("lastName").value = data.lastName || "";
+            document.getElementById("phone").value = data.phone || "";
+            document.getElementById("city").value = data.city || "";
+            document.getElementById("district").value = data.district || "";
+        }
+    });
+
+    // 2. Sauvegarder les modifications
+    document.getElementById("settingsForm").onsubmit = async (e) => {
+        e.preventDefault();
+        if (!currentUser) return;
+
+        const updatedData = {
+            firstName: document.getElementById("firstName").value,
+            lastName: document.getElementById("lastName").value,
+            phone: document.getElementById("phone").value,
+            city: document.getElementById("city").value,
+            district: document.getElementById("district").value
+        };
+
+        try {
+            await updateDoc(doc(db, "users", currentUser.uid), updatedData);
+            alert("Profil mis à jour !");
+            location.href = "customer.html";
+        } catch (err) {
+            alert("Erreur lors de la mise à jour.");
+        }
+    };
+</script>
+
+</body>
+</html>
