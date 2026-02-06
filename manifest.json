@@ -1,5 +1,5 @@
 {
-  "name": "Become",
+  "name": "Become Boutique",
   "short_name": "Become",
   "description": "Become — boutique de vêtements premium",
   "start_url": "./index.html",
@@ -9,14 +9,22 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "./icons/logo/icon-192.png",
+      "src": "./icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "./icons/logo/icon-512.png",
+      "src": "./icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/logo/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
