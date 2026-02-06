@@ -4,194 +4,196 @@
   <meta charset="UTF-8" />
   <title>Become — Admin</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#141414">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#F4F1EC">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     :root {
-      --bg:#161616;
-      --card:#1F1F1F;
-      --soft:#262626;
-      --text:#F5F5F5;
+      --bg:#F4F1EC;
+      --surface:#FFFFFF;
+      --text:#252525;
       --muted:#9A9A9A;
-      --accent:#C2A16A;
-      --border:#2E2E2E;
-      --radius:16px;
-      --danger:#f44336;
+      --accent:#8B6F47;
+      --border:#E2DDD5;
+      --danger:#A64444;
     }
 
-    * { box-sizing: border-box }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-      margin:0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial;
-      background:var(--bg);
-      color:var(--text);
-      padding:16px;
-      min-height:100vh;
+      margin: 0;
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 0;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== HEADER ===== */
+    /* ===== HEADER ÉPURÉ ===== */
     header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:14px 16px;
-      margin-bottom:24px;
+      padding: 40px 20px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 0.5px solid var(--border);
     }
 
-    .title {
-      font-size:14px;
-      font-weight:600;
-      letter-spacing:3px;
-      color:var(--accent);
+    .brand-section h1 {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+      color: var(--muted);
+    }
+
+    .brand-section .subtitle {
+      font-size: 22px;
+      font-weight: 400;
+      margin: 0;
     }
 
     .header-actions {
-      display:flex;
-      gap:10px;
+      display: flex;
+      gap: 15px;
     }
 
-    .btn {
-      height:36px;
-      padding:0 14px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:transparent;
-      color:var(--accent);
-      font-size:12px;
-      font-weight:600;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      cursor:pointer;
-      text-decoration:none;
+    .btn-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 0.5px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s;
     }
 
-    .btn.logout {
-      border-color:var(--danger);
-      color:var(--danger);
+    .btn-circle:hover { border-color: var(--text); }
+    .btn-logout { color: var(--danger); border-color: rgba(166, 68, 68, 0.2); }
+
+    /* ===== GRID PANELS ===== */
+    main {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 20px 60px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1px; /* Crée les lignes de séparation */
+      background: var(--border);
+      border: 0.5px solid var(--border);
     }
 
-    /* ===== GRID ===== */
-    .grid {
-      display:grid;
-      gap:16px;
+    @media (min-width: 600px) {
+      main { grid-template-columns: 1fr 1fr; }
     }
 
-    @media (min-width:768px) {
-      .grid {
-        grid-template-columns:repeat(3,1fr);
-      }
+    .panel-link {
+      background: var(--bg);
+      padding: 35px 25px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      transition: background 0.3s;
     }
 
-    /* ===== CARD ===== */
-    .card {
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:20px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      text-decoration:none;
-      color:inherit;
-      transition:.2s ease;
+    .panel-link:hover {
+      background: var(--surface);
     }
 
-    .card:hover {
-      transform:translateY(-2px);
-      background:var(--soft);
+    .panel-icon {
+      font-size: 20px;
+      color: var(--accent);
+      margin-bottom: 5px;
     }
 
-    .icon {
-      width:46px;
-      height:46px;
-      border-radius:50%;
-      background:var(--soft);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:18px;
-      color:var(--accent);
+    .panel-link h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .card h3 {
-      margin:0;
-      font-size:15px;
-      font-weight:600;
+    .panel-link p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
     }
 
-    .card p {
-      margin:0;
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.5;
+    .panel-footer {
+      margin-top: auto;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.5;
     }
 
-    .go {
-      margin-top:auto;
-      font-size:12px;
-      font-weight:600;
-      color:var(--accent);
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
   </style>
 </head>
 
 <body>
 
 <header>
-  <div class="title">BECOME · ADMIN</div>
+  <div class="brand-section">
+    <h1>Management</h1>
+    <p class="subtitle">Tableau de bord</p>
+  </div>
 
   <div class="header-actions">
-    <a href="index.html" class="btn">
+    <a href="index.html" class="btn-circle" title="Voir la boutique">
       <i class="fa-solid fa-store"></i>
-      Vitrine
     </a>
-
-    <button id="logoutBtn" class="btn logout">
-      <i class="fa-solid fa-right-from-bracket"></i>
-      Déconnexion
+    <button id="logoutBtn" class="btn-circle btn-logout" title="Déconnexion">
+      <i class="fa-solid fa-power-off"></i>
     </button>
   </div>
 </header>
 
-<main class="grid">
+<main>
 
-  <a href="view.user.html" class="card">
-    <div class="icon"><i class="fa-solid fa-users"></i></div>
-    <h3>Utilisateurs</h3>
-    <p>Gestion des comptes, rôles et accès.</p>
-    <div class="go">Accéder <i class="fa-solid fa-arrow-right"></i></div>
+  <a href="view.user.html" class="panel-link">
+    <i class="fa-solid fa-users-line panel-icon"></i>
+    <h3>Répertoire</h3>
+    <p>Gérer la base clients, les accès et les privilèges admin.</p>
+    <div class="panel-footer">Ouvrir <i class="fa-solid fa-chevron-right"></i></div>
   </a>
 
-  <a href="admin.commande.html" class="card">
-    <div class="icon"><i class="fa-solid fa-box"></i></div>
+  <a href="admin.commande.html" class="panel-link">
+    <i class="fa-solid fa-receipt panel-icon"></i>
     <h3>Commandes</h3>
-    <p>Suivi des commandes clients.</p>
-    <div class="go">Accéder <i class="fa-solid fa-arrow-right"></i></div>
+    <p>Consulter les flux de ventes et modifier les statuts de livraison.</p>
+    <div class="panel-footer">Ouvrir <i class="fa-solid fa-chevron-right"></i></div>
   </a>
 
-  <a href="admin.product.html" class="card">
-    <div class="icon"><i class="fa-solid fa-shirt"></i></div>
-    <h3>Ajouter un produit</h3>
-    <p>Créer de nouveaux articles.</p>
-    <div class="go">Accéder <i class="fa-solid fa-arrow-right"></i></div>
+  <a href="admin.product.html" class="panel-link">
+    <i class="fa-solid fa-plus panel-icon"></i>
+    <h3>Nouveau Produit</h3>
+    <p>Ajouter une pièce à la collection et définir les stocks.</p>
+    <div class="panel-footer">Ouvrir <i class="fa-solid fa-chevron-right"></i></div>
   </a>
 
-  <a href="admin-products.html" class="card">
-    <div class="icon"><i class="fa-solid fa-pen-to-square"></i></div>
-    <h3>Modifier un produit</h3>
-    <p>Modifier, désactiver ou supprimer.</p>
-    <div class="go">Accéder <i class="fa-solid fa-arrow-right"></i></div>
+  <a href="admin-products.html" class="panel-link">
+    <i class="fa-solid fa-sliders panel-icon"></i>
+    <h3>Inventaire</h3>
+    <p>Modifier les fiches produits, prix et visibilité boutique.</p>
+    <div class="panel-footer">Ouvrir <i class="fa-solid fa-chevron-right"></i></div>
   </a>
 
 </main>
@@ -200,10 +202,12 @@
   import { auth } from "./js/firebase.config.js";
   import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
+  document.getElementById("logoutBtn").onclick = async () => {
+    if(confirm("Déconnexion de la session admin ?")) {
+      await signOut(auth);
+      window.location.href = "index.html";
+    }
+  };
 </script>
 
 </body>
