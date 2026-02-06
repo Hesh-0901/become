@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Facture Become — Consultation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Become — Votre Facture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -11,118 +11,206 @@
     :root {
       --bg: #F4F1EC;
       --surface: #FFFFFF;
-      --text: #1A1A1A;
-      --muted: #6B6B6B;
+      --text: #2D2D2D;
+      --muted: #8E8E93;
       --accent: #8B6F47;
       --border: #E2DDD5;
+      --radius: 22px;
     }
 
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
       padding: 20px;
     }
 
-    /* ZONE FACTURE (Ce qui sera dans le PDF) */
-    #invoice {
+    /* STRUCTURE IDENTIQUE À FACTURE.HTML */
+    .invoice-container {
       background: var(--surface);
+      border-radius: var(--radius);
+      padding: 30px 25px;
       max-width: 500px;
       margin: 0 auto;
-      padding: 40px 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+      border: 1px solid var(--border);
     }
 
-    .brand { text-align: center; margin-bottom: 30px; }
-    .brand h1 { margin: 0; font-size: 24px; letter-spacing: 4px; text-transform: uppercase; }
-    
-    .inv-header { display: flex; justify-content: space-between; margin-bottom: 40px; font-size: 13px; }
-    .inv-details h2 { font-size: 14px; text-transform: uppercase; margin-bottom: 5px; }
-    
-    table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-    th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--muted); padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-    td { padding: 12px 0; border-bottom: 1px solid #F9F9F9; font-size: 14px; }
+    .brand-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
 
-    .total-zone { text-align: right; margin-top: 20px; }
-    .total-row { display: flex; justify-content: flex-end; gap: 20px; margin-bottom: 5px; }
-    .total-amount { font-size: 20px; font-weight: 800; color: var(--accent); }
+    .brand-header h1 {
+      font-size: 22px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      margin: 0;
+      font-weight: 800;
+    }
 
-    /* BOUTONS (Masqués lors de l'impression) */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 40px;
+      font-size: 12px;
+    }
+
+    .info-label {
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 10px;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .info-value { font-weight: 600; line-height: 1.4; }
+
+    /* TABLEAU DES ARTICLES */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    .items-table th {
+      text-align: left;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .items-table td {
+      padding: 15px 0;
+      font-size: 14px;
+      border-bottom: 1px solid #F9F7F4;
+    }
+
+    .price-col { text-align: right; font-weight: 600; }
+
+    /* ZONE TOTAUX */
+    .summary {
+      border-top: 2px solid var(--text);
+      padding-top: 20px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .total-row {
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    /* BOUTONS (Identiques mais avec Download) */
     .actions {
       max-width: 500px;
       margin: 25px auto;
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    button {
-      height: 50px;
-      border-radius: 12px;
+    .btn {
+      height: 55px;
+      border-radius: 18px;
       border: none;
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      font-size: 14px;
-      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: 0.3s;
+      width: 100%;
     }
 
-    .back-btn { background: #E2DDD5; color: var(--text); }
-    .download-btn { background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
-    button:active { transform: scale(0.96); }
+    .btn-download {
+      background: var(--text);
+      color: white;
+    }
 
+    .btn-back {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    /* Masquer les boutons pendant la génération du PDF */
     @media print { .actions { display: none; } }
   </style>
 </head>
 <body>
 
-  <div id="invoice">
-    <div class="brand">
+  <div class="invoice-container" id="printableInvoice">
+    <div class="brand-header">
       <h1>BECOME</h1>
-      <p style="font-size: 10px; color: var(--muted); margin-top: 5px;">Luxury & Elegance Boutique</p>
+      <div style="width: 30px; height: 2px; background: var(--accent); margin: 15px auto;"></div>
     </div>
 
-    <div class="inv-header">
-      <div class="inv-details">
-        <h2>Facture à</h2>
-        <p id="custName">Chargement...</p>
-        <p id="custPhone" style="color: var(--muted);"></p>
+    <div class="info-grid">
+      <div>
+        <span class="info-label">Client</span>
+        <div class="info-value" id="clientName">...</div>
+        <div class="info-value" id="clientPhone" style="font-weight: 400; color: var(--muted);"></div>
       </div>
       <div style="text-align: right;">
-        <p><b id="invNum">#---</b></p>
-        <p id="invDate" style="color: var(--muted);"></p>
+        <span class="info-label">Référence</span>
+        <div class="info-value" id="orderRef">#------</div>
+        <div class="info-value" id="orderDate" style="font-weight: 400; color: var(--muted);"></div>
       </div>
     </div>
 
-    <table>
+    <table class="items-table">
       <thead>
         <tr>
-          <th>Article</th>
+          <th>Désignation</th>
           <th style="text-align: center;">Qté</th>
-          <th style="text-align: right;">Prix</th>
+          <th class="price-col">Total</th>
         </tr>
       </thead>
-      <tbody id="itemsList">
+      <tbody id="itemsBody">
         </tbody>
     </table>
 
-    <div class="total-zone">
-      <div class="total-row">
-        <span style="color: var(--muted);">Sous-total :</span>
+    <div class="summary">
+      <div class="summary-row">
+        <span>Sous-total</span>
         <span id="subTotal">0.00 $</span>
       </div>
-      <div class="total-row">
-        <span style="font-weight: 700;">TOTAL RÉGLÉ :</span>
-        <span class="total-amount" id="finalTotal">0.00 $</span>
+      <div class="summary-row" style="color: var(--muted); font-size: 12px;">
+        <span>Livraison internationale</span>
+        <span>Incluse</span>
       </div>
+      <div class="summary-row total-row">
+        <span>TOTAL</span>
+        <span id="finalTotal">0.00 $</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px; text-align: center; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;">
+      Merci pour votre confiance en Become.
     </div>
   </div>
 
   <div class="actions">
-    <button class="back-btn" onclick="history.back()">Retour</button>
-    <button class="download-btn" id="pdfBtn">
-      <i class="fa-solid fa-file-pdf"></i> TÉLÉCHARGER PDF
+    <button class="btn btn-download" id="downloadPdf">
+      <i class="fa-solid fa-file-arrow-down"></i> TÉLÉCHARGER LA FACTURE
+    </button>
+    <button class="btn btn-back" onclick="history.back()">
+      RETOUR
     </button>
   </div>
 
@@ -130,51 +218,47 @@
     import { db } from "./js/firebase.config.js";
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('orderId');
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('orderId');
 
-    async function loadInvoice() {
+    async function fetchOrder() {
       if (!orderId) return;
-
-      const docRef = doc(db, "orders", orderId);
-      const snap = await getDoc(docRef);
+      const snap = await getDoc(doc(db, "orders", orderId));
 
       if (snap.exists()) {
-        const o = snap.data();
-        
-        document.getElementById("custName").textContent = o.customerName || "Client";
-        document.getElementById("custPhone").textContent = o.customerPhone || "";
-        document.getElementById("invNum").textContent = `#${o.orderNumber || orderId.substring(0,6).toUpperCase()}`;
-        document.getElementById("invDate").textContent = o.createdAt?.toDate().toLocaleDateString('fr-FR');
-        
-        const list = document.getElementById("itemsList");
-        list.innerHTML = "";
-        o.items.forEach(item => {
-          list.innerHTML += `
-            <tr>
-              <td>${item.name}</td>
-              <td style="text-align: center;">${item.quantity || 1}</td>
-              <td style="text-align: right;">${item.price.toLocaleString()} $</td>
-            </tr>
-          `;
-        });
+        const d = snap.data();
+        document.getElementById("clientName").innerText = d.customerName || "Client Become";
+        document.getElementById("clientPhone").innerText = d.customerPhone || "";
+        document.getElementById("orderRef").innerText = `#${d.orderNumber || orderId.substring(0,6).toUpperCase()}`;
+        document.getElementById("orderDate").innerText = d.createdAt?.toDate().toLocaleDateString('fr-FR');
 
-        const total = o.totalAmount || o.total || 0;
-        document.getElementById("subTotal").textContent = total.toLocaleString() + " $";
-        document.getElementById("finalTotal").textContent = total.toLocaleString() + " $";
+        let html = "";
+        d.items.forEach(item => {
+          html += `
+            <tr>
+              <td><div style="font-weight:600">${item.name}</div></td>
+              <td style="text-align: center;">1</td>
+              <td class="price-col">${item.price.toLocaleString()} $</td>
+            </tr>`;
+        });
+        document.getElementById("itemsBody").innerHTML = html;
+
+        const total = (d.totalAmount || d.total || 0).toLocaleString();
+        document.getElementById("subTotal").innerText = total + " $";
+        document.getElementById("finalTotal").innerText = total + " $";
       }
     }
 
-    loadInvoice();
+    fetchOrder();
 
-    // LOGIQUE DE TÉLÉCHARGEMENT
-    document.getElementById("pdfBtn").onclick = () => {
-      const element = document.getElementById("invoice");
+    // BOUTON TÉLÉCHARGEMENT
+    document.getElementById("downloadPdf").onclick = function() {
+      const element = document.getElementById("printableInvoice");
       const opt = {
         margin: 10,
-        filename: `Facture_Become_${orderId.substring(0,6)}.pdf`,
+        filename: `BECOME_Facture_${orderId.substring(0,6)}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 3, useCORS: true },
+        html2canvas: { scale: 3 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
       html2pdf().set(opt).from(element).save();
