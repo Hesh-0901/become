@@ -109,49 +109,47 @@
     const listElement = document.getElementById("historyList");
 
     onAuthStateChanged(auth, (user) => {
-        if (!user) { location.href = "login.html"; return; }
+        if (!user) return;
 
-        // On filtre par userId ET par statut 'LIVRÉ'
+        // Requête filtrée sur tes données : userId et status "LIVRÉ"
         const q = query(
             collection(db, "orders"), 
             where("userId", "==", user.uid),
-            where("status", "==", "LIVRÉ"),
-            orderBy("createdAt", "desc")
+            where("status", "==", "LIVRÉ")
+            // Suppression temporaire du orderBy si l'index n'est pas encore créé
         );
 
         onSnapshot(q, (snap) => {
             listElement.innerHTML = "";
 
             if (snap.empty) {
-                listElement.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fa-solid fa-box-open"></i>
-                        <p>Aucune commande terminée pour le moment.</p>
-                    </div>`;
+                listElement.innerHTML = `<div class="empty-state"><p>Aucun achat livré pour l'instant.</p></div>`;
                 return;
             }
 
             snap.forEach(doc => {
                 const o = doc.data();
-                const date = o.createdAt ? o.createdAt.toDate().toLocaleDateString('fr-FR', {day: 'numeric', month: 'short'}) : 'Récemment';
+                // Utilisation de ton champ 'total' vu sur la capture
+                const total = o.total || 0;
+                const orderNum = o.orderNumber || doc.id.substring(0,8).toUpperCase();
                 
+                // On peut même afficher le premier article du tableau 'items'
+                const firstItem = o.items && o.items[0] ? o.items[0].title : "Commande";
+
                 const card = document.createElement("div");
                 card.className = "order-card";
                 card.innerHTML = `
                     <div class="order-info">
-                        <span class="order-date">${date}</span>
-                        <span class="order-id">Commande #${doc.id.substring(0,6).toUpperCase()}</span>
-                        <span class="order-total">${o.totalAmount || 0} $</span>
+                        <span class="order-date">LIVRAISON TERMINÉE</span>
+                        <span class="order-id">${orderNum}</span>
+                        <span class="order-total">${firstItem} • ${total}$</span>
                     </div>
                     <div class="status-badge">
-                        <i class="fa-solid fa-check-circle"></i> Reçue
+                        <i class="fa-solid fa-check"></i> REÇU
                     </div>
                 `;
                 listElement.appendChild(card);
             });
-        }, (error) => {
-            console.error(error);
-            listElement.innerHTML = "<p style='text-align:center; font-size:12px;'>Erreur de chargement. Vérifiez vos permissions.</p>";
         });
     });
 </script>
