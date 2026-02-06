@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Become Admin — Gestion Utilisateurs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg: #E9E5DF;
+      --surface: #FFFFFF;
+      --text: #1E1E1E;
+      --muted: #8E8E93;
+      --accent: #8B6F47;
+      --border: #D6CFC4;
+      --radius: 22px;
+      --shadow: 0 8px 25px rgba(0,0,0,0.04);
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      border: 1px solid var(--border);
+      margin-bottom: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .header-title { display: flex; align-items: center; gap: 12px; }
+    h1 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 0; }
+
+    /* STATS & RECHERCHE */
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .search-box {
+      background: var(--surface);
+      border-radius: 15px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+      background: transparent;
+    }
+
+    .user-stats {
+      background: var(--accent);
+      color: white;
+      padding: 15px;
+      border-radius: var(--radius);
+      text-align: center;
+    }
+
+    /* LISTE UTILISATEURS */
+    #usersList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+    }
+
+    .user-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .user-info { display: flex; align-items: center; gap: 15px; }
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      background: var(--bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 20px;
+    }
+
+    .user-details h3 { margin: 0; font-size: 16px; font-weight: 700; }
+    .user-details p { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+
+    .user-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 12px 0;
+      border-top: 1px dashed var(--border);
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .meta-item { font-size: 11px; }
+    .meta-item b { display: block; color: var(--muted); text-transform: uppercase; font-size: 9px; margin-bottom: 2px; }
+
+    .btn-history {
+      background: var(--text);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: 0.3s;
+    }
+
+    .btn-history:hover { opacity: 0.9; }
+
+    .empty-msg { text-align: center; padding: 50px; color: var(--muted); grid-column: 1/-1; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-title">
+      <i class="fa-solid fa-users-gear" style="color: var(--accent);"></i>
+      <h1>Communauté Become</h1>
+    </div>
+    <a href="admin.commande.html" style="color:var(--text);"><i class="fa-solid fa-arrow-left"></i></a>
+  </header>
+
+  <div class="controls">
+    <div class="user-stats">
+      <span id="userCount" style="font-size: 24px; font-weight: 800;">0</span>
+      <p style="margin: 0; font-size: 10px; text-transform: uppercase; opacity: 0.8; letter-spacing: 1px;">Comptes Actifs</p>
+    </div>
+
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass" style="color: var(--muted);"></i>
+      <input type="text" id="searchInput" placeholder="Rechercher un client (Nom ou Email)...">
+    </div>
+  </div>
+
+  <div id="usersList">
+    <div class="empty-msg">Connexion à la base de données...</div>
+  </div>
+
+  <script type="module">
+    import { db, auth } from "./js/firebase.config.js";
+    import { collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const usersList = document.getElementById("usersList");
+    const userCount = document.getElementById("userCount");
+    const searchInput = document.getElementById("searchInput");
+    let allUsers = [];
+
+    // Sécurité Admin
+    onAuthStateChanged(auth, (user) => {
+      if (!user || user.email !== "jessmjessicamodi@gmail.com") {
+        location.href = "login.html";
+        return;
+      }
+      loadUsers();
+    });
+
+    function loadUsers() {
+      const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+
+      onSnapshot(q, (snap) => {
+        allUsers = [];
+        snap.forEach(doc => allUsers.push({ id: doc.id, ...doc.data() }));
+        renderUsers(allUsers);
+      });
+    }
+
+    function renderUsers(users) {
+      usersList.innerHTML = "";
+      userCount.textContent = users.length;
+
+      if (users.length === 0) {
+        usersList.innerHTML = `<div class="empty-msg">Aucun utilisateur trouvé.</div>`;
+        return;
+      }
+
+      users.forEach(u => {
+        const date = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('fr-FR') : "Ancien";
+        
+        usersList.innerHTML += `
+          <div class="user-card">
+            <div class="user-info">
+              <div class="user-avatar">
+                <i class="fa-solid fa-circle-user"></i>
+              </div>
+              <div class="user-details">
+                <h3>${u.name || u.displayName || "Client Anonyme"}</h3>
+                <p>${u.email || "Pas d'email"}</p>
+              </div>
+            </div>
+
+            <div class="user-meta">
+              <div class="meta-item">
+                <b>Téléphone</b>
+                ${u.phone || "Non renseigné"}
+              </div>
+              <div class="meta-item">
+                <b>Membre depuis</b>
+                ${date}
+              </div>
+            </div>
+
+            <button class="btn-history" onclick="window.viewOrders('${u.id}')">
+              <i class="fa-solid fa-clock-rotate-left"></i> Voir l'Historique d'Achats
+            </button>
+          </div>
+        `;
+      });
+    }
+
+    // Filtrage dynamique
+    searchInput.oninput = (e) => {
+      const val = e.target.value.toLowerCase();
+      const filtered = allUsers.filter(u => 
+        (u.name || "").toLowerCase().includes(val) || 
+        (u.email || "").toLowerCase().includes(val)
+      );
+      renderUsers(filtered);
+    };
+
+    // Action : Voir les commandes
+    window.viewOrders = (uid) => {
+      // Tu peux rediriger vers une page spéciale ou filtrer ton admin.commande
+      // Ici, on peut par exemple aller sur l'admin avec un filtre
+      location.href = `admin.commande.html?filterUser=${uid}`;
+    };
+  </script>
+</body>
+</html>
