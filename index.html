@@ -5,9 +5,9 @@
   <title>Become boutique</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#7A623F">
-<div class="brand">
-  <img src="icons/logo/icon-192.png" alt="Become" onclick="location.reload()" style="cursor:pointer; height: 30px;">
-</div>
+  
+  <link rel="apple-touch-icon" href="icons/logo/icon-192.png">
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
@@ -52,7 +52,7 @@
       margin: 0 auto;
     }
 
-    .brand img { height: 20px; width: auto; }
+    .brand img { height: 32px; width: auto; border-radius: 4px; }
 
     .actions {
       display: flex;
@@ -197,7 +197,7 @@
 <header>
   <div class="bar">
     <div class="brand">
-      <img src="icons/logo/logo.png" alt="Become" onclick="location.reload()" style="cursor:pointer">
+      <img src="icons/logo/icon-192.png" alt="Become" onclick="location.reload()" style="cursor:pointer">
     </div>
     <div class="actions">
       <i id="searchBtn" class="fa-solid fa-magnifying-glass"></i>
@@ -254,10 +254,7 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     CURRENT_USER = user;
     CART_KEY = `cart_${user.uid}`;
-    
-    // Si connecté, on redirige vers settings.html au clic
     greeting.onclick = () => location.href = 'settings.html';
-    
     const snap = await getDoc(doc(db, "users", user.uid));
     const name = snap.exists() ? (snap.data().firstName || "User") : "User";
     greeting.textContent = `Hello, ${name.split(' ')[0]}`;
@@ -278,21 +275,16 @@ let totalPages = 1;
 
 async function loadProducts(dir = "next") {
   grid.innerHTML = "";
-  
   if (currentPage === 1) {
     const coll = collection(db, "products");
     const snapshot = await getCountFromServer(query(coll, where("active", "==", true)));
     totalPages = Math.ceil(snapshot.data().count / PER_PAGE);
   }
-
   let q = query(collection(db, "products"), where("active", "==", true), orderBy("createdAt", "desc"), limit(PER_PAGE));
   if (dir === "next" && lastVisible) q = query(q, startAfter(lastVisible));
-
   const snap = await getDocs(q);
   if (snap.empty) return;
-
   lastVisible = snap.docs[snap.docs.length - 1];
-  
   snap.forEach(d => {
     const p = d.data();
     const card = document.createElement("article");
@@ -307,13 +299,11 @@ async function loadProducts(dir = "next") {
     card.onclick = () => location.href = `product.html?id=${d.id}`;
     grid.appendChild(card);
   });
-
   pageInfo.textContent = `${String(currentPage).padStart(2, '0')} / ${String(totalPages || 1).padStart(2, '0')}`;
 }
 
 document.getElementById("next").onclick = () => { if(currentPage < totalPages) { currentPage++; loadProducts("next"); } };
 document.getElementById("prev").onclick = () => { if(currentPage > 1) { currentPage = 1; lastVisible = null; loadProducts(); } };
-
 loadProducts();
 
 /* ================= PANIER LOGIQUE ================= */
@@ -333,7 +323,10 @@ let deferredPrompt;
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  document.getElementById("installBtn").style.display = "block";
+  // N'affiche le bouton QUE sur mobile Android
+  if(window.innerWidth < 768) {
+     document.getElementById("installBtn").style.display = "block";
+  }
 });
 
 document.getElementById("installBtn").onclick = async () => {
@@ -350,14 +343,8 @@ const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
 if (isIOS && !isStandalone) {
     const prompt = document.getElementById("iosPrompt");
-    setTimeout(() => { 
-      prompt.style.display = "block"; 
-    }, 3000);
-    
-    // Fermeture auto de la bulle au scroll pour ne pas gêner
-    window.addEventListener('scroll', () => { 
-      prompt.style.display = "none"; 
-    }, { once: true });
+    setTimeout(() => { prompt.style.display = "block"; }, 3000);
+    window.addEventListener('scroll', () => { prompt.style.display = "none"; }, { once: true });
 }
 </script>
 
